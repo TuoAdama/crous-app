@@ -5,7 +5,9 @@
  * (and its CSS file) in your base layout (base.html.twig).
  */
 
-// any CSS you import will output into a single css file (app.css in this case)
-import './styles/app.css';
+// any CSS you import will output into a single css file (app.scss in this case)
+import './styles/app.scss';
 import 'bootstrap/dist/js/bootstrap.bundle.min'
 import 'admin-lte/dist/js/adminlte.min.js'
+import 'bootstrap-switch/dist/js/bootstrap-switch.min'
+import '@fortawesome/fontawesome-free/css/all.min.css'

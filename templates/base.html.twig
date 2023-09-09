@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html>
+<html data-lt-installed="true" style="height: auto;">
     <head>
         <meta charset="UTF-8">
-        <title>{% block title %}Welcome!{% endblock %}</title>
+        <title>{% block title %}Crous-app{% endblock %}</title>
         <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text></svg>">
         {% block stylesheets %}
             {{ encore_entry_link_tags('app') }}
@@ -12,7 +12,10 @@
             {{ encore_entry_script_tags('app') }}
         {% endblock %}
     </head>
-    <body>
-        {% block body %}{% endblock %}
+    <body class="sidebar-mini layout-fixed" style="height: auto;">
+        {% block body %}
+            {% include '_partials/header.html.twig' %}
+            {% include '_partials/sidebar.html.twig' %}
+        {% endblock %}
     </body>
 </html>
