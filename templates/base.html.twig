@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html data-lt-installed="true" style="height: auto;">
+    <head>
+        <meta charset="UTF-8">
+        <title>{% block title %}Crous-app{% endblock %}</title>
+        <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text></svg>">
+        {% block stylesheets %}
+            {{ encore_entry_link_tags('app') }}
+        {% endblock %}
+
+        {% block javascripts %}
+            {{ encore_entry_script_tags('app') }}
+        {% endblock %}
+    </head>
+    <body class="sidebar-mini layout-fixed" style="height: auto;">
+        {% block body %}
+            {% include '_partials/header.html.twig' %}
+            {% include '_partials/sidebar.html.twig' %}
+            <div class="content-wrapper">
+                <div class="content-header">
+                    <div class="container-fluid">
+                        <div class="row mb-2">
+                            <div class="col-sm-6">
+                                <h1 class="m-0">{% block page_name %}Dashboard{% endblock %}</h1>
+                            </div>
+                            <div class="col-sm-6">
+                                <ol class="breadcrumb float-sm-right">
+                                    <li class="breadcrumb-item"><a href="#">Home</a></li>
+                                    <li class="breadcrumb-item active">{% block page_name_path %}Dashboard{% endblock %}</li>
+                                </ol>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="content">
+                    <div class="container-fluid">
+                        {% block content %}No content{% endblock %}
+                    </div>
+                </div>
+            </div>
+        {% endblock %}
+    </body>
+</html>
