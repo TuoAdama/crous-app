@@ -1,0 +1,13 @@
+<div class="row g-4 settings-section">
+    <div class="col-12 col-md-4">
+        <h3 class="section-title">{{ title }}</h3>
+        <div class="section-intro">{{ description | raw }}</div>
+    </div>
+    <div class="col-12 col-md-8">
+        <div class="app-card app-card-settings shadow-sm p-4">
+            <div class="app-card-body">
+                {% include view_path %}
+            </div><!--//app-card-body-->
+        </div><!--//app-card-->
+    </div>
+</div>
