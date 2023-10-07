@@ -1,5 +1,5 @@
-$(document).ready(function() {
-
+$(document).ready(function () {
+    const criteria = {};
     const parameters = {
         url: "https://trouverunlogement.lescrous.fr/photon/api?limit=18&osm_tag=amenity%3Acollege&osm_tag=amenity%3Alibrary&osm_tag=amenity%3Aschool&osm_tag=amenity%3Auniversity&osm_tag=place%3Acountry&osm_tag=place%3Aregion&osm_tag=place%3Astate&osm_tag=place%3Acity&osm_tag=place%3Atown&osm_tag=place%3Avillage&osm_tag=place%3Ahouse&osm_tag=landuse%3Aresidential",
         country: "France",
@@ -15,26 +15,27 @@ $(document).ready(function() {
         dropdownParent: $('#dropdown'),
         ajax: {
             url: parameters.url,
-            data: function(params){
+            data: function (params) {
                 return {
                     q: params.term
                 }
             },
             processResults: function (data) {
                 let cities = data.features;
-                if (cities.length === 0){
+                if (cities.length === 0) {
                     return [];
                 }
                 cities = cities.filter(function (city) {
                     return city.properties.country === parameters.country
                 });
-                if (cities.length === 0){
+                if (cities.length === 0) {
                     return [];
                 }
-                const items = cities.map(function (result){
+                const items = cities.map(function (result) {
                     return {
                         id: result.properties.osm_id,
                         text: result.properties.name,
+                        results: result,
                     }
                 });
                 return {
@@ -43,4 +44,19 @@ $(document).ready(function() {
             }
         }
     });
+
+    $("#location").on("select2:select", function (e) {
+        criteria['location'] = e.params.data.results;
+    });
+
+    $("#criteria-form").on('submit', function (e) {
+        e.preventDefault();
+        criteria['type'] = [];
+        $('input[name="type[]"]:checked').each(function () {
+            criteria['type'].push($(this).val())
+        });
+        criteria['price'] = $("input[name='price']").val();
+        console.log(criteria);
+    })
+
 });
