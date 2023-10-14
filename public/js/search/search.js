@@ -56,7 +56,15 @@ $(document).ready(function () {
             criteria['type'].push($(this).val())
         });
         criteria['price'] = $("input[name='price']").val();
-        console.log(criteria);
+        let headers = new Headers();
+        headers.append("Content-Type", "application/json");
+        console.log(JSON.stringify(criteria))
+        fetch('/api/search', {
+            method: 'POST',
+            headers: headers,
+            body: JSON.stringify(criteria)
+        }).then(res => res.json())
+            .then(res => console.log(res));
     })
 
 });
