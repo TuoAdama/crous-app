@@ -19,6 +19,7 @@ class CriteriaController extends AbstractController
     #[Route('/criteria/location', name: 'criteria.location', methods: 'POST')]
     public function location(Request $request): JsonResponse
     {
+        dd($request->get('request'));
         return new JsonResponse(compact($location, $price),);
     }
 }

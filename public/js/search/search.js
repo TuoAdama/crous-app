@@ -58,13 +58,17 @@ $(document).ready(function () {
         criteria['price'] = $("input[name='price']").val();
         let headers = new Headers();
         headers.append("Content-Type", "application/json");
-        console.log(JSON.stringify(criteria))
+        headers.append("Accept", "application/json");
+        $('#submit-btn').prop("disabled",true);
         fetch('/api/search', {
             method: 'POST',
             headers: headers,
             body: JSON.stringify(criteria)
         }).then(res => res.json())
-            .then(res => console.log(res));
+            .then(res => {
+                alert("Opération effectuée avec succès")
+                $('#submit-btn').prop("disabled",false);
+            });
     })
 
 });
