@@ -2,9 +2,9 @@
 
 namespace App\Controller;
 
+use App\Repository\SearchCriteriaRepository;
+use App\Services\SearchService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -16,10 +16,12 @@ class CriteriaController extends AbstractController
         return $this->render('pages/criteria/criteria.html.twig');
     }
 
-    #[Route('/criteria/location', name: 'criteria.location', methods: 'POST')]
-    public function location(Request $request): JsonResponse
+
+    #[Route('/search', name: "search")]
+    public function search(SearchCriteriaRepository $criteriaRepository, SearchService $searchService)
     {
-        dd($request->get('request'));
-        return new JsonResponse(compact($location, $price),);
+        $criteria = $criteriaRepository->find(1);
+        $requestBody = $searchService->getRequestBody($criteria);
+        $searchService->search($requestBody);
     }
 }

@@ -1,0 +1,14 @@
+parameters:
+    url: https://trouverunlogement.lescrous.fr/api/fr/search/32
+    image_base_path: https://trouverunlogement.lescrous.fr/cache/images/preview/
+    precision: 6
+    idTool: 32
+    need_aggregation: true
+    residence: null
+    sector: null
+    page: 1
+    occupationModes: []
+    min: 0
+    max: 10000000
+    equipment: []
+    multiple: 100
