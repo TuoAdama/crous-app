@@ -9,6 +9,5 @@ parameters:
     page: 1
     occupationModes: []
     min: 0
-    max: 10000000
     equipment: []
     multiple: 100
