@@ -3,6 +3,11 @@
 namespace App\Services;
 
 use App\Entity\SearchCriteria;
+use Psr\Log\LoggerInterface;
+use Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface;
+use Symfony\Contracts\HttpClient\Exception\DecodingExceptionInterface;
+use Symfony\Contracts\HttpClient\Exception\RedirectionExceptionInterface;
+use Symfony\Contracts\HttpClient\Exception\ServerExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 use UnexpectedValueException;
@@ -31,7 +36,8 @@ class SearchService
      */
     public function __construct(
         private readonly ParameterBagInterface $params,
-        private HttpClientInterface $client,
+        private readonly HttpClientInterface   $client,
+        private readonly LoggerInterface       $logger
     )
     {
         $this->precision = $this->params->get('precision');
@@ -55,11 +61,13 @@ class SearchService
     {
         $location = $searchCriteria->getLocation();
         $extent = $location['properties']['extent'];
-        if (count($extent) !== 4){
+        if (count($extent) !== 4) {
             throw new UnexpectedValueException("La taille de l'extent doit être égale à 4");
         }
-        $lon1 = $extent[0]; $lat1 = $extent[1];
-        $lon2 = $extent[2]; $lat2 = $extent[3];
+        $lon1 = $extent[0];
+        $lat1 = $extent[1];
+        $lon2 = $extent[2];
+        $lat2 = $extent[3];
         return [
             'idTool' => $this->idTool,
             'need_aggregation' => $this->needAggregation,
@@ -87,14 +95,35 @@ class SearchService
     }
 
     /**
-     * @throws TransportExceptionInterface
+     * @param array $requestBody
+     * @return array
      */
-    public function search(array $requestBody): void
+    public function search(array $requestBody): array
     {
-        $response = $this->client->request('POST', $this->url, [
-            'body' => $requestBody
-        ]);
-        dd(json_decode($response->getContent(), true));
+        $this->logger->info("Récupération des logements disponibles");
+        try {
+            $response = $this->client->request('POST', $this->url, [
+                'body' => $requestBody,
+                'timeout' => 2.5
+            ]);
+            return $response->toArray();
+        } catch
+        (
+        ServerExceptionInterface|
+        TransportExceptionInterface|
+        ClientExceptionInterface|
+        RedirectionExceptionInterface|
+        DecodingExceptionInterface $e
+        ) {
+            $this->logger->error($e->getMessage());
+            return [];
+        }
+    }
+
+
+    public function run()
+    {
+
     }
 
 }
