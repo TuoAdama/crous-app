@@ -2,7 +2,9 @@
 
 namespace App\Repository;
 
+use App\Entity\SearchCriteria;
 use App\Entity\SearchResult;
+use DateTimeImmutable;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -28,6 +30,19 @@ class SearchResultRepository extends ServiceEntityRepository
      */
     public function storeAll(array $results): void
     {
-        dd($results);
+        $currentDate = new DateTimeImmutable();
+        $em = $this->getEntityManager();
+        foreach ($results as $result) {
+            /** @var SearchCriteria $criteria */
+            $criteria = $result['criteria'];
+            $criteriaResult = $result['results']['items'];
+            $searchResult = new SearchResult();
+            $searchResult->setResults($criteriaResult)
+                ->setSearchCriteria($criteria)
+                ->setCreatedAt($currentDate)
+                ->setUpdatedAt($currentDate);
+            $em->persist($searchResult);
+        }
+        $em->flush();
     }
 }
