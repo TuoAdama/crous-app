@@ -6,12 +6,6 @@ use App\Entity\SearchCriteria;
 use App\Repository\SearchCriteriaRepository;
 use App\Repository\SearchResultRepository;
 use Psr\Log\LoggerInterface;
-use Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface;
-use Symfony\Contracts\HttpClient\Exception\DecodingExceptionInterface;
-use Symfony\Contracts\HttpClient\Exception\RedirectionExceptionInterface;
-use Symfony\Contracts\HttpClient\Exception\ServerExceptionInterface;
-use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
-use Symfony\Contracts\HttpClient\HttpClientInterface;
 use UnexpectedValueException;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
@@ -38,10 +32,10 @@ class SearchService
      */
     public function __construct(
         private readonly ParameterBagInterface    $params,
-        private readonly HttpClientInterface      $client,
         private readonly LoggerInterface          $logger,
         private readonly SearchCriteriaRepository $criteriaRepository,
         private readonly SearchResultRepository   $searchResultRepository,
+        private readonly ApiRequest               $apiRequest,
     )
     {
         $this->precision = $this->params->get('precision');
@@ -99,29 +93,14 @@ class SearchService
     }
 
     /**
-     * @param array $requestBody
+     * @param SearchCriteria $criteria
      * @return array
      */
-    public function search(array $requestBody): array
+    public function search(SearchCriteria $criteria): array
     {
         $this->logger->info("Récupération des logements disponibles");
-        try {
-            $response = $this->client->request('POST', $this->url, [
-                'json' => $requestBody,
-                'timeout' => 2.5
-            ]);
-            return $response->toArray();
-        } catch
-        (
-        ServerExceptionInterface|
-        TransportExceptionInterface|
-        ClientExceptionInterface|
-        RedirectionExceptionInterface|
-        DecodingExceptionInterface $e
-        ) {
-            $this->logger->error($e->getMessage());
-            return [];
-        }
+        $requestBody = $this->getRequestBody($criteria);
+        return $this->apiRequest->getSearchResult($this->url, $requestBody);
     }
 
 
@@ -131,8 +110,7 @@ class SearchService
         $criterias = $this->criteriaRepository->findAllAvailableCriteria();
         if (count($criterias) != 0) {
             foreach ($criterias as $criteria) {
-                $requestBody = $this->getRequestBody($criteria);
-                $searchResult = $this->search($requestBody);
+                $searchResult = $this->search($criteria);
                 if (count($searchResult) == 0) {
                     continue;
                 }
