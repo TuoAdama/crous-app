@@ -3,6 +3,8 @@
 namespace App\Services;
 
 use App\Entity\SearchCriteria;
+use App\Repository\SearchCriteriaRepository;
+use App\Repository\SearchResultRepository;
 use Psr\Log\LoggerInterface;
 use Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\DecodingExceptionInterface;
@@ -35,9 +37,11 @@ class SearchService
      * @throws NotFoundExceptionInterface
      */
     public function __construct(
-        private readonly ParameterBagInterface $params,
-        private readonly HttpClientInterface   $client,
-        private readonly LoggerInterface       $logger
+        private readonly ParameterBagInterface    $params,
+        private readonly HttpClientInterface      $client,
+        private readonly LoggerInterface          $logger,
+        private readonly SearchCriteriaRepository $criteriaRepository,
+        private readonly SearchResultRepository   $searchResultRepository,
     )
     {
         $this->precision = $this->params->get('precision');
@@ -103,7 +107,7 @@ class SearchService
         $this->logger->info("Récupération des logements disponibles");
         try {
             $response = $this->client->request('POST', $this->url, [
-                'body' => $requestBody,
+                'json' => $requestBody,
                 'timeout' => 2.5
             ]);
             return $response->toArray();
@@ -121,9 +125,38 @@ class SearchService
     }
 
 
-    public function run()
+    public function run(): void
     {
+        $results = [];
+        $criterias = $this->criteriaRepository->findAllAvailableCriteria();
+        if (count($criterias) != 0) {
+            foreach ($criterias as $criteria) {
+                $requestBody = $this->getRequestBody($criteria);
+                $searchResult = $this->search($requestBody);
+                if (count($searchResult) == 0) {
+                    continue;
+                }
+                if (!key_exists('results', $searchResult)) {
+                    continue;
+                }
+                $searchResult = $searchResult['results'];
+                if (!key_exists('items', $searchResult) || count($searchResult['items']) == 0) {
+                    continue;
+                }
+                $results[] = [
+                    'criteria' => $criteria,
+                    'results' => $searchResult,
+                ];
+            }
+        }
+        if (count($results)) {
+            $this->storeSearchResults($results);
+        }
+    }
 
+    public function storeSearchResults(array $results): void
+    {
+        $this->searchResultRepository->storeAll($results);
     }
 
 }

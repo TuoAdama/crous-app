@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\SearchCriteriaRepository;
+use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
@@ -39,6 +40,9 @@ class SearchCriteria
 
     #[ORM\OneToMany(mappedBy: 'searchCriteria', targetEntity: SearchResult::class)]
     private Collection $searchResults;
+
+    #[ORM\Column(nullable: true)]
+    private ?DateTimeImmutable $deletedAt = null;
 
     public function __construct()
     {
@@ -136,6 +140,18 @@ class SearchCriteria
                 $searchResult->setSearchCriteria(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getDeletedAt(): ?\DateTimeImmutable
+    {
+        return $this->deletedAt;
+    }
+
+    public function setDeletedAt(\DateTimeImmutable $deletedAt): static
+    {
+        $this->deletedAt = $deletedAt;
 
         return $this;
     }

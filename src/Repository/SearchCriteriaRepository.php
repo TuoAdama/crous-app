@@ -32,4 +32,15 @@ class SearchCriteriaRepository extends ServiceEntityRepository
         $this->getEntityManager()->persist($searchCriteria);
         $this->getEntityManager()->flush();
     }
+
+    /**
+     * @return SearchCriteria[]
+     */
+    public function findAllAvailableCriteria(): array
+    {
+        return $this->createQueryBuilder('c')
+            ->where("c.deletedAt is NULL")
+            ->getQuery()
+            ->getResult();
+    }
 }

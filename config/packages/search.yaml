@@ -11,3 +11,5 @@ parameters:
     min: 0
     equipment: []
     multiple: 100
+    # Represente le jour auquel un resulat rétrouvé est supprimé
+    delete.after.change: 5

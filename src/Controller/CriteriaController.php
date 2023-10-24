@@ -20,8 +20,6 @@ class CriteriaController extends AbstractController
     #[Route('/search', name: "search")]
     public function search(SearchCriteriaRepository $criteriaRepository, SearchService $searchService)
     {
-        $criteria = $criteriaRepository->find(1);
-        $requestBody = $searchService->getRequestBody($criteria);
-        $searchService->search($requestBody);
+        $searchService->run();
     }
 }
