@@ -6,6 +6,7 @@ use App\Entity\SearchCriteria;
 use App\Entity\SearchResult;
 use DateTimeImmutable;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -28,8 +29,9 @@ class SearchResultRepository extends ServiceEntityRepository
      * @param array $results
      * @return void
      */
-    public function storeAll(array $results): void
+    public function updateOrStoreAll(array $results): void
     {
+        //TODO Remove old result and save the new
         $currentDate = new DateTimeImmutable();
         $em = $this->getEntityManager();
         foreach ($results as $result) {
@@ -44,5 +46,19 @@ class SearchResultRepository extends ServiceEntityRepository
             $em->persist($searchResult);
         }
         $em->flush();
+    }
+
+    function getResultAvailable(SearchCriteria $searchCriteria): ?SearchResult
+    {
+        try {
+            return $this->createQueryBuilder('s')
+                ->where('s.searchCriteria = :criteria')
+                ->andWhere('s.deletedAt is NULL')
+                ->setParameter('criteria', $searchCriteria)
+                ->getQuery()
+                ->getOneOrNullResult();
+        } catch (NonUniqueResultException $e) {
+            return null;
+        }
     }
 }

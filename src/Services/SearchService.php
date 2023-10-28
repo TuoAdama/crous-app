@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Entity\SearchCriteria;
 use App\Repository\SearchCriteriaRepository;
 use App\Repository\SearchResultRepository;
+use Doctrine\Common\Collections\Criteria;
 use Psr\Log\LoggerInterface;
 use UnexpectedValueException;
 use Psr\Container\ContainerExceptionInterface;
@@ -36,6 +37,7 @@ class SearchService
         private readonly SearchCriteriaRepository $criteriaRepository,
         private readonly SearchResultRepository   $searchResultRepository,
         private readonly ApiRequest               $apiRequest,
+        private readonly ComparisonService $comparisonService,
     )
     {
         $this->precision = $this->params->get('precision');
@@ -121,6 +123,12 @@ class SearchService
                 if (!key_exists('items', $searchResult) || count($searchResult['items']) == 0) {
                     continue;
                 }
+                $items = $searchResult['items'];
+                // Check if information are already registered
+                $exist = $this->comparisonService->exists($criteria, $items);
+                if ($exist){
+                    continue;
+                }
                 $results[] = [
                     'criteria' => $criteria,
                     'results' => $searchResult,
@@ -134,7 +142,7 @@ class SearchService
 
     public function storeSearchResults(array $results): void
     {
-        $this->searchResultRepository->storeAll($results);
+        $this->searchResultRepository->updateOrStoreAll($results);
     }
 
 }

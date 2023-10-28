@@ -94,4 +94,16 @@ class SearchResult
 
         return $this;
     }
+
+    /**
+     * @return int[]
+     */
+    public function getItemsIds(): array
+    {
+        $ids = [];
+        foreach ($this->results as $result) {
+            $ids[] = $result['id'];
+        }
+        return $ids;
+    }
 }
