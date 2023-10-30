@@ -25,6 +25,7 @@ class ComparisonService
             $newItemsIds[] = $item['id'];
         }
         $oldItemsIds = $result->getItemsIds();
-        return count(array_diff($newItemsIds, $oldItemsIds)) == 0;
+
+        return array_diff($newItemsIds, $oldItemsIds) == array_diff($oldItemsIds, $newItemsIds);
     }
 }
