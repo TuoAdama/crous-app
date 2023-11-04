@@ -3,10 +3,12 @@
 namespace App\Services;
 
 use App\Entity\SearchCriteria;
+use App\Message\CriteriaMessage;
 use App\Repository\SearchCriteriaRepository;
 use App\Repository\SearchResultRepository;
 use Doctrine\Common\Collections\Criteria;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\Messenger\MessageBusInterface;
 use UnexpectedValueException;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
@@ -38,6 +40,7 @@ class SearchService
         private readonly SearchResultRepository   $searchResultRepository,
         private readonly ApiRequest               $apiRequest,
         private readonly ComparisonService $comparisonService,
+        private readonly MessageBusInterface $bus,
     )
     {
         $this->precision = $this->params->get('precision');
@@ -109,6 +112,7 @@ class SearchService
     public function run(): void
     {
         $results = [];
+        $ids = [];
         $criterias = $this->criteriaRepository->findAllAvailableCriteria();
         if (count($criterias) != 0) {
             foreach ($criterias as $criteria) {
@@ -130,6 +134,7 @@ class SearchService
                     $this->logger->info('criteria_id = '.$criteria->getId());
                     continue;
                 }
+                $ids[] = $criteria->getId();
                 $results[] = [
                     'criteria' => $criteria,
                     'results' => $searchResult,
@@ -137,6 +142,7 @@ class SearchService
             }
         }
         if (count($results)) {
+            $this->bus->dispatch(new CriteriaMessage($ids));
             $this->storeSearchResults($results);
         }
     }
