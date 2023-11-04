@@ -127,6 +127,7 @@ class SearchService
                 // Check if information are already registered
                 $exist = $this->comparisonService->exists($criteria, $items);
                 if ($exist){
+                    $this->logger->info('criteria_id = '.$criteria->getId());
                     continue;
                 }
                 $results[] = [

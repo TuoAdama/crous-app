@@ -37,6 +37,9 @@ class SearchResultRepository extends ServiceEntityRepository
         foreach ($results as $result) {
             /** @var SearchCriteria $criteria */
             $criteria = $result['criteria'];
+            $criteria->getSearchResults()->forAll(function($index, $res) use ($em){
+                $em->remove($res);
+            });
             $criteriaResult = $result['results']['items'];
             $searchResult = new SearchResult();
             $searchResult->setResults($criteriaResult)
