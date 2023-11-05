@@ -67,4 +67,18 @@ class SearchResultRepository extends ServiceEntityRepository
             return null;
         }
     }
+
+
+    /**
+     * @param array $ids
+     * @return SearchResult[]
+     */
+    public function findWhereIdIn(array $ids): array
+    {
+        return $this->createQueryBuilder('s')
+            ->where('s.id IN (:ids)')
+            ->setParameter('ids', $ids)
+            ->getQuery()
+            ->getResult();
+    }
 }

@@ -11,7 +11,7 @@ framework:
 
         routing:
             # Route your messages to the transports
-             'App\Message\SearchResultMessage': sync
+             'App\Message\SearchResultMessage': async
 
 # when@test:
 #    framework:

@@ -14,7 +14,7 @@ class SearchResultMessage
     /**
      * @return int[]
      */
-    public function getId(): array
+    public function getIds(): array
     {
         return $this->ids;
     }
