@@ -27,10 +27,11 @@ class SearchResultRepository extends ServiceEntityRepository
 
     /**
      * @param array $results
-     * @return void
+     * @return SearchResult[]
      */
-    public function updateOrStoreAll(array $results): void
+    public function updateOrStoreAll(array $results): array
     {
+        $searchResults = [];
         //TODO Remove old result and save the new
         $currentDate = new DateTimeImmutable();
         $em = $this->getEntityManager();
@@ -47,8 +48,10 @@ class SearchResultRepository extends ServiceEntityRepository
                 ->setCreatedAt($currentDate)
                 ->setUpdatedAt($currentDate);
             $em->persist($searchResult);
+            $searchResults[] = $searchResult;
         }
         $em->flush();
+        return $searchResults;
     }
 
     function getResultAvailable(SearchCriteria $searchCriteria): ?SearchResult

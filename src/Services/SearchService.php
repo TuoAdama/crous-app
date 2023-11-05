@@ -3,7 +3,7 @@
 namespace App\Services;
 
 use App\Entity\SearchCriteria;
-use App\Message\CriteriaMessage;
+use App\Message\SearchResultMessage;
 use App\Repository\SearchCriteriaRepository;
 use App\Repository\SearchResultRepository;
 use Doctrine\Common\Collections\Criteria;
@@ -142,14 +142,22 @@ class SearchService
             }
         }
         if (count($results)) {
-            $this->bus->dispatch(new CriteriaMessage($ids));
             $this->storeSearchResults($results);
         }
     }
 
+    /**
+     * @param array $results
+     * @return void
+     */
     public function storeSearchResults(array $results): void
     {
-        $this->searchResultRepository->updateOrStoreAll($results);
+       $results = $this->searchResultRepository->updateOrStoreAll($results);
+       $ids = [];
+        foreach ($results as $result) {
+            $ids[] = $result->getId();
+       }
+        $this->bus->dispatch(new SearchResultMessage($ids));
     }
 
 }

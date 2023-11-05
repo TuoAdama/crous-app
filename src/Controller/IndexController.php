@@ -2,7 +2,7 @@
 
 namespace App\Controller;
 
-use App\Message\CriteriaMessage;
+use App\Message\SearchResultMessage;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;

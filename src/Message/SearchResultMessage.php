@@ -2,7 +2,7 @@
 
 namespace App\Message;
 
-class CriteriaMessage
+class SearchResultMessage
 {
     public function __construct(
         /** @var int[] */
