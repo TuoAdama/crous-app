@@ -1,4 +1,4 @@
-{% extends "base.html.twig" %}
+{% extends "../../../base.html.twig" %}
 
 {% block content_title %}
     Choix de la residence
@@ -24,7 +24,7 @@
 {% block content %}
     <form method="post" action="{{ path('search.store') }}" id="criteria-form">
         <hr class="mb-4">
-        {% include 'pages/criteria/section/form-section.html.twig' with
+        {% include 'section/form-section.html.twig' with
             {
                 view_path: 'pages/criteria/section/adresse.html.twig',
                 title: 'Adresses',
@@ -33,7 +33,7 @@
             }
         %}
         <hr class="my-4">
-        {% include 'pages/criteria/section/form-section.html.twig' with
+        {% include 'section/form-section.html.twig' with
             {
                 view_path: 'pages/criteria/section/type.html.twig',
                 title: 'Type de logement',
@@ -41,7 +41,7 @@
             }
         %}
         <hr class="my-4">
-        {% include 'pages/criteria/section/form-section.html.twig' with
+        {% include 'section/form-section.html.twig' with
             {
                 view_path: 'pages/criteria/section/notification.html.twig',
                 title: 'Notifications',
