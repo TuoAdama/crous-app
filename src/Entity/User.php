@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\UserRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
@@ -43,6 +45,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column]
     private ?\DateTimeImmutable $updatedAt = null;
+
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: SearchCriteria::class)]
+    private Collection $searchCriterias;
+
+    public function __construct()
+    {
+        $this->searchCriterias = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -146,6 +156,36 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setUpdatedAt(\DateTimeImmutable $updatedAt): static
     {
         $this->updatedAt = $updatedAt;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, SearchCriteria>
+     */
+    public function getSearchCriterias(): Collection
+    {
+        return $this->searchCriterias;
+    }
+
+    public function addSearchCriteria(SearchCriteria $searchCriteria): static
+    {
+        if (!$this->searchCriterias->contains($searchCriteria)) {
+            $this->searchCriterias->add($searchCriteria);
+            $searchCriteria->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeSearchCriteria(SearchCriteria $searchCriteria): static
+    {
+        if ($this->searchCriterias->removeElement($searchCriteria)) {
+            // set the owning side to null (unless already changed)
+            if ($searchCriteria->getUser() === $this) {
+                $searchCriteria->setUser(null);
+            }
+        }
 
         return $this;
     }

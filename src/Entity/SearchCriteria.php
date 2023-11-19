@@ -44,6 +44,9 @@ class SearchCriteria
     #[ORM\Column(nullable: true)]
     private ?DateTimeImmutable $deletedAt = null;
 
+    #[ORM\ManyToOne(inversedBy: 'searchCriterias')]
+    private ?User $user = null;
+
     public function __construct()
     {
         $this->searchResults = new ArrayCollection();
@@ -152,6 +155,18 @@ class SearchCriteria
     public function setDeletedAt(\DateTimeImmutable $deletedAt): static
     {
         $this->deletedAt = $deletedAt;
+
+        return $this;
+    }
+
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
+
+    public function setUser(?User $user): static
+    {
+        $this->user = $user;
 
         return $this;
     }
