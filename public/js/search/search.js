@@ -64,11 +64,21 @@ $(document).ready(function () {
             method: 'POST',
             headers: headers,
             body: JSON.stringify(criteria)
-        }).then(res => res.json())
-            .then(res => {
-                alert("Opération effectuée avec succès")
-                $('#submit-btn').prop("disabled",false);
-            });
+        }).then(res => {
+            if (res.status === 200){
+                return res.json();
+            }
+            throw new Error(JSON.stringify(res.json()))
+        })
+        .then(res => {
+            alert("Opération effectuée avec succès. Status: ")
+        })
+        .catch((error) => {
+            alert(error);
+        })
+        .finally(() => {
+            $('#submit-btn').prop("disabled",false);
+        })
     })
 
 });

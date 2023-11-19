@@ -23,6 +23,8 @@
 
 {% block content %}
     <form method="post" action="{{ path('search.store') }}" id="criteria-form">
+        <input type="hidden" name="_token" value="{{ csrf_token('criteria') }}">
+        <input type="hidden" name="user_id" value="{{ identifier }}">
         <hr class="mb-4">
         {% include 'pages/criteria/section/form-section.html.twig' with
             {
