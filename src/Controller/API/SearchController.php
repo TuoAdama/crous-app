@@ -24,7 +24,6 @@ class SearchController extends AbstractController
     public function __construct(
         private readonly SearchCriteriaValidator $searchValidator,
         private readonly SearchCriteriaRepository $criteriaRepository,
-        private readonly UserService $userService,
     )
     {
     }
@@ -34,6 +33,7 @@ class SearchController extends AbstractController
         Request $request
     ): JsonResponse
     {
+        /** @var User $user */
         $user = $this->getUser();
         $content = $request->toArray();
         if ($user == null){
@@ -42,6 +42,7 @@ class SearchController extends AbstractController
             ], Response::HTTP_FORBIDDEN);
         }
         $searchCriteria = new SearchCriteria();
+        $searchCriteria->setUser($user);
         $searchCriteria->setLocation($content['location'] ?? []);
         $searchCriteria->setType($content['type'] ?? []);
         if (is_numeric($content['price'])){
