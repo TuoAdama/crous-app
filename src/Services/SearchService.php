@@ -3,6 +3,8 @@
 namespace App\Services;
 
 use App\Entity\SearchCriteria;
+use App\Entity\SearchResult;
+use App\Entity\User;
 use App\Message\SearchResultMessage;
 use App\Repository\SearchCriteriaRepository;
 use App\Repository\SearchResultRepository;
@@ -158,6 +160,26 @@ class SearchService
             $ids[] = $result->getId();
        }
         $this->bus->dispatch(new SearchResultMessage($ids));
+    }
+
+
+    /**
+     * @param User $user
+     * @return void
+     */
+    function getResults(User $user): array|null
+    {
+        /** @var SearchCriteria|bool $criteria */
+        $criteria = $user->getSearchCriterias()->first();
+        if ($criteria === false){
+            return null;
+        }
+        /** @var SearchResult|bool $results */
+        $results = $criteria->getSearchResults()->first();
+        if ($results === false){
+            return null;
+        }
+        return $results->getResults();
     }
 
 }
