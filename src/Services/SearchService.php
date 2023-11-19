@@ -31,6 +31,8 @@ class SearchService
     private array $equipment;
     private int $multiple;
 
+    private string $resultLink;
+
     /**
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
@@ -56,6 +58,7 @@ class SearchService
         $this->equipment = $this->params->get('equipment');
         $this->multiple = $this->params->get('multiple');
         $this->url = $this->params->get('url');
+        $this->resultLink = $this->params->get('result.link');
     }
 
     /**
@@ -179,7 +182,24 @@ class SearchService
         if ($results === false){
             return null;
         }
-        return $results->getResults();
+        return [
+            'link' => $this->getLink($criteria),
+            'results' => $results->getResults()
+        ];
+    }
+
+
+    /**
+     * @param SearchCriteria $criteria
+     * @return string
+     */
+    function getLink(SearchCriteria $criteria): string
+    {
+       $lat1 = $criteria->getLat1();
+       $lon1 = $criteria->getLon1();
+       $lat2 = $criteria->getLat2();
+       $lon2 = $criteria->getLon2();
+       return str_replace(['LAT-1', 'LON-1', 'LAT-2', 'LON-2'], [$lat1, $lon1, $lat2, $lon2], $this->resultLink);
     }
 
 }

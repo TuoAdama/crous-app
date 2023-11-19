@@ -170,4 +170,30 @@ class SearchCriteria
 
         return $this;
     }
+
+    public function getLat1(): float
+    {
+        return $this->getExtent()[0];
+    }
+
+    public function getLon1(): float
+    {
+        return $this->getExtent()[1];
+    }
+
+    public function getLat2(): float
+    {
+        return $this->getExtent()[2];
+    }
+
+    public function getLon2(): float
+    {
+        return $this->getExtent()[3];
+    }
+
+
+    public function getExtent(): array
+    {
+        return $this->getLocation()['properties']['extent'];
+    }
 }
