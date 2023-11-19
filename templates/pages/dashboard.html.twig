@@ -8,7 +8,12 @@
 {% endblock %}
 
 {% block alert_messsage %}
-    {% include '_partials/alert.html.twig' %}
+    {% include '_partials/alert.html.twig' with {
+        alert_title: results.results|length ~ ' Logement(s) trouvé(s)',
+        alert_content: 'Des logements répondants aux critères que vous avez définis ont été trouvés',
+        link: results.link,
+        link_text: 'Details'
+    } %}
 {% endblock %}
 
 
