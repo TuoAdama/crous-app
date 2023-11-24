@@ -13,16 +13,16 @@ class SearchResultMessageHandler
 {
 
     public function __construct(
-        private SearchResultRepository $searchResultRepository,
-        private LoggerInterface $logger,
-        private MailService $mailService,
+        private readonly SearchResultRepository $searchResultRepository,
+        private readonly LoggerInterface        $logger,
+        private readonly MailService            $mailService,
     )
     {
     }
 
     public function __invoke(
         SearchResultMessage $criteriaMessage
-    )
+    ): void
     {
         $ids = $criteriaMessage->getIds();
         $searchResults = $this->searchResultRepository->findWhereIdIn($ids);

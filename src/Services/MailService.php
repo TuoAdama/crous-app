@@ -10,7 +10,6 @@ use Symfony\Component\Mime\Email;
 
 class MailService
 {
-    private string $author;
     public function __construct(
         private readonly MailerInterface $mailer,
         private readonly LoggerInterface $logger,
@@ -35,9 +34,12 @@ class MailService
     {
         try {
             $this->mailer->send($email);
+            $this->logger->info('[MAIL] Mail send to {email}', [
+                'email' => 'tuoadama17@gmail',
+            ]);
         } catch (TransportExceptionInterface $e) {
-            $this->logger->alert('envoie de mail echoué: user [email: {email}]', [
-                'email' => $email->getFrom()[0]->getAddress()
+            $this->logger->alert('[MAIL] Envoie de mail echoué: user [email: {email}]', [
+                'email' => 'tuoadama17@gmail'
             ]);
         }
     }
