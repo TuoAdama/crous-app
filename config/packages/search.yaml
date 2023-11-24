@@ -1,0 +1,17 @@
+parameters:
+    url.domain: https://trouverunlogement.lescrous.fr
+    url: https://trouverunlogement.lescrous.fr/api/fr/search/32
+    image_base_path: https://trouverunlogement.lescrous.fr/cache/images/preview/
+    precision: 6
+    idTool: 32
+    need_aggregation: true
+    residence: null
+    sector: null
+    page: 1
+    occupationModes: []
+    min: 0
+    equipment: []
+    multiple: 100
+    # Represente le jour auquel un resulat rétrouvé est supprimé
+    delete.after.change: 5
+    result.link: "%url.domain%/tools/32/search?bounds=LAT-1_LON-1_LAT-2_LON-2"

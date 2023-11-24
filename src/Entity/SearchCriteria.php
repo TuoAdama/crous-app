@@ -3,6 +3,9 @@
 namespace App\Entity;
 
 use App\Repository\SearchCriteriaRepository;
+use DateTimeImmutable;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -34,6 +37,20 @@ class SearchCriteria
 
     #[ORM\Column]
     private ?\DateTimeImmutable $updatedAt = null;
+
+    #[ORM\OneToMany(mappedBy: 'searchCriteria', targetEntity: SearchResult::class)]
+    private Collection $searchResults;
+
+    #[ORM\Column(nullable: true)]
+    private ?DateTimeImmutable $deletedAt = null;
+
+    #[ORM\ManyToOne(inversedBy: 'searchCriterias')]
+    private ?User $user = null;
+
+    public function __construct()
+    {
+        $this->searchResults = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -98,5 +115,85 @@ class SearchCriteria
         $this->updatedAt = $updatedAt;
 
         return $this;
+    }
+
+    /**
+     * @return Collection<int, SearchResult>
+     */
+    public function getSearchResults(): Collection
+    {
+        return $this->searchResults;
+    }
+
+    public function addSearchResult(SearchResult $searchResult): static
+    {
+        if (!$this->searchResults->contains($searchResult)) {
+            $this->searchResults->add($searchResult);
+            $searchResult->setSearchCriteria($this);
+        }
+
+        return $this;
+    }
+
+    public function removeSearchResult(SearchResult $searchResult): static
+    {
+        if ($this->searchResults->removeElement($searchResult)) {
+            // set the owning side to null (unless already changed)
+            if ($searchResult->getSearchCriteria() === $this) {
+                $searchResult->setSearchCriteria(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getDeletedAt(): ?\DateTimeImmutable
+    {
+        return $this->deletedAt;
+    }
+
+    public function setDeletedAt(\DateTimeImmutable $deletedAt): static
+    {
+        $this->deletedAt = $deletedAt;
+
+        return $this;
+    }
+
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
+
+    public function setUser(?User $user): static
+    {
+        $this->user = $user;
+
+        return $this;
+    }
+
+    public function getLat1(): float
+    {
+        return $this->getExtent()[0];
+    }
+
+    public function getLon1(): float
+    {
+        return $this->getExtent()[1];
+    }
+
+    public function getLat2(): float
+    {
+        return $this->getExtent()[2];
+    }
+
+    public function getLon2(): float
+    {
+        return $this->getExtent()[3];
+    }
+
+
+    public function getExtent(): array
+    {
+        return $this->getLocation()['properties']['extent'];
     }
 }
