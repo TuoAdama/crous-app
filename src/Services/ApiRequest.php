@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use http\Exception\InvalidArgumentException;
 use Psr\Log\LoggerInterface;
 use Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\DecodingExceptionInterface;
@@ -9,6 +10,7 @@ use Symfony\Contracts\HttpClient\Exception\RedirectionExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\ServerExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
+use Symfony\Contracts\HttpClient\ResponseInterface;
 
 class ApiRequest
 {
@@ -39,5 +41,20 @@ class ApiRequest
             $this->logger->error($e->getMessage());
             return [];
         }
+    }
+
+    /**
+     * @throws TransportExceptionInterface
+     * @throws \InvalidArgumentException
+     */
+    public function postWithAuthentication(string $url, array $body, array $credentials): ResponseInterface
+    {
+        if (!isset($credentials['username']) && !isset($credentials['password'])){
+            throw new InvalidArgumentException('username or password not exits');
+        }
+        return $this->client->request('POST', $url, [
+            'auth_basic' => [$credentials['username'], $credentials['password']],
+            'body' => $body
+        ]);
     }
 }
