@@ -3,10 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\User;
-use App\Message\SearchResultMessage;
 use App\Services\SearchService;
-use App\Services\SmsInterface;
-use App\Services\TwilioService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
