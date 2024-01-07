@@ -31,6 +31,7 @@ class SearchCriteriaType extends AbstractType
                 ]
             ])
             ->add('type', ChoiceType::class, [
+                'required' => true,
                 'expanded' => true,
                 'multiple' => true,
                 'choices'  => [
