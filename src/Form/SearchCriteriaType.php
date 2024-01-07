@@ -12,6 +12,7 @@ use Symfony\Component\Form\Extension\Core\Type\FormType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\NotBlank;
 
 class SearchCriteriaType extends AbstractType
 {
@@ -34,6 +35,9 @@ class SearchCriteriaType extends AbstractType
                 'required' => true,
                 'expanded' => true,
                 'multiple' => true,
+                'constraints' => [
+                    new NotBlank(),
+                ],
                 'choices'  => [
                     'Individuel' => 'individuel',
                     'Colocation'    => 'colocation',
