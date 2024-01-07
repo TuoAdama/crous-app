@@ -19,6 +19,9 @@ class CriteriaController extends AbstractController
         $searchCriteria = new SearchCriteria();
         $form = $this->createForm(SearchCriteriaType::class, $searchCriteria);
         $form->handleRequest($request);
+        if ($form->isSubmitted()){
+            dd($form);
+        }
         return $this->render('pages/criteria/criteria.html.twig',  [
             'identifier' => $this->getUser()->getUserIdentifier(),
             'form' => $form,

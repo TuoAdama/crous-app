@@ -54,6 +54,7 @@ class SearchCriteriaType extends AbstractType
                 'label_attr' => [
                     'class' => 'form-label'
                 ],
+                'html5' => true,
                 'attr' => [
                     'min' => 0,
                     'placeholder' => 0,
