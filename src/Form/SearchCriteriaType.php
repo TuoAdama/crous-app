@@ -7,6 +7,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
+use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\FormType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -29,20 +30,23 @@ class SearchCriteriaType extends AbstractType
                     'class' => 'form-control',
                 ]
             ])
-            ->add('type', CollectionType::class, [
-                'entry_type'   => CheckboxType::class,
-                'allow_add' => true,
-                'entry_options'  => [
-                    'choices'  => [
-                        'Nashville' => 'nashville',
-                        'Paris'     => 'paris',
-                        'Berlin'    => 'berlin',
-                        'London'    => 'london',
-                    ],
-                    'attr' => [
-                        'class' => 'form-check-input',
-                    ]
+            ->add('type', ChoiceType::class, [
+                'expanded' => true,
+                'multiple' => true,
+                'choices'  => [
+                    'Individuel' => 'individuel',
+                    'Colocation'    => 'colocation',
+                    'Couple'    => 'couple',
                 ],
+                'choice_attr' => function(){
+                    return [
+                        'class' => 'form-check-input'
+                    ];
+                },
+                'label_attr' => [
+                    'class' => 'form-check-label'
+                ],
+                'data' => ['individuel'],
             ])
             ->add('price', NumberType::class, [
                 'required' => true,
