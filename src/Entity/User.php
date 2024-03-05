@@ -49,6 +49,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: SearchCriteria::class)]
     private Collection $searchCriterias;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $number = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?bool $number_is_verified = null;
+
     public function __construct()
     {
         $this->searchCriterias = new ArrayCollection();
@@ -186,6 +192,30 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
                 $searchCriteria->setUser(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getNumber(): ?string
+    {
+        return $this->number;
+    }
+
+    public function setNumber(?string $number): static
+    {
+        $this->number = $number;
+
+        return $this;
+    }
+
+    public function isNumberIsVerified(): ?bool
+    {
+        return $this->number_is_verified;
+    }
+
+    public function setNumberIsVerified(?bool $number_is_verified): static
+    {
+        $this->number_is_verified = $number_is_verified;
 
         return $this;
     }
