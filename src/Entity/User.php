@@ -59,6 +59,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(nullable: true)]
     private ?bool $number_is_verified = null;
 
+    #[ORM\Column(nullable: true)]
+    private ?int $TemporaryNumberCode = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?\DateTimeImmutable $TemporaryCodeExpiredAt = null;
+
     public function __construct()
     {
         $this->searchCriterias = new ArrayCollection();
@@ -220,6 +226,30 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setNumberIsVerified(?bool $number_is_verified): static
     {
         $this->number_is_verified = $number_is_verified;
+
+        return $this;
+    }
+
+    public function getTemporaryNumberCode(): ?int
+    {
+        return $this->TemporaryNumberCode;
+    }
+
+    public function setTemporaryNumberCode(?int $TemporaryNumberCode): static
+    {
+        $this->TemporaryNumberCode = $TemporaryNumberCode;
+
+        return $this;
+    }
+
+    public function getTemporaryCodeExpiredAt(): ?\DateTimeImmutable
+    {
+        return $this->TemporaryCodeExpiredAt;
+    }
+
+    public function setTemporaryCodeExpiredAt(?\DateTimeImmutable $TemporaryCodeExpiredAt): static
+    {
+        $this->TemporaryCodeExpiredAt = $TemporaryCodeExpiredAt;
 
         return $this;
     }
