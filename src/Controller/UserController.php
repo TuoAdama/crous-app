@@ -5,11 +5,13 @@ namespace App\Controller;
 use App\Entity\User;
 use App\Form\UserNumberType;
 use App\Form\VerificationNumberType;
+use App\Services\Token\SmsTokenValidator;
 use App\Services\UserService;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
@@ -19,6 +21,7 @@ class UserController extends AbstractController
 
     public function __construct(
         private readonly UserService $userService,
+        private readonly SmsTokenValidator $smsTokenValidator
     )
     {
     }
@@ -35,7 +38,11 @@ class UserController extends AbstractController
         $numberForm->handleRequest($request);
         if ($numberForm->isSubmitted() && $numberForm->isValid()){
             $this->userService->verifyNumber($user);
-            return $this->redirectToRoute('user.verification.number');
+            $token = $this->userService->updateToken($user);
+            $this->userService->flush();
+            return $this->redirectToRoute('user.verification.number', [
+                'token' =>  $token
+            ]);
         }
         return $this->render('pages/user-setting.html.twig', [
             'user' => $user,
@@ -44,9 +51,15 @@ class UserController extends AbstractController
     }
 
 
-    #[Route('/setting/verification/number', name: 'user.verification.number')]
-    public function verification(Request $request): Response
+    #[Route('/setting/verification/number/{token}', name: 'user.verification.number')]
+    public function verification(Request $request, string $token): Response
     {
+        /** @var User $user */
+        $user = $this->getUser();
+        $isValid = $this->smsTokenValidator->isValid($user, $token);
+        if (!$isValid){
+            return new Response("Page not found", 404);
+        }
         $form = $this->createForm(VerificationNumberType::class, []);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()){
@@ -56,7 +69,9 @@ class UserController extends AbstractController
                 $isValid = $this->userService->codeIsValid($user, $form->getData()['code']);
                 if (!$isValid){
                     $this->addFlash('danger', 'Code incorrect');
-                    return $this->redirectToRoute('user.verification.number');
+                    return $this->redirectToRoute('user.verification.number', [
+                        'token' => $token
+                    ]);
                 }
                 $this->addFlash('success', 'Numéro mis à jour');
                 return $this->redirectToRoute('user.setting');
@@ -79,6 +94,8 @@ class UserController extends AbstractController
         /** @var User $user */
         $user = $this->getUser();
         $this->userService->verifyNumber($user);
-        return $this->redirectToRoute('user.verification.number');
+        return $this->redirectToRoute('user.verification.number', [
+            'token' => $user->getNumberTokenVerification(),
+        ]);
     }
 }

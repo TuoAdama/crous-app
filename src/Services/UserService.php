@@ -4,12 +4,15 @@ namespace App\Services;
 
 use App\Entity\User;
 use App\Repository\UserRepository;
+use App\Services\Token\SmsTokenValidator;
+use App\Services\Token\TokenGenerator;
 use DateInterval;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+use Symfony\Component\Security\Csrf\TokenGenerator\TokenGeneratorInterface;
 
 class UserService
 {
@@ -20,8 +23,10 @@ class UserService
         private readonly SmsInterface $smsSender,
         private readonly EntityManagerInterface $entityManager,
         private readonly ParameterBagInterface $parameterBag,
+        private readonly TokenGenerator $tokenGenerator
     )
     {
+
     }
 
     /**
@@ -47,8 +52,7 @@ class UserService
         $temporaryCode = $this->codeGenerator->generate();
         $user->setTemporaryNumberCode($temporaryCode);
         $message = "Votre code de vérification est: ".$temporaryCode;
-        $expiredIn = $this->parameterBag->get('sms.verification.expired');
-        $expiredAt = (new DateTimeImmutable())->add(new DateInterval('PT'.$expiredIn.'S'));
+        $expiredAt = $this->getExpiredDate('sms.verification.expired');
         $user->setTemporaryCodeExpiredAt($expiredAt);
         $this->entityManager->flush();
         $this->smsSender->send("+33".$user->getNumber(), $message);
@@ -78,7 +82,39 @@ class UserService
         $user->setNumberIsVerified(true);
         $user->setTemporaryNumberCode(null)
             ->setTemporaryCodeExpiredAt(null);
-        $this->entityManager->flush();
         return true;
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function updateToken(User $user): string
+    {
+        $expiredAt = $this->getExpiredDate('sms.verification.token.expired');
+        $token = $this->tokenGenerator
+                        ->setPayload([
+                            'exp' => $expiredAt->getTimestamp(),
+                            'sub' => $user->getId()
+                        ])
+                        ->generate();
+
+        $user->setNumberTokenVerification($token);
+        return $token;
+    }
+
+
+    /**
+     * @throws Exception
+     */
+    private function getExpiredDate(string $parameterKey): DateTimeImmutable
+    {
+        $expiredIn = $this->parameterBag->get($parameterKey);
+        return (new DateTimeImmutable())->add(new DateInterval('PT'.$expiredIn.'S'));
+    }
+
+
+    public function flush(): void
+    {
+        $this->entityManager->flush();
     }
 }
