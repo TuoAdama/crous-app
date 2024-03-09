@@ -65,6 +65,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(nullable: true)]
     private ?\DateTimeImmutable $TemporaryCodeExpiredAt = null;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $number_token_verification = null;
+
     public function __construct()
     {
         $this->searchCriterias = new ArrayCollection();
@@ -250,6 +253,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setTemporaryCodeExpiredAt(?\DateTimeImmutable $TemporaryCodeExpiredAt): static
     {
         $this->TemporaryCodeExpiredAt = $TemporaryCodeExpiredAt;
+
+        return $this;
+    }
+
+    public function getNumberTokenVerification(): ?string
+    {
+        return $this->number_token_verification;
+    }
+
+    public function setNumberTokenVerification(?string $number_token_verification): static
+    {
+        $this->number_token_verification = $number_token_verification;
 
         return $this;
     }
