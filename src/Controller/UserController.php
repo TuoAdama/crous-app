@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\User;
 use App\Form\UserNumberType;
+use App\Form\VerificationNumberType;
 use App\Services\UserService;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -34,6 +35,7 @@ class UserController extends AbstractController
         $numberForm->handleRequest($request);
         if ($numberForm->isSubmitted() && $numberForm->isValid()){
             $this->userService->verifyNumber($user);
+            return $this->redirectToRoute('user.verification.number');
         }
         return $this->render('pages/user-setting.html.twig', [
             'user' => $user,
@@ -42,8 +44,41 @@ class UserController extends AbstractController
     }
 
 
-    public function tokenIsValid(Request $request): bool
+    #[Route('/setting/verification/number', name: 'user.verification.number')]
+    public function verification(Request $request): Response
     {
-        return $this->isCsrfTokenValid('user_update_item', $request->get('_token'));
+        $form = $this->createForm(VerificationNumberType::class, []);
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()){
+            /** @var User $user */
+            $user = $this->getUser();
+            try {
+                $isValid = $this->userService->codeIsValid($user, $form->getData()['code']);
+                if (!$isValid){
+                    $this->addFlash('danger', 'Code incorrect');
+                    return $this->redirectToRoute('user.verification.number');
+                }
+                $this->addFlash('success', 'Numéro mis à jour');
+                return $this->redirectToRoute('user.setting');
+            }catch (Exception $e){
+                return new Response('verification expired', Response::HTTP_BAD_REQUEST);
+            }
+        }
+        return $this->render('pages/number-verification.html.twig',[
+            'form' => $form,
+        ]);
+    }
+
+
+    /**
+     * @throws Exception
+     */
+    #[Route('/setting/verification/resend', name: 'user.verification.resend')]
+    public function resendCode(): Response
+    {
+        /** @var User $user */
+        $user = $this->getUser();
+        $this->userService->verifyNumber($user);
+        return $this->redirectToRoute('user.verification.number');
     }
 }

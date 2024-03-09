@@ -58,4 +58,27 @@ class UserService
     {
         return $this->userRepository->findOneBy($criteria);
     }
+
+
+    /**
+     * @throws Exception
+     */
+    public function codeIsValid(User $user, int $code): bool
+    {
+        if ($user->getTemporaryCodeExpiredAt() == null || $user->getTemporaryNumberCode() == null){
+            throw new Exception("Verification information doesn't exists");
+        }
+        $now = (new DateTimeImmutable())->getTimestamp();
+        if ($now > $user->getTemporaryCodeExpiredAt()->getTimestamp()){
+            return false;
+        }
+        if ($code != $user->getTemporaryNumberCode()){
+            return false;
+        }
+        $user->setNumberIsVerified(true);
+        $user->setTemporaryNumberCode(null)
+            ->setTemporaryCodeExpiredAt(null);
+        $this->entityManager->flush();
+        return true;
+    }
 }
