@@ -35,7 +35,6 @@ class TwilioService implements SmsInterface
             'From' => $this->senderNumber,
             'Body' => $message,
         ];
-
         try {
             return $this->apiRequest->postWithAuthentication($this->url, $body, [
                 'username' => $this->accountSID,

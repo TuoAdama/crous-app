@@ -13,6 +13,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[UniqueEntity('email')]
+#[UniqueEntity('number')]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
@@ -48,6 +49,24 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: SearchCriteria::class)]
     private Collection $searchCriterias;
+
+    #[ORM\Column(length: 255, unique: true, nullable: true)]
+    #[Assert\NotNull]
+    #[Assert\NotBlank]
+    #[Assert\Regex(pattern: "/0[1-9]{1}[0-9]{8}/", message: "Invalid number")]
+    private ?string $number = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?bool $number_is_verified = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?int $TemporaryNumberCode = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?\DateTimeImmutable $TemporaryCodeExpiredAt = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $number_token_verification = null;
 
     public function __construct()
     {
@@ -186,6 +205,66 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
                 $searchCriteria->setUser(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getNumber(): ?string
+    {
+        return $this->number;
+    }
+
+    public function setNumber(?string $number): static
+    {
+        $this->number = $number;
+
+        return $this;
+    }
+
+    public function isNumberIsVerified(): ?bool
+    {
+        return $this->number_is_verified;
+    }
+
+    public function setNumberIsVerified(?bool $number_is_verified): static
+    {
+        $this->number_is_verified = $number_is_verified;
+
+        return $this;
+    }
+
+    public function getTemporaryNumberCode(): ?int
+    {
+        return $this->TemporaryNumberCode;
+    }
+
+    public function setTemporaryNumberCode(?int $TemporaryNumberCode): static
+    {
+        $this->TemporaryNumberCode = $TemporaryNumberCode;
+
+        return $this;
+    }
+
+    public function getTemporaryCodeExpiredAt(): ?\DateTimeImmutable
+    {
+        return $this->TemporaryCodeExpiredAt;
+    }
+
+    public function setTemporaryCodeExpiredAt(?\DateTimeImmutable $TemporaryCodeExpiredAt): static
+    {
+        $this->TemporaryCodeExpiredAt = $TemporaryCodeExpiredAt;
+
+        return $this;
+    }
+
+    public function getNumberTokenVerification(): ?string
+    {
+        return $this->number_token_verification;
+    }
+
+    public function setNumberTokenVerification(?string $number_token_verification): static
+    {
+        $this->number_token_verification = $number_token_verification;
 
         return $this;
     }

@@ -32,6 +32,7 @@ class UserType extends AbstractType
                 ],
                 'label' => false,
             ])
+            ->add('number', FranceNumberType::class)
             ->add('password', PasswordType::class, [
                 'attr' => [
                     'class' => 'form-control signup-password',

@@ -1,10 +1,8 @@
 <div class="settings-form">
     <div class="mb-3">
-        <label for="location" class="form-label">Ville</label>
-        <select name="location" class="form-control" id="location" required></select>
+        {{ form_row(form.address) }}
     </div>
     <div class="mb-3" id="dropdown">
-        <label for="setting-input-1" class="form-label">Prix maximum</label>
-        <input name="price" type="number" class="form-control" id="setting-input-1" placeholder="0" required>
+        {{ form_row(form.price) }}
     </div>
 </div>

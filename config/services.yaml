@@ -4,7 +4,11 @@
 # Put parameters here that don't need to change on each machine where the app is deployed
 # https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
 parameters:
-
+    JWT_ALGORITHM: "%env(JWT_ALGORITHM)%"
+    JWT_SECRET: "%env(JWT_SECRET)%"
+    sms.verification.digit: 6 # number of digit
+    sms.verification.expired: 160 # 2 minutes
+    sms.verification.token.expired: 1800 # 30 minutes
 services:
     # default configuration for services in *this* file
     _defaults:
