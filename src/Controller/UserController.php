@@ -11,7 +11,6 @@ use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
@@ -58,26 +57,22 @@ class UserController extends AbstractController
         $user = $this->getUser();
         $isValid = $this->smsTokenValidator->isValid($user, $token);
         if (!$isValid){
-            return new Response("Page not found", 404);
+           throw $this->createNotFoundException();
         }
         $form = $this->createForm(VerificationNumberType::class, []);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()){
             /** @var User $user */
             $user = $this->getUser();
-            try {
-                $isValid = $this->userService->codeIsValid($user, $form->getData()['code']);
-                if (!$isValid){
-                    $this->addFlash('danger', 'Code incorrect');
-                    return $this->redirectToRoute('user.verification.number', [
-                        'token' => $token
-                    ]);
-                }
-                $this->addFlash('success', 'Numéro mis à jour');
-                return $this->redirectToRoute('user.setting');
-            }catch (Exception $e){
-                return new Response('verification expired', Response::HTTP_BAD_REQUEST);
+            $isValid = $this->userService->codeIsValid($user, $form->getData()['code']);
+            if (!$isValid){
+                $this->addFlash('danger', 'Code incorrect');
+                return $this->redirectToRoute('user.verification.number', [
+                    'token' => $token
+                ]);
             }
+            $this->addFlash('success', 'Numéro mis à jour');
+            return $this->redirectToRoute('user.setting');
         }
         return $this->render('pages/number-verification.html.twig',[
             'form' => $form,

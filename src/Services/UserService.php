@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Entity\User;
+use App\Exceptions\NumberCodeException;
 use App\Repository\UserRepository;
 use App\Services\Token\SmsTokenValidator;
 use App\Services\Token\TokenGenerator;
@@ -63,15 +64,8 @@ class UserService
         return $this->userRepository->findOneBy($criteria);
     }
 
-
-    /**
-     * @throws Exception
-     */
     public function codeIsValid(User $user, int $code): bool
     {
-        if ($user->getTemporaryCodeExpiredAt() == null || $user->getTemporaryNumberCode() == null){
-            throw new Exception("Verification information doesn't exists");
-        }
         $now = (new DateTimeImmutable())->getTimestamp();
         if ($now > $user->getTemporaryCodeExpiredAt()->getTimestamp()){
             return false;
