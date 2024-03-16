@@ -68,6 +68,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $number_token_verification = null;
 
+    #[ORM\Column(nullable: true)]
+    private ?bool $emailIsVerified = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $emailTokenVerification = null;
+
     public function __construct()
     {
         $this->searchCriterias = new ArrayCollection();
@@ -265,6 +271,30 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setNumberTokenVerification(?string $number_token_verification): static
     {
         $this->number_token_verification = $number_token_verification;
+
+        return $this;
+    }
+
+    public function isEmailIsVerified(): ?bool
+    {
+        return $this->emailIsVerified;
+    }
+
+    public function setEmailIsVerified(?bool $emailIsVerified): static
+    {
+        $this->emailIsVerified = $emailIsVerified;
+
+        return $this;
+    }
+
+    public function getEmailTokenVerification(): ?string
+    {
+        return $this->emailTokenVerification;
+    }
+
+    public function setEmailTokenVerification(?string $emailTokenVerification): static
+    {
+        $this->emailTokenVerification = $emailTokenVerification;
 
         return $this;
     }

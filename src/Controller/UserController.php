@@ -109,7 +109,6 @@ class UserController extends AbstractController
 
     public function onUpdateEmail(User $user): Response
     {
-        dd($user);
         return $this->redirectToRoute('user.verification.email', [
             'token' => $token,
         ]);
