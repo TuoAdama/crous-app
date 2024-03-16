@@ -7,6 +7,8 @@ use App\Form\UserNumberType;
 use App\Form\VerificationNumberType;
 use App\Services\Token\SmsTokenValidator;
 use App\Services\UserService;
+use DateTime;
+use DateTimeImmutable;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -74,8 +76,15 @@ class UserController extends AbstractController
             $this->addFlash('success', 'Numéro mis à jour');
             return $this->redirectToRoute('user.setting');
         }
+        $expiredAt = $user->getTemporaryCodeExpiredAt();
+        $now = new DateTimeImmutable();
+        $seconds = 0;
+        if ($expiredAt > $now){
+            $seconds = $expiredAt->getTimestamp() - $now->getTimestamp();
+        }
         return $this->render('pages/number-verification.html.twig',[
             'form' => $form,
+            'seconds' => $seconds,
         ]);
     }
 
