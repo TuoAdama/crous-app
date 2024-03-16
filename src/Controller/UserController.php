@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\User;
+use App\Form\UserEmailType;
 use App\Form\UserNumberType;
 use App\Form\VerificationNumberType;
 use App\Services\Token\SmsTokenValidator;
@@ -35,19 +36,22 @@ class UserController extends AbstractController
     {
         /** @var User $user */
         $user = $this->getUser();
+
         $numberForm = $this->createForm(UserNumberType::class, $user);
         $numberForm->handleRequest($request);
         if ($numberForm->isSubmitted() && $numberForm->isValid()){
-            $this->userService->verifyNumber($user);
-            $token = $this->userService->updateToken($user);
-            $this->userService->flush();
-            return $this->redirectToRoute('user.verification.number', [
-                'token' =>  $token
-            ]);
+            return $this->onUpdateNumber($user);
+        }
+
+        $emailForm = $this->createForm(UserEmailType::class, $user);
+        $emailForm->handleRequest($request);
+        if ($emailForm->isSubmitted() && $emailForm->isValid()){
+            return $this->onUpdateEmail($user);
         }
         return $this->render('pages/user-setting.html.twig', [
             'user' => $user,
-            'numberForm' => $numberForm
+            'numberForm' => $numberForm,
+            'emailForm' => $emailForm,
         ]);
     }
 
@@ -100,6 +104,24 @@ class UserController extends AbstractController
         $this->userService->verifyNumber($user);
         return $this->redirectToRoute('user.verification.number', [
             'token' => $user->getNumberTokenVerification(),
+        ]);
+    }
+
+    public function onUpdateEmail(User $user): Response
+    {
+        dd($user);
+        return $this->redirectToRoute('user.verification.email', [
+            'token' => $token,
+        ]);
+    }
+
+    public function onUpdateNumber(User $user): Response
+    {
+        $this->userService->verifyNumber($user);
+        $token = $this->userService->updateToken($user);
+        $this->userService->flush();
+        return $this->redirectToRoute('user.verification.number', [
+            'token' =>  $token
         ]);
     }
 }
