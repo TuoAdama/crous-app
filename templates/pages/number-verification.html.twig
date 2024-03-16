@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>Portal - Bootstrap 5 Admin Dashboard Template For Developers</title>
+    <title>Vérification de numéro de téléphone</title>
 
     <!-- Meta -->
     <meta charset="utf-8">
@@ -22,7 +22,7 @@
 </head>
 
 <body class="app app-reset-password p-0">
-<div class="row g-0 app-auth-wrapper">
+<div class="row g-0 app-auth-wrapper" {{ stimulus_controller('number_verification', {seconds: seconds}) }}>
     <div class="col-12 auth-main-col text-center p-5">
         <div class="d-flex flex-column align-content-end">
             <div class="app-auth-body mx-auto">
@@ -34,8 +34,11 @@
                     {% endfor %}
                 {% endfor %}
                 <h2 class="auth-heading text-center mb-4">Vérification du numéro de telephone: {{ number ?? "" }}</h2>
-
-                <div class="auth-intro mb-4 text-center">Le code de vérification expire dans: <b>03:23</b></div>
+                {% if seconds == 0 %}
+                    <div style="color: red" class="auth-intro mb-4 text-center" {{ stimulus_target('number_verification', 'counterParent') }}>Le code de vérification expiré </div>
+                {% else %}
+                    <div class="auth-intro mb-4 text-center" {{ stimulus_target('number_verification', 'counterParent') }}>Le code de vérification expire dans: <b {{ stimulus_target('number_verification', 'counter') }}>--:--</b></div>
+                {% endif %}
 
                 <div class="auth-form-container text-left">
                     {{ form_start(form) }}

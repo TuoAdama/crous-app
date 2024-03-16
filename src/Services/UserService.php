@@ -54,7 +54,8 @@ class UserService
         $user->setTemporaryNumberCode($temporaryCode);
         $message = "Votre code de vérification est: ".$temporaryCode;
         $expiredAt = $this->getExpiredDate('sms.verification.expired');
-        $user->setTemporaryCodeExpiredAt($expiredAt);
+        $user->setTemporaryCodeExpiredAt($expiredAt)
+            ->setNumberIsVerified(false);
         $this->entityManager->flush();
         $this->smsSender->send("+33".$user->getNumber(), $message);
     }
@@ -75,7 +76,9 @@ class UserService
         }
         $user->setNumberIsVerified(true);
         $user->setTemporaryNumberCode(null)
-            ->setTemporaryCodeExpiredAt(null);
+            ->setTemporaryCodeExpiredAt(null)
+            ->setNumberTokenVerification(null);
+        $this->entityManager->flush();
         return true;
     }
 
