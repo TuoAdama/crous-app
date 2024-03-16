@@ -76,6 +76,7 @@ class UserService
         $user->setNumberIsVerified(true);
         $user->setTemporaryNumberCode(null)
             ->setTemporaryCodeExpiredAt(null);
+        $this->entityManager->flush();
         return true;
     }
 
