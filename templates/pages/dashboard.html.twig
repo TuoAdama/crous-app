@@ -7,17 +7,17 @@
     Dashboard
 {% endblock %}
 
-{% block alert_messsage %}
-    {% include '_partials/alert.html.twig' with {
-        alert_title: results.results|length ~ ' Logement(s) trouvé(s)',
-        alert_content: 'Des logements répondants aux critères que vous avez définis ont été trouvés',
-        link: results.link,
-        link_text: 'Details'
-    } %}
-{% endblock %}
-
-
 {% block content %}
+    <div>
+        {% if results is not null %}
+            {% include '_partials/alert.html.twig' with {
+                alert_title: results.results|length ~ ' Logement(s) trouvé(s)',
+                alert_content: 'Des logements répondants aux critères que vous avez définis ont été trouvés',
+                link: results.link,
+                link_text: 'Details'
+            } %}
+        {% endif %}
+    </div>
     <div>
         <div class="row g-4 mb-4">
             <div class="col-6 col-lg-3">
