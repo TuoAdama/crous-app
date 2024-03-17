@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\User;
 use App\Form\UserType;
+use App\Services\EmailVerificationService;
 use App\Services\UserService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
@@ -17,11 +18,15 @@ class RegistrationController extends AbstractController
 
     public function __construct(
         private readonly UserService $userService,
-        private readonly Security $security
+        private readonly Security $security,
+        private readonly EmailVerificationService $emailVerificationService,
     )
     {
     }
 
+    /**
+     * @throws \Exception
+     */
     #[Route('/registration', name: 'app_registration')]
     public function index(Request $request): Response
     {
@@ -34,7 +39,9 @@ class RegistrationController extends AbstractController
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()){
             $this->userService->save($user);
+            $this->emailVerificationService->notify($user);
             $this->security->login($user);
+            $this->addFlash('warning', 'Un mail de verification vous a été envoyé');
             return $this->redirectToRoute('app_index');
         }
         return $this->render('authentication/registration/index.html.twig', [

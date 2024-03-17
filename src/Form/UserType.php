@@ -20,26 +20,22 @@ class UserType extends AbstractType
                 'attr' =>  [
                     'class' => 'form-control signup-name',
                     'required' => true,
-                    'placeholder' => 'Nom et prénom'
                 ],
-                'label' => false,
+                'label' => 'Nom et prénom *',
             ])
             ->add('email', EmailType::class, [
                 'attr' => [
                     'class' => 'form-control email signup-email',
                     'required' => true,
-                    'placeholder' => 'email'
                 ],
-                'label' => false,
+                'label' => 'Email *',
             ])
-            ->add('number', FranceNumberType::class)
             ->add('password', PasswordType::class, [
                 'attr' => [
-                    'class' => 'form-control signup-password',
+                    'class' => 'form-control signup-password mb-2',
                     'required' => true,
-                    'placeholder' => "mot de passe"
                 ],
-                'label' => false,
+                'label' => 'Mot de passe *',
             ])
             ->add('Enregistrer', SubmitType::class, [
                 'attr' => [

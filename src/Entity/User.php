@@ -51,8 +51,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private Collection $searchCriterias;
 
     #[ORM\Column(length: 255, unique: true, nullable: true)]
-    #[Assert\NotNull]
-    #[Assert\NotBlank]
     #[Assert\Regex(pattern: "/0[1-9]{1}[0-9]{8}/", message: "Invalid number")]
     private ?string $number = null;
 
