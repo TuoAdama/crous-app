@@ -76,6 +76,7 @@ class UserController extends AbstractController
     public function onUpdateEmail(User $user): Response
     {
         $this->emailVerificationService->notify($user);
+        $this->addFlash('warning', 'Un mail de confirmation vous a été envoyé');
         return $this->redirectToRoute('user.setting');
     }
 
