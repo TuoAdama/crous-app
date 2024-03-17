@@ -42,4 +42,15 @@ class JWTServiceToken implements TokenGenerator
         }
         return JWT::encode($this->payload, $this->secret, 'HS256', null, $this->headers);
     }
+
+    public function decode(string $token): array
+    {
+        list($header, $payload) = explode('.', $token);
+        $payload = json_decode(base64_decode($payload), true);
+        $header = json_decode(base64_decode($header), true);
+        return [
+            'header' => $header,
+            'payload' => $payload,
+        ];
+    }
 }
