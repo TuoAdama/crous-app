@@ -43,6 +43,10 @@ class EmailVerificationService
         $this->bus->dispatch(new VerificationEmailMessage($user->getId()));
     }
 
+    /**
+     * @param string $token
+     * @return bool
+     */
     public function tokenIsValid(string $token): bool
     {
         $user = $this->userRepository->findOneBy([
@@ -58,5 +62,12 @@ class EmailVerificationService
             return  false;
         }
         return true;
+    }
+
+    public function updateAfterVerified(User $user): void
+    {
+        $user->setEmailIsVerified(true)
+            ->setEmailTokenVerification(null);
+        $this->entityManager->flush();
     }
 }

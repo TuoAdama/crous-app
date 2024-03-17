@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\User;
 use App\Services\EmailVerificationService;
 use App\Services\Token\JWTServiceToken;
 use App\Services\Token\TokenGenerator;
@@ -24,6 +25,13 @@ class EmailVerificationController extends AbstractController
     public function verificationEmail(Request $request, string $token): Response
     {
         $isValid = $this->emailVerificationService->tokenIsValid($token);
-        dd($isValid);
+        if (!$isValid){
+            throw $this->createNotFoundException('Token invalid');
+        }
+        /** @var User $user */
+        $user = $this->getUser();
+        $this->emailVerificationService->updateAfterVerified($user);
+        $this->addFlash('success', 'adresse mail vérifiée');
+        return $this->redirectToRoute('user.setting');
     }
 }
