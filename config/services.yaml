@@ -9,6 +9,7 @@ parameters:
     sms.verification.digit: 6 # number of digit
     sms.verification.expired: 160 # 2 minutes
     sms.verification.token.expired: 1800 # 30 minutes
+    email.verification.token.expired: 1800 # 30 minutes
 services:
     # default configuration for services in *this* file
     _defaults:
