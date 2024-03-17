@@ -23,7 +23,6 @@ class UserService
         private readonly CodeGenerator $codeGenerator,
         private readonly SmsInterface $smsSender,
         private readonly EntityManagerInterface $entityManager,
-        private readonly ParameterBagInterface $parameterBag,
         private readonly TokenGenerator $tokenGenerator,
         private readonly ExpirationService $expirationService,
     )
