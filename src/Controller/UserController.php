@@ -6,6 +6,7 @@ use App\Entity\User;
 use App\Form\UserEmailType;
 use App\Form\UserNumberType;
 use App\Form\VerificationNumberType;
+use App\Services\EmailVerificationService;
 use App\Services\Token\SmsTokenValidator;
 use App\Services\UserService;
 use DateTime;
@@ -23,7 +24,8 @@ class UserController extends AbstractController
 
     public function __construct(
         private readonly UserService $userService,
-        private readonly SmsTokenValidator $smsTokenValidator
+        private readonly SmsTokenValidator $smsTokenValidator,
+        private readonly EmailVerificationService $emailVerificationService
     )
     {
     }
@@ -107,13 +109,18 @@ class UserController extends AbstractController
         ]);
     }
 
+    /**
+     * @throws Exception
+     */
     public function onUpdateEmail(User $user): Response
     {
-        return $this->redirectToRoute('user.verification.email', [
-            'token' => $token,
-        ]);
+        $this->emailVerificationService->notify($user);
+        return $this->redirectToRoute('user.setting');
     }
 
+    /**
+     * @throws Exception
+     */
     public function onUpdateNumber(User $user): Response
     {
         $this->userService->verifyNumber($user);
@@ -122,5 +129,11 @@ class UserController extends AbstractController
         return $this->redirectToRoute('user.verification.number', [
             'token' =>  $token
         ]);
+    }
+
+    #[Route('/email/verification/{token}', name: 'email.verification')]
+    public function vericationEmail(Request $response, string $token)
+    {
+        dd($token);
     }
 }

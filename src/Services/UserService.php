@@ -24,7 +24,8 @@ class UserService
         private readonly SmsInterface $smsSender,
         private readonly EntityManagerInterface $entityManager,
         private readonly ParameterBagInterface $parameterBag,
-        private readonly TokenGenerator $tokenGenerator
+        private readonly TokenGenerator $tokenGenerator,
+        private readonly ExpirationService $expirationService,
     )
     {
 
@@ -87,7 +88,7 @@ class UserService
      */
     public function updateToken(User $user): string
     {
-        $expiredAt = $this->getExpiredDate('sms.verification.token.expired');
+        $expiredAt = $this->expirationService->getExpiredDate('sms.verification.token.expired');
         $token = $this->tokenGenerator
                         ->setPayload([
                             'exp' => $expiredAt->getTimestamp(),
@@ -98,17 +99,6 @@ class UserService
         $user->setNumberTokenVerification($token);
         return $token;
     }
-
-
-    /**
-     * @throws Exception
-     */
-    private function getExpiredDate(string $parameterKey): DateTimeImmutable
-    {
-        $expiredIn = $this->parameterBag->get($parameterKey);
-        return (new DateTimeImmutable())->add(new DateInterval('PT'.$expiredIn.'S'));
-    }
-
 
     public function flush(): void
     {
