@@ -54,7 +54,7 @@ class UserService
         $temporaryCode = $this->codeGenerator->generate();
         $user->setTemporaryNumberCode($temporaryCode);
         $message = "Votre code de vérification est: ".$temporaryCode;
-        $expiredAt = $this->getExpiredDate('sms.verification.expired');
+        $expiredAt = $this->expirationService->getExpiredDate('sms.verification.expired');
         $user->setTemporaryCodeExpiredAt($expiredAt)
             ->setNumberIsVerified(false);
         $this->entityManager->flush();
