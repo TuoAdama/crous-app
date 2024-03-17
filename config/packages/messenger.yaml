@@ -12,6 +12,7 @@ framework:
         routing:
             # Route your messages to the transports
              'App\Message\SearchResultMessage': async
+             'App\Message\VerificationEmailMessage': async
 
 # when@test:
 #    framework:
