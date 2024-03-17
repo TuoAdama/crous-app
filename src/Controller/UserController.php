@@ -24,8 +24,7 @@ class UserController extends AbstractController
 
     public function __construct(
         private readonly UserService $userService,
-        private readonly SmsTokenValidator $smsTokenValidator,
-        private readonly EmailVerificationService $emailVerificationService
+        private readonly EmailVerificationService $emailVerificationService,
     )
     {
     }
@@ -56,44 +55,6 @@ class UserController extends AbstractController
             'emailForm' => $emailForm,
         ]);
     }
-
-
-    #[Route('/setting/verification/number/{token}', name: 'user.verification.number')]
-    public function verification(Request $request, string $token): Response
-    {
-        /** @var User $user */
-        $user = $this->getUser();
-        $isValid = $this->smsTokenValidator->isValid($user, $token);
-        if (!$isValid){
-           throw $this->createNotFoundException();
-        }
-        $form = $this->createForm(VerificationNumberType::class, []);
-        $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()){
-            /** @var User $user */
-            $user = $this->getUser();
-            $isValid = $this->userService->codeIsValid($user, $form->getData()['code']);
-            if (!$isValid){
-                $this->addFlash('danger', 'Code incorrect');
-                return $this->redirectToRoute('user.verification.number', [
-                    'token' => $token
-                ]);
-            }
-            $this->addFlash('success', 'Numéro mis à jour');
-            return $this->redirectToRoute('user.setting');
-        }
-        $expiredAt = $user->getTemporaryCodeExpiredAt();
-        $now = new DateTimeImmutable();
-        $seconds = 0;
-        if ($expiredAt > $now){
-            $seconds = $expiredAt->getTimestamp() - $now->getTimestamp();
-        }
-        return $this->render('pages/number-verification.html.twig',[
-            'form' => $form,
-            'seconds' => $seconds,
-        ]);
-    }
-
 
     /**
      * @throws Exception
@@ -131,9 +92,4 @@ class UserController extends AbstractController
         ]);
     }
 
-    #[Route('/email/verification/{token}', name: 'email.verification')]
-    public function vericationEmail(Request $response, string $token)
-    {
-        dd($token);
-    }
 }
