@@ -3,8 +3,10 @@
 namespace App\Controller;
 
 use App\Entity\User;
+use App\Form\UserEmailType;
 use App\Form\UserNumberType;
 use App\Form\VerificationNumberType;
+use App\Services\EmailVerificationService;
 use App\Services\Token\SmsTokenValidator;
 use App\Services\UserService;
 use DateTime;
@@ -22,7 +24,7 @@ class UserController extends AbstractController
 
     public function __construct(
         private readonly UserService $userService,
-        private readonly SmsTokenValidator $smsTokenValidator
+        private readonly EmailVerificationService $emailVerificationService,
     )
     {
     }
@@ -35,59 +37,24 @@ class UserController extends AbstractController
     {
         /** @var User $user */
         $user = $this->getUser();
+
         $numberForm = $this->createForm(UserNumberType::class, $user);
         $numberForm->handleRequest($request);
         if ($numberForm->isSubmitted() && $numberForm->isValid()){
-            $this->userService->verifyNumber($user);
-            $token = $this->userService->updateToken($user);
-            $this->userService->flush();
-            return $this->redirectToRoute('user.verification.number', [
-                'token' =>  $token
-            ]);
+            return $this->onUpdateNumber($user);
+        }
+
+        $emailForm = $this->createForm(UserEmailType::class, $user);
+        $emailForm->handleRequest($request);
+        if ($emailForm->isSubmitted() && $emailForm->isValid()){
+            return $this->onUpdateEmail($user);
         }
         return $this->render('pages/user-setting.html.twig', [
             'user' => $user,
-            'numberForm' => $numberForm
+            'numberForm' => $numberForm,
+            'emailForm' => $emailForm,
         ]);
     }
-
-
-    #[Route('/setting/verification/number/{token}', name: 'user.verification.number')]
-    public function verification(Request $request, string $token): Response
-    {
-        /** @var User $user */
-        $user = $this->getUser();
-        $isValid = $this->smsTokenValidator->isValid($user, $token);
-        if (!$isValid){
-           throw $this->createNotFoundException();
-        }
-        $form = $this->createForm(VerificationNumberType::class, []);
-        $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()){
-            /** @var User $user */
-            $user = $this->getUser();
-            $isValid = $this->userService->codeIsValid($user, $form->getData()['code']);
-            if (!$isValid){
-                $this->addFlash('danger', 'Code incorrect');
-                return $this->redirectToRoute('user.verification.number', [
-                    'token' => $token
-                ]);
-            }
-            $this->addFlash('success', 'Numéro mis à jour');
-            return $this->redirectToRoute('user.setting');
-        }
-        $expiredAt = $user->getTemporaryCodeExpiredAt();
-        $now = new DateTimeImmutable();
-        $seconds = 0;
-        if ($expiredAt > $now){
-            $seconds = $expiredAt->getTimestamp() - $now->getTimestamp();
-        }
-        return $this->render('pages/number-verification.html.twig',[
-            'form' => $form,
-            'seconds' => $seconds,
-        ]);
-    }
-
 
     /**
      * @throws Exception
@@ -102,4 +69,28 @@ class UserController extends AbstractController
             'token' => $user->getNumberTokenVerification(),
         ]);
     }
+
+    /**
+     * @throws Exception
+     */
+    public function onUpdateEmail(User $user): Response
+    {
+        $this->emailVerificationService->notify($user);
+        $this->addFlash('warning', 'Un mail de confirmation vous a été envoyé');
+        return $this->redirectToRoute('user.setting');
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function onUpdateNumber(User $user): Response
+    {
+        $this->userService->verifyNumber($user);
+        $token = $this->userService->updateToken($user);
+        $this->userService->flush();
+        return $this->redirectToRoute('user.verification.number', [
+            'token' =>  $token
+        ]);
+    }
+
 }

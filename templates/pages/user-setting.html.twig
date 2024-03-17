@@ -32,14 +32,9 @@
 			</div>
 			<div class="col-12 col-md-8">
 				<div class="app-card-body">
-					<form class="settings-form" action="#" method="post">
-						<input type="hidden" name="_token" value="{{ csrf_token('user_update_item') }}">
-						<div class="mb-3">
-							<label for="setting-input-2" class="form-label">Email:</label>
-							<input name="email" type="email" class="form-control" id="setting-input-2" value="{{ user.email }}" required>
-						</div>
-						<button type="submit" class="btn app-btn-primary" >Mettre à jour</button>
-					</form>
+					{{ form_start(emailForm) }}
+						{{ form_row(emailForm.email) }}
+					{{ form_end(emailForm) }}
 				</div>
 			</div>
 		</div><!--//row-->

@@ -23,8 +23,8 @@ class UserService
         private readonly CodeGenerator $codeGenerator,
         private readonly SmsInterface $smsSender,
         private readonly EntityManagerInterface $entityManager,
-        private readonly ParameterBagInterface $parameterBag,
-        private readonly TokenGenerator $tokenGenerator
+        private readonly TokenGenerator $tokenGenerator,
+        private readonly ExpirationService $expirationService,
     )
     {
 
@@ -53,7 +53,7 @@ class UserService
         $temporaryCode = $this->codeGenerator->generate();
         $user->setTemporaryNumberCode($temporaryCode);
         $message = "Votre code de vérification est: ".$temporaryCode;
-        $expiredAt = $this->getExpiredDate('sms.verification.expired');
+        $expiredAt = $this->expirationService->getExpiredDate('sms.verification.expired');
         $user->setTemporaryCodeExpiredAt($expiredAt)
             ->setNumberIsVerified(false);
         $this->entityManager->flush();
@@ -87,7 +87,7 @@ class UserService
      */
     public function updateToken(User $user): string
     {
-        $expiredAt = $this->getExpiredDate('sms.verification.token.expired');
+        $expiredAt = $this->expirationService->getExpiredDate('sms.verification.token.expired');
         $token = $this->tokenGenerator
                         ->setPayload([
                             'exp' => $expiredAt->getTimestamp(),
@@ -98,17 +98,6 @@ class UserService
         $user->setNumberTokenVerification($token);
         return $token;
     }
-
-
-    /**
-     * @throws Exception
-     */
-    private function getExpiredDate(string $parameterKey): DateTimeImmutable
-    {
-        $expiredIn = $this->parameterBag->get($parameterKey);
-        return (new DateTimeImmutable())->add(new DateInterval('PT'.$expiredIn.'S'));
-    }
-
 
     public function flush(): void
     {

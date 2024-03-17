@@ -11,4 +11,6 @@ interface TokenGenerator
     public function setPayload(array $payload): TokenGenerator;
 
     public function generate(): string;
+
+    public function decode(string $token): array;
 }
