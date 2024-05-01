@@ -55,20 +55,7 @@
 				<h3 class="section-title">Notifications</h3>
 			</div>
 			<div class="col-12 col-md-6">
-				<div class="app-card app-card-settings shadow-sm p-4">
-					<div class="app-card-body">
-						<form class="settings-form">
-							<div class="form-check form-switch mb-3">
-								<input class="form-check-input" type="checkbox" id="settings-switch-1" checked>
-								<label class="form-check-label" for="settings-switch-1">Téléphone</label>
-							</div>
-							<div class="form-check form-switch mb-3">
-								<input class="form-check-input" type="checkbox" id="settings-switch-2">
-								<label class="form-check-label" for="settings-switch-2">Adresse email</label>
-							</div>
-						</form>
-					</div><!--//app-card-body-->
-				</div><!--//app-card-->
+				{% include '_partials/_notification-form.html.twig' %}
 			</div>
 		</div><!--//row-->
 	</div>

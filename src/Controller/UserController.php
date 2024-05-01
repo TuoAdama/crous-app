@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\User;
+use App\Form\NotificationType;
 use App\Form\UserEmailType;
 use App\Form\UserNumberType;
 use App\Form\UserType;
@@ -62,10 +63,13 @@ class UserController extends AbstractController
             return $this->onUpdateForm($user);
         }
 
+        $notificationForm = $this->createForm(NotificationType::class, $user);
+
         return $this->render('pages/user-setting.html.twig', [
             'user' => $user,
             'numberForm' => $numberForm,
             'emailForm' => $emailForm,
+            'notificationForm' => $notificationForm,
             'form' => $form,
         ]);
     }

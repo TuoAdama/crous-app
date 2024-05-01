@@ -6,3 +6,7 @@ flash:
 account:
   label: Mon compte
   logout: Déconnexion
+
+form:
+  phone: Téléphone
+  email: Adresse e-mail
