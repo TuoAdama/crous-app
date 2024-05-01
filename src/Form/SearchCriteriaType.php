@@ -22,7 +22,7 @@ class SearchCriteriaType extends AbstractType
             ->add('address', ChoiceType::class, [
                 'mapped' => false,
                 'required' => true,
-                'label' => 'Ville',
+                'label' => 'housing.label',
                 'label_attr' => [
                     'class' => 'form-label'
                 ],

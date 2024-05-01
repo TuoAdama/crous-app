@@ -13,3 +13,7 @@ form:
   email: Adresse e-mail
 dashboard: Tableau de board
 notification: Notifications
+address: Adresse
+housing:
+  type: Type de logement
+  label: Ville, résidence ou lieu d'étude
