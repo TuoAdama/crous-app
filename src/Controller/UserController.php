@@ -15,6 +15,8 @@ use DateTime;
 use DateTimeImmutable;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Form\Form;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -58,12 +60,10 @@ class UserController extends AbstractController
         $form->remove('email')
             ->remove('password')
             ->remove('submit');
-        $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()){
-            return $this->onUpdateForm($user);
-        }
+        $this->onUpdated($form, $request);
 
         $notificationForm = $this->createForm(NotificationType::class, $user);
+        $this->onUpdated($notificationForm, $request);
 
         return $this->render('pages/user-setting.html.twig', [
             'user' => $user,
@@ -113,11 +113,13 @@ class UserController extends AbstractController
 
 
 
-    public function onUpdateForm(User $user): Response
+    public function onUpdated(FormInterface $form, Request $request): void
     {
-        $this->userService->flush();
-        $this->addFlash('success', $this->translator->trans("flash.messages.user.username.update"));
-        return $this->redirectToRoute('user.setting');
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()){
+            $this->userService->flush();
+            $this->addFlash('success', $this->translator->trans("flash.messages.update"));
+        }
     }
 
 }
