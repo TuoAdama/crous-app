@@ -9,6 +9,7 @@ use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\FormType;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -19,6 +20,13 @@ class SearchCriteriaType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
+            ->add('address_hidden', HiddenType::class, [
+                'required' => true,
+                'mapped' => false,
+                'attr' => [
+                    'class' => 'address_hidden',
+                ]
+            ])
             ->add('address', ChoiceType::class, [
                 'mapped' => false,
                 'required' => true,
@@ -27,8 +35,8 @@ class SearchCriteriaType extends AbstractType
                     'class' => 'form-label'
                 ],
                 'attr' => [
-                    'id' => 'location',
-                    'class' => 'form-control',
+                    'id' => 'input-location',
+                    'class' => 'form-control address-select',
                 ]
             ])
             ->add('type', ChoiceType::class, [
@@ -45,7 +53,7 @@ class SearchCriteriaType extends AbstractType
                 ],
                 'choice_attr' => function(){
                     return [
-                        'class' => 'form-check-input'
+                        'class' => 'form-check-input input-type-location'
                     ];
                 },
                 'label_attr' => [
@@ -64,6 +72,7 @@ class SearchCriteriaType extends AbstractType
                     'min' => 0,
                     'placeholder' => 0,
                     'class' => 'form-control',
+                    'id' => 'input-price'
                 ]
             ])
         ;

@@ -17,3 +17,6 @@ address: Adresse
 housing:
   type: Type de logement
   label: Ville, résidence ou lieu d'étude
+criteria:
+  page:
+    title: Choix de la residence
