@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\User;
 use App\Form\UserEmailType;
 use App\Form\UserNumberType;
+use App\Form\UserType;
 use App\Form\VerificationNumberType;
 use App\Services\EmailVerificationService;
 use App\Services\Token\SmsTokenValidator;
@@ -49,10 +50,21 @@ class UserController extends AbstractController
         if ($emailForm->isSubmitted() && $emailForm->isValid()){
             return $this->onUpdateEmail($user);
         }
+
+        $form = $this->createForm(UserType::class, $user);
+        $form->remove('email')
+            ->remove('password')
+            ->remove('submit');
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()){
+            $this->onUpdateForm($user);
+        }
+
         return $this->render('pages/user-setting.html.twig', [
             'user' => $user,
             'numberForm' => $numberForm,
             'emailForm' => $emailForm,
+            'form' => $form,
         ]);
     }
 
@@ -91,6 +103,13 @@ class UserController extends AbstractController
         return $this->redirectToRoute('user.verification.number', [
             'token' =>  $token
         ]);
+    }
+
+
+
+    public function onUpdateForm(User $user): Response
+    {
+        dd($user);
     }
 
 }
