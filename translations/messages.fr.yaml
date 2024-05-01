@@ -3,3 +3,6 @@ flash:
     user:
       username:
         update: Votre nom d'utilisateur a été mis à jour
+account:
+  label: Mon compte
+  logout: Déconnexion
