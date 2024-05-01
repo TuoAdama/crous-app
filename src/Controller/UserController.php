@@ -18,6 +18,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 #[IsGranted('IS_AUTHENTICATED_FULLY')]
 class UserController extends AbstractController
@@ -26,6 +27,7 @@ class UserController extends AbstractController
     public function __construct(
         private readonly UserService $userService,
         private readonly EmailVerificationService $emailVerificationService,
+        private readonly TranslatorInterface $translator,
     )
     {
     }
@@ -57,7 +59,7 @@ class UserController extends AbstractController
             ->remove('submit');
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()){
-            $this->onUpdateForm($user);
+            return $this->onUpdateForm($user);
         }
 
         return $this->render('pages/user-setting.html.twig', [
@@ -109,7 +111,9 @@ class UserController extends AbstractController
 
     public function onUpdateForm(User $user): Response
     {
-        dd($user);
+        $this->userService->flush();
+        $this->addFlash('success', $this->translator->trans("flash.messages.user.username.update"));
+        return $this->redirectToRoute('user.setting');
     }
 
 }

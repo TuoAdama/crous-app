@@ -1,0 +1,5 @@
+flash:
+  messages:
+    user:
+      username:
+        update: Votre nom d'utilisateur a été mis à jour
