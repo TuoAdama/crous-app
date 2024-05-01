@@ -21,6 +21,7 @@ class NotificationType extends AbstractType
     {
         $builder
             ->add('notifyByNumber', CheckboxType::class, [
+                'required' => false,
                 'label' => 'form.phone',
                 'attr' => [
                     'class' => 'form-check-input',
@@ -28,6 +29,7 @@ class NotificationType extends AbstractType
             ])
             ->add('notifyByEmail', CheckboxType::class, [
                 'label' => 'form.email',
+                'required' => false,
                 'attr' => [
                     'class' => 'form-check-input',
                 ]
