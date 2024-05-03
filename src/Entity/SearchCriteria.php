@@ -11,6 +11,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: SearchCriteriaRepository::class)]
+#[ORM\HasLifecycleCallbacks]
 class SearchCriteria
 {
     #[ORM\Id]
@@ -19,7 +20,6 @@ class SearchCriteria
     private ?int $id = null;
 
     #[ORM\Column(type: Types::JSON)]
-    #[Assert\NotBlank]
     private array $location = [];
 
     #[ORM\Column(type: Types::JSON)]
@@ -195,5 +195,16 @@ class SearchCriteria
     public function getExtent(): array
     {
         return $this->getLocation()['properties']['extent'];
+    }
+
+
+    #[ORM\PrePersist]
+    public function onPrePersist(): void
+    {
+        $now = new DateTimeImmutable();
+        if ($this->createdAt == null){
+            $this->createdAt = $now;
+        }
+        $this->updatedAt = $now;
     }
 }

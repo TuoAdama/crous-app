@@ -3,8 +3,10 @@
 namespace App\Controller;
 
 use App\Entity\SearchCriteria;
+use App\Entity\User;
 use App\Form\NotificationType;
 use App\Form\SearchCriteriaType;
+use App\Services\SearchService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -18,6 +20,7 @@ class CriteriaController extends AbstractController
     public function __construct(
         private readonly EntityManagerInterface $entityManager,
         private readonly TranslatorInterface $translator,
+        private readonly SearchService $searchService,
     )
     {
     }
@@ -30,7 +33,10 @@ class CriteriaController extends AbstractController
         $form = $this->createForm(SearchCriteriaType::class, $searchCriteria);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()){
-            dd($form->getData());
+            /** @var User $user */
+            $user = $this->getUser();
+            $this->addFlash('success', $this->translator->trans('flash.messages.update'));
+            $this->searchService->save($searchCriteria,  $user, $request);
         }
         $notificationForm = $this->createForm(NotificationType::class, $this->getUser());
         $notificationForm->handleRequest($request);

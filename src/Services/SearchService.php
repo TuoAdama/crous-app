@@ -9,7 +9,9 @@ use App\Message\SearchResultMessage;
 use App\Repository\SearchCriteriaRepository;
 use App\Repository\SearchResultRepository;
 use Doctrine\Common\Collections\Criteria;
+use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Messenger\MessageBusInterface;
 use UnexpectedValueException;
 use Psr\Container\ContainerExceptionInterface;
@@ -45,6 +47,7 @@ class SearchService
         private readonly ApiRequest               $apiRequest,
         private readonly ComparisonService $comparisonService,
         private readonly MessageBusInterface $bus,
+        private readonly EntityManagerInterface $entityManager,
     )
     {
         $this->precision = $this->params->get('precision');
@@ -200,6 +203,17 @@ class SearchService
        $lat2 = $criteria->getLat2();
        $lon2 = $criteria->getLon2();
        return str_replace(['LAT-1', 'LON-1', 'LAT-2', 'LON-2'], [$lat1, $lon1, $lat2, $lon2], $this->resultLink);
+    }
+
+
+    public function save(SearchCriteria $searchCriteria, User $user, Request $request): void
+    {
+        $location = $request->request->all('search_criteria')['location'];
+        $location = json_decode($location, true);
+        $searchCriteria->setLocation($location);
+        $searchCriteria->setUser($user);
+        $this->entityManager->persist($searchCriteria);
+        $this->entityManager->flush();
     }
 
 }

@@ -6,7 +6,7 @@ export default class extends Controller {
 
     connect() {
         $(".address-select").on("select2:select", function (e) {
-            $('.address_hidden').val(JSON.stringify(e.params.data.results))
+            $('.location').val(JSON.stringify(e.params.data.results))
         });
 
         const parameters = {
@@ -20,7 +20,6 @@ export default class extends Controller {
         $('select').select2({
             minimumInputLength: parameters.minimumInputLength,
             width: "100%",
-            placeholder: "Exemple: Rennes, Résidence ou lieu d'étude",
             dropdownParent: $('#dropdown'),
             ajax: {
                 url: parameters.url,
