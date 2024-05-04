@@ -39,7 +39,6 @@ class UserType extends AbstractType
                         'required' => true,
                     ],
                 ],
-                'invalid_message' => 'input.password.invalid.message',
                 'first_options'  => ['label' => 'input.password.label'],
                 'second_options' => ['label' => 'input.password.confirm.label'],
             ])

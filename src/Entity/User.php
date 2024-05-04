@@ -14,6 +14,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[UniqueEntity('email')]
 #[UniqueEntity('number')]
+#[ORM\HasLifecycleCallbacks]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
@@ -34,6 +35,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     #[ORM\Column]
     #[Assert\NotNull]
+    #[Assert\PasswordStrength(minScore: Assert\PasswordStrength::STRENGTH_WEAK)]
     private ?string $password = null;
 
     #[ORM\Column(length: 255)]
@@ -73,13 +75,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $emailTokenVerification = null;
 
     #[ORM\Column(options: ['default' => false])]
-    private ?bool $notifyByNumber = null;
+    private ?bool $notifyByNumber = false;
 
     #[ORM\Column(options: ['default' => true])]
-    private ?bool $notifyByEmail = null;
+    private ?bool $notifyByEmail = true;
 
     #[ORM\Column(options: ['default' => false])]
-    private ?bool $enable = null;
+    private ?bool $enable = false;
 
     public function __construct()
     {
@@ -340,5 +342,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->enable = $enable;
 
         return $this;
+    }
+
+    #[ORM\PrePersist]
+    public function onPrePersist(): void
+    {
+
     }
 }
