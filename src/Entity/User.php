@@ -78,6 +78,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(options: ['default' => true])]
     private ?bool $notifyByEmail = null;
 
+    #[ORM\Column(options: ['default' => false])]
+    private ?bool $enable = null;
+
     public function __construct()
     {
         $this->searchCriterias = new ArrayCollection();
@@ -323,6 +326,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setNotifyByEmail(bool $notifyByEmail): static
     {
         $this->notifyByEmail = $notifyByEmail;
+
+        return $this;
+    }
+
+    public function isEnable(): ?bool
+    {
+        return $this->enable;
+    }
+
+    public function setEnable(bool $enable): static
+    {
+        $this->enable = $enable;
 
         return $this;
     }
