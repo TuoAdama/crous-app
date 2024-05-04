@@ -1,0 +1,22 @@
+flash:
+  messages:
+    user:
+      username:
+        update: Votre nom d'utilisateur a été mis à jour
+    update: Mise à jour effectuée avec succès
+account:
+  label: Mon compte
+  logout: Déconnexion
+
+form:
+  phone: Téléphone
+  email: Adresse e-mail
+dashboard: Tableau de board
+notification: Notifications
+address: Adresse
+housing:
+  type: Type de logement
+  label: Ville, résidence ou lieu d'étude
+criteria:
+  page:
+    title: Choix de la residence

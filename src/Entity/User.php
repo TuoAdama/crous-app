@@ -72,6 +72,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $emailTokenVerification = null;
 
+    #[ORM\Column(options: ['default' => false])]
+    private ?bool $notifyByNumber = null;
+
+    #[ORM\Column(options: ['default' => true])]
+    private ?bool $notifyByEmail = null;
+
     public function __construct()
     {
         $this->searchCriterias = new ArrayCollection();
@@ -293,6 +299,30 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setEmailTokenVerification(?string $emailTokenVerification): static
     {
         $this->emailTokenVerification = $emailTokenVerification;
+
+        return $this;
+    }
+
+    public function isNotifyByNumber(): ?bool
+    {
+        return $this->notifyByNumber;
+    }
+
+    public function setNotifyByNumber(bool $notifyByNumber): static
+    {
+        $this->notifyByNumber = $notifyByNumber;
+
+        return $this;
+    }
+
+    public function isNotifyByEmail(): ?bool
+    {
+        return $this->notifyByEmail;
+    }
+
+    public function setNotifyByEmail(bool $notifyByEmail): static
+    {
+        $this->notifyByEmail = $notifyByEmail;
 
         return $this;
     }

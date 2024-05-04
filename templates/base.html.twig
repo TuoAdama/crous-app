@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en"> 
+<html lang="fr">
 <head>
 	<title>{% block page_title %}Crous - App{% endblock %}</title>
 
@@ -35,17 +35,7 @@
 		    <div class="container-xl">
 			    
 			    <h1 class="app-page-title">{% block content_title %}Overview{% endblock %}</h1>
-
-				{% block alert_messsage %}
-					{% for label, messages in app.flashes %}
-						{% for message in messages %}
-							<div class="alert alert-{{ label }}">
-								{{ message }}
-							</div>
-						{% endfor %}
-					{% endfor %}
-				{% endblock %}
-
+				{% include '_partials/_flash-message.html.twig' %}
 				{% block content %}{% endblock %}
 
 

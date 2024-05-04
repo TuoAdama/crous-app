@@ -3,8 +3,10 @@
 namespace App\Controller;
 
 use App\Entity\User;
+use App\Form\NotificationType;
 use App\Form\UserEmailType;
 use App\Form\UserNumberType;
+use App\Form\UserType;
 use App\Form\VerificationNumberType;
 use App\Services\EmailVerificationService;
 use App\Services\Token\SmsTokenValidator;
@@ -13,10 +15,13 @@ use DateTime;
 use DateTimeImmutable;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Form\Form;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 #[IsGranted('IS_AUTHENTICATED_FULLY')]
 class UserController extends AbstractController
@@ -25,6 +30,7 @@ class UserController extends AbstractController
     public function __construct(
         private readonly UserService $userService,
         private readonly EmailVerificationService $emailVerificationService,
+        private readonly TranslatorInterface $translator,
     )
     {
     }
@@ -49,10 +55,22 @@ class UserController extends AbstractController
         if ($emailForm->isSubmitted() && $emailForm->isValid()){
             return $this->onUpdateEmail($user);
         }
+
+        $form = $this->createForm(UserType::class, $user);
+        $form->remove('email')
+            ->remove('password')
+            ->remove('submit');
+        $this->onUpdated($form, $request);
+
+        $notificationForm = $this->createForm(NotificationType::class, $user);
+        $this->onUpdated($notificationForm, $request);
+
         return $this->render('pages/user-setting.html.twig', [
             'user' => $user,
             'numberForm' => $numberForm,
             'emailForm' => $emailForm,
+            'notificationForm' => $notificationForm,
+            'form' => $form,
         ]);
     }
 
@@ -91,6 +109,17 @@ class UserController extends AbstractController
         return $this->redirectToRoute('user.verification.number', [
             'token' =>  $token
         ]);
+    }
+
+
+
+    public function onUpdated(FormInterface $form, Request $request): void
+    {
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()){
+            $this->userService->flush();
+            $this->addFlash('success', $this->translator->trans("flash.messages.update"));
+        }
     }
 
 }
