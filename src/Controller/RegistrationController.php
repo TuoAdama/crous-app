@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\User;
+use App\Enum\EmailVerificationType;
 use App\Form\UserType;
 use App\Services\EmailVerificationService;
 use App\Services\UserService;
@@ -39,7 +40,7 @@ class RegistrationController extends AbstractController
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()){
             $this->userService->save($user);
-            $this->emailVerificationService->notify($user);
+            $this->emailVerificationService->notify($user, EmailVerificationType::VERIFICATION_AFTER_REGISTRATION);
             $this->security->login($user);
             $this->addFlash('warning', 'Un mail de verification vous a été envoyé');
             return $this->redirectToRoute('app_index');

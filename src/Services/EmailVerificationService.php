@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Entity\User;
+use App\Enum\EmailVerificationType;
 use App\Message\VerificationEmailMessage;
 use App\Repository\UserRepository;
 use App\Services\Token\TokenGenerator;
@@ -28,7 +29,7 @@ class EmailVerificationService
     /**
      * @throws Exception
      */
-    public function notify(User $user): void
+    public function notify(User $user, EmailVerificationType $type = EmailVerificationType::CHANGE_EMAIL): void
     {
         $expiredAt = $this->expirationService->getExpiredDate('email.verification.token.expired');
         $token = $this->tokenGenerator
@@ -40,7 +41,9 @@ class EmailVerificationService
         $user->setEmailIsVerified(false)
             ->setEmailTokenVerification($token);
         $this->entityManager->flush();
-        $this->bus->dispatch(new VerificationEmailMessage($user->getId()));
+        $verificationMessage = new VerificationEmailMessage($user->getId());
+        $verificationMessage->setType($type);
+        $this->bus->dispatch($verificationMessage);
     }
 
     /**
