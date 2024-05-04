@@ -8,6 +8,8 @@ account:
   label: Mon compte
   logout: Déconnexion
 
+hello: Bonjour
+
 form:
   phone: Téléphone
   email: Adresse e-mail
@@ -28,3 +30,19 @@ input:
   password:
     helper:
       message: "Le mot de passe doit avoir au moins 8 caractères dont: Au moins une lette majuscle, une lettre minuscle, un chiffre et un caractère spécial"
+
+mail:
+  verification:
+    reset.password.subject: Vérification de votre adresse mail
+    change.mail.subject: Changement d'adresse e-mail
+    registration.user.subject: Vérification de compte
+  template:
+    reset.password:
+      title: Réinitialisation de mot de passe
+      body:
+    user.registration:
+      title: Vérification de votre compte
+      body: "Pour activer votre compte, veuillez suivre le lien suivant:"
+    change.mail:
+      title: Changement d'adresse e-mail
+      body: "Pour validez le changement de votre adresse e-mail, veuillez suivre le lien suivant:"

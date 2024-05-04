@@ -49,4 +49,11 @@ class RegistrationController extends AbstractController
             'form' => $form
         ]);
     }
+
+    #[Route('/registration/verification/{token}', name: 'app_registration.verification')]
+
+    public function verification(Request $request, string $token)
+    {
+        dd("OOK");
+    }
 }
