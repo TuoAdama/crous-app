@@ -20,3 +20,8 @@ housing:
 criteria:
   page:
     title: Choix de la residence
+
+input:
+  password.label: "Mot de passe:"
+  password.confirm.label: "Confirmation du mot de passe:"
+  password.invalid.message: Les mots de passe de correspondent pas

@@ -6,6 +6,7 @@ use App\Entity\User;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
+use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -28,14 +29,19 @@ class UserType extends AbstractType
                     'class' => 'form-control email signup-email',
                     'required' => true,
                 ],
-                'label' => 'Email:',
+                'label' => 'E-mail:',
             ])
-            ->add('password', PasswordType::class, [
-                'attr' => [
-                    'class' => 'form-control signup-password mb-2',
-                    'required' => true,
+            ->add('password', RepeatedType::class, [
+                'type' => PasswordType::class,
+                "options" => [
+                    'attr' => [
+                        'class' => 'form-control signup-password mb-2',
+                        'required' => true,
+                    ],
                 ],
-                'label' => 'Mot de passe:',
+                'invalid_message' => 'input.password.invalid.message',
+                'first_options'  => ['label' => 'input.password.label'],
+                'second_options' => ['label' => 'input.password.confirm.label'],
             ])
             ->add('submit', SubmitType::class, [
                 'label' => 'Enregistrer',
