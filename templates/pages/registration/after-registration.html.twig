@@ -1,0 +1,14 @@
+{% extends "authentication/base.html.twig" %}
+
+{% block title %}
+    {{ 'registration.verification.title'|trans }}
+{% endblock %}
+
+{% block content %}
+    {{ 'registration.verification.message'|trans }}
+    <div>
+        <a href="{{ path('app_registration.resend.mail', {id: user.id}) }}">{{ 'registration.verification.resend.button'|trans }} ?</a>
+    </div>
+{% endblock %}
+
+

@@ -7,12 +7,14 @@ use App\Enum\EmailVerificationType;
 use App\Form\UserType;
 use App\Services\EmailVerificationService;
 use App\Services\UserService;
+use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class RegistrationController extends AbstractController
 {
@@ -21,6 +23,7 @@ class RegistrationController extends AbstractController
         private readonly UserService $userService,
         private readonly Security $security,
         private readonly EmailVerificationService $emailVerificationService,
+        private readonly TranslatorInterface $translator,
     )
     {
     }
@@ -41,9 +44,10 @@ class RegistrationController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()){
             $this->userService->save($user);
             $this->emailVerificationService->notify($user, EmailVerificationType::VERIFICATION_AFTER_REGISTRATION);
-            $this->security->login($user);
-            $this->addFlash('warning', 'Un mail de verification vous a été envoyé');
-            return $this->redirectToRoute('app_index');
+//            $this->security->login($user);
+            return $this->redirectToRoute('app_registration.after.registration', [
+                'id' => $user->getId(),
+            ]);
         }
         return $this->render('authentication/registration/index.html.twig', [
             'form' => $form
@@ -55,5 +59,27 @@ class RegistrationController extends AbstractController
     public function verification(Request $request, string $token)
     {
         dd("OOK");
+    }
+
+
+    #[Route('/registration/user/{id}', name: 'app_registration.after.registration')]
+    public function afterRegistration(Request $request, User $user): Response
+    {
+        return $this->render('pages/registration/after-registration.html.twig', [
+            'user' => $user,
+        ]);
+    }
+
+    /**
+     * @throws Exception
+     */
+    #[Route('/registration/user/resend/verification/mail/{id}', name: 'app_registration.resend.mail')]
+    public function resendMail(User $user): Response
+    {
+        $this->addFlash('warning', $this->translator->trans('flash.messages.mail.resend'));
+        $this->emailVerificationService->notify($user, EmailVerificationType::VERIFICATION_AFTER_REGISTRATION);
+        return $this->redirectToRoute('app_registration.after.registration', [
+            'id' => $user->getId(),
+        ]);
     }
 }
