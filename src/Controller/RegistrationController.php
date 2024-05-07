@@ -52,8 +52,9 @@ class RegistrationController extends AbstractController
             $this->userService->save($user);
             $this->emailVerificationService->notify($user, EmailVerificationType::VERIFICATION_AFTER_REGISTRATION);
             $this->security->login($user);
-            return $this->redirectToRoute('app_registration.after.registration', [
-                'id' => $user->getId(),
+            $request->getSession()->set('user_token', $user->getEmailTokenVerification());
+            return $this->render('pages/registration/after-registration.html.twig', [
+                'user' => $user,
             ]);
         }
         return $this->render('authentication/registration/index.html.twig', [
@@ -67,6 +68,7 @@ class RegistrationController extends AbstractController
         if (!$this->emailVerificationService->tokenIsValid($token)){
             throw $this->createNotFoundException($this->translator->trans('page.notfound'));
         }
+        $request->getSession()->remove('user_token');
         $userId = $this->tokenGenerator->decode($token)['payload']['sub'];
         $user = $this->repository->find($userId);
         $user->setEmailTokenVerification(null);
@@ -75,27 +77,21 @@ class RegistrationController extends AbstractController
         return $this->redirectToRoute('app_index');
     }
 
-
-    #[IsGranted('IS_AUTHENTICATED_FULLY')]
-    #[Route('/registration/user/{id}', name: 'app_registration.after.registration')]
-    public function afterRegistration(Request $request, User $user): Response
-    {
-        return $this->render('pages/registration/after-registration.html.twig', [
-            'user' => $user,
-        ]);
-    }
-
     /**
      * @throws Exception
      */
-    #[IsGranted('IS_AUTHENTICATED_FULLY')]
     #[Route('/registration/user/resend/verification/mail/{id}', name: 'app_registration.resend.mail')]
-    public function resendMail(User $user): Response
+    public function resendMail(Request $request, User $user): Response
     {
+        $token = $request->getSession()->get('user_token');
+        if ($user->getEmailTokenVerification() !== $token){
+            throw $this->createNotFoundException();
+        }
         $this->addFlash('warning', $this->translator->trans('flash.messages.mail.resend'));
         $this->emailVerificationService->notify($user, EmailVerificationType::VERIFICATION_AFTER_REGISTRATION);
-        return $this->redirectToRoute('app_registration.after.registration', [
-            'id' => $user->getId(),
+        $request->getSession()->set('user_token', $user->getEmailTokenVerification());
+        return $this->render('pages/registration/after-registration.html.twig', [
+            'user' => $user,
         ]);
     }
 }
