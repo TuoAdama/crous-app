@@ -5,13 +5,17 @@ namespace App\Controller;
 use App\Entity\User;
 use App\Enum\EmailVerificationType;
 use App\Form\UserType;
+use App\Repository\UserRepository;
 use App\Services\EmailVerificationService;
+use App\Services\Token\TokenGenerator;
 use App\Services\UserService;
+use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -24,6 +28,9 @@ class RegistrationController extends AbstractController
         private readonly Security $security,
         private readonly EmailVerificationService $emailVerificationService,
         private readonly TranslatorInterface $translator,
+        private readonly TokenGenerator $tokenGenerator,
+        private readonly UserRepository $repository,
+        private readonly EntityManagerInterface $entityManager,
     )
     {
     }
@@ -44,7 +51,7 @@ class RegistrationController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()){
             $this->userService->save($user);
             $this->emailVerificationService->notify($user, EmailVerificationType::VERIFICATION_AFTER_REGISTRATION);
-//            $this->security->login($user);
+            $this->security->login($user);
             return $this->redirectToRoute('app_registration.after.registration', [
                 'id' => $user->getId(),
             ]);
@@ -55,13 +62,21 @@ class RegistrationController extends AbstractController
     }
 
     #[Route('/registration/verification/{token}', name: 'app_registration.verification')]
-
-    public function verification(Request $request, string $token)
+    public function verification(Request $request, string $token): Response
     {
-        dd("OOK");
+        if (!$this->emailVerificationService->tokenIsValid($token)){
+            throw $this->createNotFoundException($this->translator->trans('page.notfound'));
+        }
+        $userId = $this->tokenGenerator->decode($token)['payload']['sub'];
+        $user = $this->repository->find($userId);
+        $user->setEmailTokenVerification(null);
+        $this->entityManager->flush();
+        $this->security->login($user);
+        return $this->redirectToRoute('app_index');
     }
 
 
+    #[IsGranted('IS_AUTHENTICATED_FULLY')]
     #[Route('/registration/user/{id}', name: 'app_registration.after.registration')]
     public function afterRegistration(Request $request, User $user): Response
     {
@@ -73,6 +88,7 @@ class RegistrationController extends AbstractController
     /**
      * @throws Exception
      */
+    #[IsGranted('IS_AUTHENTICATED_FULLY')]
     #[Route('/registration/user/resend/verification/mail/{id}', name: 'app_registration.resend.mail')]
     public function resendMail(User $user): Response
     {

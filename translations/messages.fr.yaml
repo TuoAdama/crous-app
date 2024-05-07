@@ -1,3 +1,5 @@
+page.notfound: Page non trouvée
+
 flash:
   messages:
     user:
@@ -38,7 +40,7 @@ registration:
     resend: Vous n'avez pas ce réçu de mail ?
     resend.button: Renvoyer
     title: Vérification de votre compte
-
+  title: Créer un compte
 mail:
   verification:
     reset.password.subject: Vérification de votre adresse mail
