@@ -80,7 +80,7 @@ class RegistrationController extends AbstractController
     /**
      * @throws Exception
      */
-    #[Route('/registration/user/resend/verification/mail/{id}', name: 'app_registration.resend.mail')]
+    #[Route('/registration/resend/verification/mail/{id}', name: 'app_registration.resend.mail')]
     public function resendMail(Request $request, User $user): Response
     {
         $token = $request->getSession()->get('user_token');
