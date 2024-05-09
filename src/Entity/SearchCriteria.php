@@ -207,4 +207,13 @@ class SearchCriteria
         }
         $this->updatedAt = $now;
     }
+
+
+    /**
+     * @return string|null
+     */
+    public function getLocationName(): ?string
+    {
+        return $this->getLocation()['properties']['name'] ?? null;
+    }
 }

@@ -149,6 +149,7 @@ class SearchService
                 ];
             }
         }
+
         if (count($results)) {
             $this->storeSearchResults($results);
         }

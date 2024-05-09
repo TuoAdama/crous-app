@@ -4,7 +4,6 @@ namespace App\MessageHandler;
 
 use App\Message\SearchResultMessage;
 use App\Repository\SearchResultRepository;
-use App\Services\MailService;
 use App\Services\NotificationService;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;

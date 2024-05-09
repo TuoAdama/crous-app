@@ -60,7 +60,7 @@ class UserService
         $user->setTemporaryCodeExpiredAt($expiredAt)
             ->setNumberIsVerified(false);
         $this->entityManager->flush();
-        $this->smsSender->send("+33".$user->getNumber(), $message);
+        $this->smsSender->send($user->getNumber(), $message);
     }
 
     public function findBy(array $criteria): ?User

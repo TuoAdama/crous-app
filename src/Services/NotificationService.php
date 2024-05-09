@@ -5,8 +5,10 @@ namespace App\Services;
 use App\Entity\SearchResult;
 use App\Entity\User;
 use App\Enum\NotificationType;
+use phpDocumentor\Reflection\Utils;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class NotificationService
 {
@@ -14,18 +16,32 @@ class NotificationService
         private readonly MailService $mailService,
         private readonly SmsInterface $smsService,
         private readonly CsrfTokenManagerInterface $tokenManager,
-        private readonly UrlGeneratorInterface $urlGenerator
+        private readonly UrlGeneratorInterface $urlGenerator,
+        private readonly TranslatorInterface $translator,
+        private readonly SearchService $searchService,
     )
     {
     }
 
-    public function notify(SearchResult $searchResult)
+    public function notify(SearchResult $searchResult): void
     {
         $criteria = $searchResult->getSearchCriteria();
-        //$user = $criteria->getUser();
-        //TODO Verifier les options choisies par les utilisateurs: si sms -> envoi sms, si mail -> envoi mail
-        $this->mailService->sendResultFoundNotification($searchResult);
-        //$this->smsService->send()
+        $user = $criteria->getUser();
+        if ($user->isNotifyByEmail()){
+            $this->mailService->sendResultFoundNotification($searchResult);
+        }
+        if ($user->isNotifyByNumber()){
+            $trans = $this->translator->trans('sms.location.found');
+
+            $this->smsService->send($user->getNumber(),
+                sprintf($trans,
+                        $user->getUsername(),
+                        count($searchResult->getResults()),
+                        $criteria->getLocationName(),
+                        $this->searchService->getLink($criteria),
+                )
+            );
+        }
     }
 
 

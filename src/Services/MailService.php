@@ -28,13 +28,12 @@ class MailService
         $count = count($searchResult->getResults());
         $email = new TemplatedEmail();
         $location = $criteria->getLocation();
-        $address = $location['properties']['name'];
         $email->to($user->getEmail())
             ->htmlTemplate("email/location-found.html.twig")
             ->context([
                 'name' => $user->getUsername(),
                 'count' => $count,
-                'location' => $address,
+                'location' => $criteria->getLocationName(),
                 'link' => $this->searchService->getLink($criteria),
             ]);
         $this->send($email);

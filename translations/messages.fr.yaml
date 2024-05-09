@@ -2,6 +2,8 @@ page.notfound: Page non trouvée
 email.address: "Adresse e-mail"
 password: "Mot de passe"
 user.disable.message: Votre compte n'est pas activé.
+sms.location.found: "Bonjour %s, nous vous avons trouvé %d logement(s) dans la zone de %s. Pour les voir directement sur le site du CROUS, pour pouvez suivre ce lien: %s"
+
 
 flash:
   messages:
