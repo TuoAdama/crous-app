@@ -31,7 +31,7 @@ class TwilioService implements SmsInterface
     public function send(string $to, string $message): ?ResponseInterface
     {
         $body = [
-            'To' => $to,
+            'To' => "+33".$to,
             'From' => $this->senderNumber,
             'Body' => $message,
         ];
