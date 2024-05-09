@@ -52,7 +52,7 @@ class RegistrationController extends AbstractController
             $this->userService->save($user);
             $this->emailVerificationService->notify($user, EmailVerificationType::VERIFICATION_AFTER_REGISTRATION);
             $this->security->login($user);
-            $request->getSession()->set('user_token', $user->getEmailTokenVerification());
+            $request->getSession()->set(User::TOKEN_SESSION_KEY, $user->getEmailTokenVerification());
             return $this->render('pages/registration/after-registration.html.twig', [
                 'user' => $user,
             ]);
@@ -68,10 +68,11 @@ class RegistrationController extends AbstractController
         if (!$this->emailVerificationService->tokenIsValid($token)){
             throw $this->createNotFoundException($this->translator->trans('page.notfound'));
         }
-        $request->getSession()->remove('user_token');
+        $request->getSession()->remove(User::TOKEN_SESSION_KEY);
         $userId = $this->tokenGenerator->decode($token)['payload']['sub'];
         $user = $this->repository->find($userId);
         $user->setEmailTokenVerification(null);
+        $user->setEnable(true);
         $this->entityManager->flush();
         $this->security->login($user);
         return $this->redirectToRoute('app_index');
@@ -83,13 +84,13 @@ class RegistrationController extends AbstractController
     #[Route('/registration/resend/verification/mail/{id}', name: 'app_registration.resend.mail')]
     public function resendMail(Request $request, User $user): Response
     {
-        $token = $request->getSession()->get('user_token');
+        $token = $request->getSession()->get(User::TOKEN_SESSION_KEY);
         if ($user->getEmailTokenVerification() !== $token){
             throw $this->createNotFoundException();
         }
         $this->addFlash('warning', $this->translator->trans('flash.messages.mail.resend'));
         $this->emailVerificationService->notify($user, EmailVerificationType::VERIFICATION_AFTER_REGISTRATION);
-        $request->getSession()->set('user_token', $user->getEmailTokenVerification());
+        $request->getSession()->set(User::TOKEN_SESSION_KEY, $user->getEmailTokenVerification());
         return $this->render('pages/registration/after-registration.html.twig', [
             'user' => $user,
         ]);

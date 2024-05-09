@@ -17,6 +17,9 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\HasLifecycleCallbacks]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
+
+    CONST TOKEN_SESSION_KEY = "user_token";
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]

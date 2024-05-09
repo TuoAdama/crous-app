@@ -11,6 +11,8 @@ use DateInterval;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
+use http\Exception\UnexpectedValueException;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Security\Csrf\TokenGenerator\TokenGeneratorInterface;
@@ -25,6 +27,7 @@ class UserService
         private readonly EntityManagerInterface $entityManager,
         private readonly TokenGenerator $tokenGenerator,
         private readonly ExpirationService $expirationService,
+        private readonly Security $security,
     )
     {
 
@@ -97,6 +100,20 @@ class UserService
 
         $user->setNumberTokenVerification($token);
         return $token;
+    }
+
+    public function attemptLogin(array $credentials): ?User
+    {
+        $email = $credentials['email'];
+        $password = $credentials['password'];
+        $user = $this->userRepository->findOneBy(['email' => $email]);
+        if ($user == null){
+            return null;
+        }
+        if ($this->passwordHasher->isPasswordValid($user, $password)){
+            return $user;
+        }
+        return null;
     }
 
     public function flush(): void

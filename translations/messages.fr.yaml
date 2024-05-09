@@ -1,4 +1,7 @@
 page.notfound: Page non trouvée
+email.address: "Adresse e-mail"
+password: "Mot de passe"
+user.disable.message: Votre compte n'est pas activé.
 
 flash:
   messages:
@@ -6,7 +9,7 @@ flash:
       username:
         update: Votre nom d'utilisateur a été mis à jour
     update: Mise à jour effectuée avec succès
-    mail.resend: Le mail a été renvoyé !
+    mail.resend: Un mail vous a été envoyé pour l'activation de votre compte
 account:
   label: Mon compte
   logout: Déconnexion
@@ -56,3 +59,5 @@ mail:
     change.mail:
       title: Changement d'adresse e-mail
       body: "Pour validez le changement de votre adresse e-mail, veuillez suivre le lien suivant:"
+enable.account.link: Cliquez-ici pour l'activé
+invalid.credentials: E-mail ou mot de passe incorrect.
