@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Entity\SearchResult;
 use Psr\Log\LoggerInterface;
+use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Email;
@@ -13,6 +14,7 @@ class MailService
     public function __construct(
         private readonly MailerInterface $mailer,
         private readonly LoggerInterface $logger,
+        private readonly SearchService $searchService,
     )
     {
     }
@@ -24,9 +26,17 @@ class MailService
         $criteria = $searchResult->getSearchCriteria();
         $user = $criteria->getUser();
         $count = count($searchResult->getResults());
-        $email = new Email();
+        $email = new TemplatedEmail();
+        $location = $criteria->getLocation();
+        $address = $location['properties']['name'];
         $email->to($user->getEmail())
-            ->html("<h1>Bonjour vous avez ".$count." logement(s) trouvé(s)</h1>");
+            ->htmlTemplate("email/location-found.html.twig")
+            ->context([
+                'name' => $user->getUsername(),
+                'count' => $count,
+                'location' => $address,
+                'link' => $this->searchService->getLink($criteria),
+            ]);
         $this->send($email);
     }
 
