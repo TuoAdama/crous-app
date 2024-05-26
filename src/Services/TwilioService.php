@@ -39,7 +39,10 @@ class TwilioService implements SmsInterface
                     'Body' => $message,
                 ]
             );
-            $this->smsLogger->error("SMS Send to $to");
+            $this->smsLogger->error("SMS Send to {number}, body: {body}", [
+                'number' => $to,
+                'body' => $message,
+            ]);
         } catch (TwilioException $e) {
             $this->smsLogger->error($e->getMessage());
         }
