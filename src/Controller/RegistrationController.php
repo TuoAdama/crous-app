@@ -4,6 +4,8 @@ namespace App\Controller;
 
 use App\Entity\User;
 use App\Enum\EmailVerificationType;
+use App\Form\ResetPasswordType;
+use App\Form\UserResetPasswordType;
 use App\Form\UserType;
 use App\Repository\UserRepository;
 use App\Services\EmailVerificationService;
@@ -93,6 +95,39 @@ class RegistrationController extends AbstractController
         $request->getSession()->set(User::TOKEN_SESSION_KEY, $user->getEmailTokenVerification());
         return $this->render('pages/registration/after-registration.html.twig', [
             'user' => $user,
+        ]);
+    }
+
+    /**
+     * @throws Exception
+     */
+    #[Route('/password/reset', name: 'app_registration.reset.password')]
+    public function resetPassword(Request $request): Response
+    {
+        $form = $this->createForm(ResetPasswordType::class, null);
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()){
+            $email = $form->getData()['email'];
+            $this->userService->resetPassword($email);
+            $this->addFlash('success', $this->translator->trans('flash.messages.reset.password'));
+        }
+        return $this->render('pages/registration/reset-password.html.twig', [
+            'form' => $form,
+        ]);
+    }
+
+    #[Route('/password/reset/{token}', name: 'app_registration.reset')]
+    public function onResetPassword(Request $request, string $token): Response
+    {
+        if (!$this->emailVerificationService->tokenIsValid($token)){
+            throw $this->createNotFoundException($this->translator->trans('page.notfound'));
+        }
+        $form = $this->createForm(UserResetPasswordType::class, null);
+        if ($form->isSubmitted() && $form->isValid()){
+            dd('OOKK');
+        }
+        return $this->render('pages/registration/reset-password.html.twig', [
+            'form' => $form,
         ]);
     }
 }

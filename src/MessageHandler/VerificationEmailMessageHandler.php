@@ -49,6 +49,14 @@ class VerificationEmailMessageHandler
             $title = "mail.template.user.registration.title";
             $message = "mail.template.user.registration.body";
         }
+
+        if ($type === EmailVerificationType::RESET_PASSWORD){
+            $subject =  $this->translator->trans('mail.template.reset.password.title');
+            $title = "mail.template.reset.password.title";
+            $message = "mail.template.reset.password.body";
+            $route = "app_registration.reset";
+        }
+
         $template
             ->subject($subject)
             ->htmlTemplate("email/mail-verification.html.twig")

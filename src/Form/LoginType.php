@@ -17,14 +17,14 @@ class LoginType extends AbstractType
             ->add('email', EmailType::class, [
                 'label' => false,
                 'attr' => [
-                    'class' => 'form-control signin-password mt-2 py-3',
+                    'class' => 'form-control signin-password mt-2 py-4',
                     'placeholder' => 'email.address'
                 ]
             ])
             ->add('password', PasswordType::class, [
                 'label' => false,
                 'attr' => [
-                    'class' => 'form-control signin-password mt-4 py-3',
+                    'class' => 'form-control signin-password mt-4 py-4',
                     'placeholder' => 'password'
                 ]
             ])

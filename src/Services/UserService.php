@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Entity\User;
+use App\Enum\EmailVerificationType;
 use App\Exceptions\NumberCodeException;
 use App\Repository\UserRepository;
 use App\Services\Token\SmsTokenValidator;
@@ -28,6 +29,7 @@ class UserService
         private readonly TokenGenerator $tokenGenerator,
         private readonly ExpirationService $expirationService,
         private readonly Security $security,
+        private readonly EmailVerificationService $emailVerificationService,
     )
     {
 
@@ -63,7 +65,7 @@ class UserService
         $this->smsSender->send($user->getNumber(), $message);
     }
 
-    public function findBy(array $criteria): ?User
+    public function findOneBy(array $criteria): ?User
     {
         return $this->userRepository->findOneBy($criteria);
     }
@@ -119,5 +121,16 @@ class UserService
     public function flush(): void
     {
         $this->entityManager->flush();
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function resetPassword(string $email): void
+    {
+        $user = $this->userRepository->findOneBy(['email' => $email]);
+        if ($user != null){
+            $this->emailVerificationService->notify($user, EmailVerificationType::RESET_PASSWORD);
+        }
     }
 }

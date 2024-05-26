@@ -25,29 +25,10 @@
             <div class="app-auth-body mx-auto">
                 <div class="app-auth-branding mb-4"><a class="app-logo" href="{{ path('app_login') }}">CROUSFY</a></div>
                 {% include '_partials/_flash-message.html.twig' %}
-                <h2 class="auth-heading text-center mb-4">
-                    {% block title %}
-                        {{ 'registration.title'|trans }}
-                    {% endblock %}
-                </h2>
-                {% block content %}
-                    <div class="auth-form-container text-start mx-auto">
-                        {{ form_start(form) }}
-                        <div class="mb-3">
-                            {{ form_row(form.username) }}
-                        </div>
-                        <div class="mb-3">
-                            {{ form_row(form.email) }}
-                        </div>
-                        <div class="mb-3">
-                            {{ form_row(form.password) }}
-                        </div>
-                        {{ form_end(form) }}
-
-                        <div class="auth-option text-center pt-5">Avez-vous un compte ? <a class="text-link" href="{{ path('app_login') }}">Se connecter</a>
-                        </div>
-                    </div>
-                {% endblock %}
+                <h4 class="auth-heading text-center mb-4">
+                    {% block title %}{% endblock %}
+                </h4>
+                {% block content %}{% endblock %}
 
             </div>
         </div><!--//flex-column-->

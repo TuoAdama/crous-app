@@ -12,6 +12,7 @@ flash:
         update: Votre nom d'utilisateur a été mis à jour
     update: Mise à jour effectuée avec succès
     mail.resend: Un mail vous a été envoyé pour l'activation de votre compte
+    reset.password: Un mail de réinitialisation vous a été envoyé !
 account:
   label: Mon compte
   logout: Déconnexion
@@ -33,6 +34,7 @@ criteria:
 
 input:
   password.label: "Mot de passe:"
+  password.new: "Nouveau mot de passe:"
   password.confirm.label: "Confirmation du mot de passe:"
   password.invalid.message: Les mots de passe de correspondent pas
   password:
@@ -53,8 +55,8 @@ mail:
     registration.user.subject: Vérification de compte
   template:
     reset.password:
-      title: Réinitialisation de mot de passe
-      body:
+      title: Modifier mon mot de passe
+      body: "Pour le changement de votre mot de passe, veuillez suivre le lien suivant:"
     user.registration:
       title: Vérification de votre compte
       body: "Pour activer votre compte, veuillez suivre le lien suivant:"
@@ -63,3 +65,9 @@ mail:
       body: "Pour validez le changement de votre adresse e-mail, veuillez suivre le lien suivant:"
 enable.account.link: Cliquez-ici pour l'activé
 invalid.credentials: E-mail ou mot de passe incorrect.
+
+no.account: Pas de compte ?
+create.account: Créer un compte
+password.forget: Mot de passe oublié ?
+reset.password: "Votre adresse E-mail:"
+reset: "Envoyer un mail de réinitialisation"
