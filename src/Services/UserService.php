@@ -133,4 +133,18 @@ class UserService
             $this->emailVerificationService->notify($user, EmailVerificationType::RESET_PASSWORD);
         }
     }
+
+    public function changePasswordByToken(string $token, string $password): void
+    {
+       $user = $this->userRepository->findOneBy([
+           'emailTokenVerification' => $token,
+       ]);
+       $password = $this->passwordHasher->hashPassword(
+           $user,
+           $password,
+       );
+       $user->setPassword($password)
+           ->setEmailTokenVerification(null);
+       $this->entityManager->flush();
+    }
 }

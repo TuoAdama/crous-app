@@ -123,8 +123,11 @@ class RegistrationController extends AbstractController
             throw $this->createNotFoundException($this->translator->trans('page.notfound'));
         }
         $form = $this->createForm(UserResetPasswordType::class, null);
+        $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()){
-            dd('OOKK');
+            $this->userService->changePasswordByToken($token, $form->get('password')->getData());
+            $this->addFlash('success', $this->translator->trans('flash.messages.password.update'));
+            return $this->redirectToRoute('app_login');
         }
         return $this->render('pages/registration/reset-password.html.twig', [
             'form' => $form,
