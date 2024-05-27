@@ -72,3 +72,6 @@ create.account: Créer un compte
 password.forget: Mot de passe oublié ?
 reset.password: "Votre adresse E-mail:"
 reset: "Envoyer un mail de réinitialisation"
+search: 'Recherches'
+settings: 'Paramètres'
+contact: "Nous contacter"
