@@ -75,3 +75,5 @@ reset: "Envoyer un mail de réinitialisation"
 search: 'Recherches'
 settings: 'Paramètres'
 contact: "Nous contacter"
+contact.subject: Titre
+contact.btn.send: Envoyer

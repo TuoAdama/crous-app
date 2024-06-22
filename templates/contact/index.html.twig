@@ -1,7 +1,15 @@
 {% extends 'base.html.twig' %}
 
+{% block content_title %}{% endblock %}
+
 {% block title %}{{ 'contact'|trans }}{% endblock %}
 
-{% block body %}
-    {{ form(form) }}
+{% block content %}
+    <div class="row justify-content-center">
+        <div class="col-7">
+            {{ form_start(form) }}
+            {{ form_widget(form) }}
+            {{ form_end(form) }}
+        </div>
+    </div>
 {% endblock %}

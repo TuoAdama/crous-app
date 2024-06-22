@@ -53,7 +53,6 @@ class RegistrationController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()){
             $this->userService->save($user);
             $this->emailVerificationService->notify($user, EmailVerificationType::VERIFICATION_AFTER_REGISTRATION);
-            $this->security->login($user);
             $request->getSession()->set(User::TOKEN_SESSION_KEY, $user->getEmailTokenVerification());
             return $this->render('pages/registration/after-registration.html.twig', [
                 'user' => $user,
