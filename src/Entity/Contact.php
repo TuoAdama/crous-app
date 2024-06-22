@@ -3,9 +3,11 @@
 namespace App\Entity;
 
 use App\Repository\ContactRepository;
+use DateTimeImmutable;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
+#[ORM\HasLifecycleCallbacks()]
 #[ORM\Entity(repositoryClass: ContactRepository::class)]
 class Contact
 {
@@ -92,5 +94,13 @@ class Contact
         $this->user = $user;
 
         return $this;
+    }
+
+    #[ORM\PrePersist]
+    public function onPersist(): void{
+        if ($this->createdAt == null){
+            $this->createdAt = new DateTimeImmutable();
+        }
+        $this->updatedAt = new DateTimeImmutable();
     }
 }

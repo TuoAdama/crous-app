@@ -77,3 +77,4 @@ settings: 'Paramètres'
 contact: "Nous contacter"
 contact.subject: Titre
 contact.btn.send: Envoyer
+contact.success.message: Votre message a bien été envoyé !
