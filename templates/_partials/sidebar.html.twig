@@ -50,7 +50,7 @@
                 </li>
                 <li class="nav-item">
                     <!--//Bootstrap Icons: https://icons.getbootstrap.com/ -->
-                    <a class="nav-link" href="{{ path('app_contact') }}">
+                    <a class="nav-link {{ app.request.get('_route') == 'app_contact' ? 'active':'' }}" href="{{ path('app_contact') }}">
 						        <span class="nav-icon">
 						        <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-question-circle"
                                      fill="currentColor" xmlns="http://www.w3.org/2000/svg">
