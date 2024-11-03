@@ -26,8 +26,12 @@ class IndexController extends AbstractController
         /** @var User $user */
         $user = $this->getUser();
         $results = $this->searchService->getResults($user);
+        $userCriteria = $this->searchService->getUserCriteria($user);
+
+
         return $this->render('pages/dashboard.html.twig', [
             'results' => $results,
+            'userCriteria' => $userCriteria
         ]);
     }
 }

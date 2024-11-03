@@ -172,7 +172,7 @@ class SearchService
 
     /**
      * @param User $user
-     * @return void
+     * @return array|null
      */
     function getResults(User $user): array|null
     {
@@ -215,6 +215,11 @@ class SearchService
         $searchCriteria->setUser($user);
         $this->entityManager->persist($searchCriteria);
         $this->entityManager->flush();
+    }
+
+    public function getUserCriteria(User $user): array
+    {
+        return $this->criteriaRepository->findBy(['user' => $user]);
     }
 
 }
