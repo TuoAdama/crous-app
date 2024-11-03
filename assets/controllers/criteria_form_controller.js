@@ -5,6 +5,7 @@ export default class extends Controller {
     static targets = ['addressHidden', 'address']
 
     connect() {
+
         $(".address-select").on("select2:select", function (e) {
             $('.location').val(JSON.stringify(e.params.data.results))
         });
@@ -40,9 +41,13 @@ export default class extends Controller {
                         return [];
                     }
                     const items = cities.map(function (result) {
+                        const postcode = result.properties.postcode;
+                        const name = result.properties.name + (
+                            postcode ? ` (${result.properties.postcode})` : ''
+                        );
                         return {
                             id: result.properties.osm_id,
-                            text: result.properties.name,
+                            text: name,
                             results: result,
                         }
                     });
