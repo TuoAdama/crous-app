@@ -26,6 +26,7 @@
     }
 </script>
 <template>
+  <div class="col-12 col-md-5 mb-5">
     <div class="card">
       <div class="card-body p-4 d-flex align-items-center">
         <div class="ms-3">
@@ -34,7 +35,6 @@
         </div>
       </div>
       <div class="card-actions p-3 justify-content-between">
-        <span class="badge bg-dark ms-2">Default</span>
         <div class="card-action-buttons">
           <a class="btn btn-text-primary mdc-ripple-upgraded" :href="`/criteria/${criteria.id}`">Modifier</a>
           <form class="d-inline" method="post" @submit.prevent="onSubmit">
@@ -46,4 +46,5 @@
         </div>
       </div>
     </div>
+  </div>
 </template>

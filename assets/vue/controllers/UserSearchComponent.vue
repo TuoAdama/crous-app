@@ -17,8 +17,8 @@ function onDelete (id){
 </script>
 
 <template>
-  <div class="col-12 col-md-6 mb-5">
-    <UserSearchItem 
+  <div class="row">
+    <UserSearchItem
         v-for="item in criteria"
         :token="token"
         :criteria="item"
