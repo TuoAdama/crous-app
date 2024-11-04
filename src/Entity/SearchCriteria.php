@@ -8,11 +8,12 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use JsonSerializable;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: SearchCriteriaRepository::class)]
 #[ORM\HasLifecycleCallbacks]
-class SearchCriteria
+class SearchCriteria implements JsonSerializable
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -215,5 +216,18 @@ class SearchCriteria
     public function getLocationName(): ?string
     {
         return $this->getLocation()['properties']['name'] ?? null;
+    }
+
+    public function jsonSerialize(): array
+    {
+        return  [
+            'id' => $this->id,
+            'location' => $this->location,
+            'user' => $this->user,
+            'type' => $this->type,
+            'price' => $this->price,
+            'createdAt' => $this->createdAt->format('d/m/Y'),
+            'updatedAt' => $this->updatedAt->format('d/m/Y'),
+        ];
     }
 }

@@ -4,7 +4,6 @@ password: "Mot de passe"
 user.disable.message: Votre compte n'est pas activé.
 sms.location.found: "Bonjour %s, nous vous avons trouvé %d logement(s) dans la zone de %s. Pour les voir directement sur le site du CROUS, pour pouvez suivre ce lien: %s"
 
-
 flash:
   messages:
     user:
@@ -78,3 +77,7 @@ contact: "Nous contacter"
 contact.subject: Titre
 contact.btn.send: Envoyer
 contact.success.message: Votre message a bien été envoyé !
+
+btn:
+  edit: Modifier
+  delete: Supprimer
