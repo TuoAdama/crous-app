@@ -84,8 +84,9 @@ class CriteriaController extends AbstractController
         ], Response::HTTP_OK);
     }
 
+    #[Route('/criteria', name: 'app_criteria_edit')]
     public function edit(Request $request, int $criteriaId): Response
     {
-        dd('edit');
+
     }
 }

@@ -15,7 +15,13 @@
             body: JSON.stringify(body),
         })
         .then(response  => {
-            console.log(response.status);
+            if (response.status === 200) {
+              onDelete();
+            }
+        })
+        .catch(error => {
+          alert("Une erreur est survenue");
+          window.location.reload();
         })
     }
 </script>
