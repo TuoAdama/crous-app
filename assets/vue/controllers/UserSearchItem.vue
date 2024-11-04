@@ -10,10 +10,9 @@
             method: "POST",
             body: JSON.stringify(body)
         })
-        .then(response  => response.json())
-        .then(response  => console.log(response))
-        
-        onDelete();
+        .then(response  => {
+            console.log(response.status);
+        })
     }
 </script>
 <template>

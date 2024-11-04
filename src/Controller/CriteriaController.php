@@ -6,6 +6,7 @@ use App\Entity\SearchCriteria;
 use App\Entity\User;
 use App\Form\NotificationType;
 use App\Form\SearchCriteriaType;
+use App\Repository\SearchCriteriaRepository;
 use App\Services\SearchService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -14,6 +15,10 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 #[IsGranted('IS_AUTHENTICATED_FULLY')]
@@ -21,8 +26,9 @@ class CriteriaController extends AbstractController
 {
     public function __construct(
         private readonly EntityManagerInterface $entityManager,
-        private readonly TranslatorInterface $translator,
-        private readonly SearchService $searchService,
+        private readonly TranslatorInterface    $translator,
+        private readonly SearchService          $searchService,
+        private readonly ValidatorInterface     $validator, private readonly SearchCriteriaRepository $searchCriteriaRepository,
     )
     {
     }
@@ -55,15 +61,54 @@ class CriteriaController extends AbstractController
     }
 
     #[Route('/criteria/delete', name: 'app_criteria_delete', methods: ['POST'])]
-    public function delete(): JsonResponse
+    public function delete(Request $request): JsonResponse
     {
+        $errorsResponses = [
+            'type' => 'error',
+            'message' => 'content not valid',
+        ];
+        $content = json_decode($request->getContent(), true);
+        if($content == null){
+            return $this->json($errorsResponses, Response::HTTP_BAD_REQUEST);
+        }
+
+        $constraints = new Assert\Collection([
+            'fields' => [
+                '_method' => [new Assert\Required(), new NotBlank(), new Assert\EqualTo("DELETE")],
+                '_token' => [new Assert\Required(), new NotBlank()],
+                'id' => [
+                    new Assert\Required(),
+                    new NotBlank(),
+                    new Assert\Positive(),
+                    new Assert\Callback(function ($value, ExecutionContextInterface $context){
+                        if ($this->searchCriteriaRepository->find($value) === null){
+                            $context->buildViolation('id not exists')
+                                ->atPath('id')
+                                ->addViolation();
+                        }
+                    })
+                ],
+            ]
+        ]);
+        $errors = $this->validator->validate($content, $constraints);
+        if ($errors->count() ||
+            !$this->isCsrfTokenValid('delete', $content['_token'])
+        ) {
+            return $this->json($errorsResponses, Response::HTTP_BAD_REQUEST);
+        }
+
+        $this->entityManager->remove(
+            $this->searchCriteriaRepository->find($content['id'])
+        );
+        $this->entityManager->flush();
+
         return $this->json([
-            'message' => 'success',
+            'type' => 'success',
         ], Response::HTTP_OK);
     }
 
     public function edit(Request $request, int $criteriaId): Response
     {
-        dd($request, $criteriaId);
+        dd('edit');
     }
 }

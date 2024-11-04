@@ -1,5 +1,5 @@
 <script setup>
-import {onMounted, ref} from "vue";
+import {ref} from "vue";
 import UserSearchItem from "./UserSearchItem.vue";
 
 const props = defineProps({
