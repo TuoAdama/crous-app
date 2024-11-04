@@ -36,7 +36,7 @@
       <div class="card-actions p-3 justify-content-between">
         <span class="badge bg-dark ms-2">Default</span>
         <div class="card-action-buttons">
-          <button class="btn btn-text-primary mdc-ripple-upgraded" type="button">Modifier</button>
+          <a class="btn btn-text-primary mdc-ripple-upgraded" :href="`/criteria/${criteria.id}`">Modifier</a>
           <form class="d-inline" method="post" @submit.prevent="onSubmit">
             <input type="hidden" name="method" value="DELETE">
             <input type="hidden" name="token" :value="token">

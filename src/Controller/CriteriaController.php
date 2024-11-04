@@ -10,6 +10,7 @@ use App\Form\SearchCriteriaType;
 use App\Repository\SearchCriteriaRepository;
 use App\Services\SearchService;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -17,10 +18,6 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
-use Symfony\Component\Validator\Constraints as Assert;
-use Symfony\Component\Validator\Constraints\NotBlank;
-use Symfony\Component\Validator\Context\ExecutionContextInterface;
-use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 #[IsGranted('IS_AUTHENTICATED_FULLY')]
@@ -30,16 +27,16 @@ class CriteriaController extends AbstractController
         private readonly EntityManagerInterface $entityManager,
         private readonly TranslatorInterface    $translator,
         private readonly SearchService          $searchService,
-        private readonly ValidatorInterface     $validator, private readonly SearchCriteriaRepository $searchCriteriaRepository,
+        private readonly SearchCriteriaRepository $searchCriteriaRepository,
     )
     {
     }
 
-    #[Route('/criteria', name: 'app_criteria')]
+    #[Route('/criteria/{id?}', name: 'app_criteria')]
     #[IsGranted('IS_AUTHENTICATED_FULLY')]
-    public function index(Request $request): Response
+    public function index(#[MapEntity] ?SearchCriteria $criteria, Request $request): Response
     {
-        $searchCriteria = new SearchCriteria();
+        $searchCriteria = $criteria ?? new SearchCriteria();
         $form = $this->createForm(SearchCriteriaType::class, $searchCriteria);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()){
@@ -82,11 +79,5 @@ class CriteriaController extends AbstractController
         return $this->json([
             'type' => 'success',
         ], Response::HTTP_OK);
-    }
-
-    #[Route('/criteria', name: 'app_criteria_edit')]
-    public function edit(Request $request, int $criteriaId): Response
-    {
-
     }
 }
