@@ -7,8 +7,12 @@
         formData.forEach((value, key) => body[key] = value);
         
         fetch(path, {
+            headers: {
+              'Content-Type': 'application/json',
+              'Accept': 'application/json',
+            },
             method: "POST",
-            body: JSON.stringify(body)
+            body: JSON.stringify(body),
         })
         .then(response  => {
             console.log(response.status);
@@ -28,8 +32,8 @@
         <div class="card-action-buttons">
           <button class="btn btn-text-primary mdc-ripple-upgraded" type="button">Modifier</button>
           <form class="d-inline" method="post" @submit.prevent="onSubmit">
-            <input type="hidden" name="_method" value="DELETE">
-            <input type="hidden" name="_token" :value="token">
+            <input type="hidden" name="method" value="DELETE">
+            <input type="hidden" name="token" :value="token">
             <input type="hidden" name="id" :value="criteria.id" />
             <button type="submit" onclick="confirm('Vous être sur !')" class="btn btn-text-primary mdc-ripple-upgraded">Supprimer</button>
           </form>

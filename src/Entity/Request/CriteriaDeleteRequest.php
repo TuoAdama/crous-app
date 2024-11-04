@@ -2,9 +2,26 @@
 
 namespace App\Entity\Request;
 
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
+
 class CriteriaDeleteRequest
 {
-    public string $method;
-    public string $id;
-    public string $token;
+    public function __construct(
+        #[Assert\NotNull]
+        #[Assert\NotBlank]
+        #[Assert\EqualTo("DELETE")]
+        public readonly string $method,
+
+        #[Assert\NotNull]
+        #[Assert\NotBlank]
+        #[Assert\Positive]
+        public readonly string $id,
+
+        #[Assert\NotNull]
+        #[Assert\NotBlank]
+        public readonly string $token,
+    )
+    {
+    }
 }
