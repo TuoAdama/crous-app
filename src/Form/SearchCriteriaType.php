@@ -3,6 +3,7 @@
 namespace App\Form;
 
 use App\Entity\SearchCriteria;
+use App\Enum\TypeLocation;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Event\PreSetDataEvent;
 use Symfony\Component\Form\Event\PreSubmitEvent;
@@ -142,11 +143,7 @@ class SearchCriteriaType extends AbstractType
                 new NotBlank(),
                 new NotNull(),
             ],
-            'choices'  => [
-                'Individuel' => 'individuel',
-                'Colocation'    => 'colocation',
-                'Couple'    => 'couple',
-            ],
+            'choices'  => TypeLocation::getTypesLocation(),
             'choice_attr' => function(){
                 return [
                     'class' => 'form-check-input input-type-location'
@@ -158,7 +155,7 @@ class SearchCriteriaType extends AbstractType
         ];
 
         if ($addedDefaultValue){
-            $attr['data'] = ['individuel'];
+            $attr['data'] = [TypeLocation::getTypesLocation()[TypeLocation::INDIVIDUAL->value]];
         }
 
 
