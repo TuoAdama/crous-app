@@ -6,7 +6,6 @@ use App\Entity\SearchCriteria;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Event\PreSetDataEvent;
 use Symfony\Component\Form\Event\PreSubmitEvent;
-use Symfony\Component\Form\Event\SubmitEvent;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
@@ -20,13 +19,7 @@ class SearchCriteriaType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('location', HiddenType::class, [
-                'required' => true,
-                'mapped' => false,
-                'attr' => [
-                    'class' => 'location',
-                ]
-            ])
+            ->add('location', HiddenType::class, $this->getLocationAttr())
             ->add('address', ChoiceType::class, $this->getAddressAttr([]))
             ->add('type', ChoiceType::class, [
                 'required' => true,
@@ -110,6 +103,8 @@ class SearchCriteriaType extends AbstractType
             $form->add('address', ChoiceType::class, $this->getAddressAttr([
                 $locationName => $locationName,
             ], $locationName));
+
+            $form->add('location', HiddenType::class, $this->getLocationAttr($location));
         }
     }
 
@@ -118,7 +113,7 @@ class SearchCriteriaType extends AbstractType
 
         $attr = [
             'mapped' => false,
-            'required' => true,
+            'required' => count($choices) == 0,
             "placeholder" => "Exemple: Rennes, Résidence ou lieu d'études",
             'label' => 'housing.label',
             'label_attr' => [
@@ -139,6 +134,20 @@ class SearchCriteriaType extends AbstractType
             $attr['choice_value'] = $choiceValue;
         }
 
+        return $attr;
+    }
+
+    private function getLocationAttr(?array $value = null): array {
+        $attr = [
+            'required' => true,
+            'mapped' => false,
+            'attr' => [
+                'class' => 'location',
+            ]
+        ];
+        if ($value != null){
+            $attr['data'] = json_encode($value);
+        }
         return $attr;
     }
 
