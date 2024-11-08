@@ -12,7 +12,9 @@ use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\Choice;
 use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Constraints\NotNull;
 
 class SearchCriteriaType extends AbstractType
 {
@@ -21,28 +23,7 @@ class SearchCriteriaType extends AbstractType
         $builder
             ->add('location', HiddenType::class, $this->getLocationAttr())
             ->add('address', ChoiceType::class, $this->getAddressAttr([]))
-            ->add('type', ChoiceType::class, [
-                'required' => true,
-                'expanded' => true,
-                'multiple' => true,
-                'constraints' => [
-                    new NotBlank(),
-                ],
-                'choices'  => [
-                    'Individuel' => 'individuel',
-                    'Colocation'    => 'colocation',
-                    'Couple'    => 'couple',
-                ],
-                'choice_attr' => function(){
-                    return [
-                        'class' => 'form-check-input input-type-location'
-                    ];
-                },
-                'label_attr' => [
-                    'class' => 'form-check-label'
-                ],
-                'data' => ['individuel'],
-            ])
+            ->add('type', ChoiceType::class, $this->getTypeLocationAttr())
             ->add('price', NumberType::class, [
                 'required' => true,
                 'label' => 'Prix maximun',
@@ -104,7 +85,8 @@ class SearchCriteriaType extends AbstractType
                 $locationName => $locationName,
             ], $locationName));
 
-            $form->add('location', HiddenType::class, $this->getLocationAttr($location));
+            $form->add('location', HiddenType::class, $this->getLocationAttr($location))
+                ->add('type', ChoiceType::class, $this->getTypeLocationAttr(false));
         }
     }
 
@@ -148,6 +130,38 @@ class SearchCriteriaType extends AbstractType
         if ($value != null){
             $attr['data'] = json_encode($value);
         }
+        return $attr;
+    }
+
+    private function getTypeLocationAttr(bool $addedDefaultValue = true): array {
+        $attr = [
+            'required' => true,
+            'expanded' => true,
+            'multiple' => true,
+            'constraints' => [
+                new NotBlank(),
+                new NotNull(),
+            ],
+            'choices'  => [
+                'Individuel' => 'individuel',
+                'Colocation'    => 'colocation',
+                'Couple'    => 'couple',
+            ],
+            'choice_attr' => function(){
+                return [
+                    'class' => 'form-check-input input-type-location'
+                ];
+            },
+            'label_attr' => [
+                'class' => 'form-check-label'
+            ],
+        ];
+
+        if ($addedDefaultValue){
+            $attr['data'] = ['individuel'];
+        }
+
+
         return $attr;
     }
 
