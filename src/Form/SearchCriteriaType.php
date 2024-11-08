@@ -4,6 +4,7 @@ namespace App\Form;
 
 use App\Entity\SearchCriteria;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Event\PreSetDataEvent;
 use Symfony\Component\Form\Event\PreSubmitEvent;
 use Symfony\Component\Form\Event\SubmitEvent;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -26,22 +27,7 @@ class SearchCriteriaType extends AbstractType
                     'class' => 'location',
                 ]
             ])
-            ->add('address', ChoiceType::class, [
-                'mapped' => false,
-                'required' => true,
-                "placeholder" => "Exemple: Rennes, Résidence ou lieu d'études",
-                'label' => 'housing.label',
-                'label_attr' => [
-                    'class' => 'form-label'
-                ],
-                'attr' => [
-                    'id' => 'input-location',
-                    'class' => 'form-control address-select',
-                ],
-                'constraints' => [
-                    new NotBlank(),
-                ]
-            ])
+            ->add('address', ChoiceType::class, $this->getAddressAttr([]))
             ->add('type', ChoiceType::class, [
                 'required' => true,
                 'expanded' => true,
@@ -78,6 +64,7 @@ class SearchCriteriaType extends AbstractType
                     'id' => 'input-price'
                 ]
             ])
+            ->addEventListener(FormEvents::PRE_SET_DATA,[$this, 'onPreSetData'])
             ->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onPreSubmit'])
         ;
     }
@@ -110,6 +97,49 @@ class SearchCriteriaType extends AbstractType
             ]);
             $event->setData($data);
         }
+    }
+
+    public function onPreSetData(PreSetDataEvent $event): void
+    {
+        /** @var SearchCriteria $criteria */
+        $criteria = $event->getData();
+        if ($criteria->getId() != null){
+            $form = $event->getForm();
+            $location = $criteria->getLocation();
+            $locationName  = $location['properties']['name'];
+            $form->add('address', ChoiceType::class, $this->getAddressAttr([
+                $locationName => $locationName,
+            ], $locationName));
+        }
+    }
+
+
+    private function getAddressAttr(array $choices, ?string $choiceValue = null): array {
+
+        $attr = [
+            'mapped' => false,
+            'required' => true,
+            "placeholder" => "Exemple: Rennes, Résidence ou lieu d'études",
+            'label' => 'housing.label',
+            'label_attr' => [
+                'class' => 'form-label'
+            ],
+            'attr' => [
+                'id' => 'input-location',
+                'class' => 'form-control address-select',
+            ],
+            'constraints' => [
+                new NotBlank(),
+            ]
+        ];
+        if (count($choices) > 0) {
+            $attr['choices'] = $choices;
+        }
+        if ($choiceValue != null){
+            $attr['choice_value'] = $choiceValue;
+        }
+
+        return $attr;
     }
 
     public function configureOptions(OptionsResolver $resolver): void
