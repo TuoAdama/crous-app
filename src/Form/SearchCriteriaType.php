@@ -142,6 +142,10 @@ class SearchCriteriaType extends AbstractType
             'constraints' => [
                 new NotBlank(),
                 new NotNull(),
+                new Choice([
+                    'choices' => array_values(TypeLocation::getTypesLocation()),
+                    'multiple' => true,
+                ])
             ],
             'choices'  => TypeLocation::getTypesLocation(),
             'choice_attr' => function(){
