@@ -28,7 +28,7 @@
 <template>
   <div class="col-12 col-md-5 mb-5">
     <div class="card">
-      <div class="card-body px-4 py-2 d-flex align-items-center border border-primary">
+      <div class="card-body px-4 py-2 d-flex align-items-center">
         <div class="ms-3">
           <div class="fs-5">{{ criteria?.location.properties.name}}</div>
           <div class="small text-muted">Ajouté le {{criteria?.updatedAt}}</div>
