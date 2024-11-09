@@ -50,9 +50,6 @@
               <ContactSetting :user :token />
             </div>
           </div>
-
-
-
         </div>
       </div>
 
