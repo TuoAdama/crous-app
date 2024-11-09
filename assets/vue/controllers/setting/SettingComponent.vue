@@ -1,7 +1,6 @@
 <script setup>
   import User from "../models/User"
   import {ref} from "vue";
-  import NotificationSetting from "./NotificationSetting.vue";
   import ContactSetting from "./ContactSetting.vue";
   import BaseSetting from "./BaseSetting.vue";
 
@@ -47,10 +46,7 @@
         <div class="col-md-8">
           <BaseSetting :user :token/>
           <div class="row gutters-sm">
-            <div class="col-sm-6 mb-3">
-              <NotificationSetting :user :token />
-            </div>
-            <div class="col-sm-6 mb-3">
+            <div class="col mb-3">
               <ContactSetting :user :token />
             </div>
           </div>
