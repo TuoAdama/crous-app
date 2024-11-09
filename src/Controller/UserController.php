@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\User;
 use App\Form\NotificationType;
+use App\Form\SettingType;
 use App\Form\UserEmailType;
 use App\Form\UserNumberType;
 use App\Form\UserType;
@@ -44,6 +45,19 @@ class UserController extends AbstractController
         /** @var User $user */
         $user = $this->getUser();
 
+        $settingForm = $this->createForm(SettingType::class, [
+            'username' => $user->getUsername(),
+            'notifyByEmail' => $user->isNotifyByEmail(),
+            'notifyByNumber' => $user->isNotifyByNumber(),
+        ]);
+        $settingForm->handleRequest($request);
+        if ($settingForm->isSubmitted() && $settingForm->isValid()) {
+            dd($settingForm->getData());
+        }
+
+        /** @var User $user */
+        $user = $this->getUser();
+
         $numberForm = $this->createForm(UserNumberType::class, $user);
         $numberForm->handleRequest($request);
         if ($numberForm->isSubmitted() && $numberForm->isValid()){
@@ -67,10 +81,7 @@ class UserController extends AbstractController
 
         return $this->render('pages/user-setting.html.twig', [
             'user' => $user,
-            'numberForm' => $numberForm,
-            'emailForm' => $emailForm,
-            'notificationForm' => $notificationForm,
-            'form' => $form,
+            'settingForm' => $settingForm,
         ]);
     }
 
