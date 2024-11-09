@@ -55,32 +55,7 @@ class UserController extends AbstractController
             dd($settingForm->getData());
         }
 
-        /** @var User $user */
-        $user = $this->getUser();
-
-        $numberForm = $this->createForm(UserNumberType::class, $user);
-        $numberForm->handleRequest($request);
-        if ($numberForm->isSubmitted() && $numberForm->isValid()){
-            return $this->onUpdateNumber($user);
-        }
-
-        $emailForm = $this->createForm(UserEmailType::class, $user);
-        $emailForm->handleRequest($request);
-        if ($emailForm->isSubmitted() && $emailForm->isValid()){
-            return $this->onUpdateEmail($user);
-        }
-
-        $form = $this->createForm(UserType::class, $user);
-        $form->remove('email')
-            ->remove('password')
-            ->remove('submit');
-        $this->onUpdated($form, $request);
-
-        $notificationForm = $this->createForm(NotificationType::class, $user);
-        $this->onUpdated($notificationForm, $request);
-
         return $this->render('pages/user-setting.html.twig', [
-            'user' => $user,
             'settingForm' => $settingForm,
         ]);
     }

@@ -18,7 +18,7 @@ class SettingType extends AbstractType
                     'class' => 'form-control signup-name',
                     'required' => true,
                 ],
-                'label' => 'Nom:',
+                'label' => false,
             ])
             ->add('notifyByNumber', CheckboxType::class, [
                 'required' => false,
