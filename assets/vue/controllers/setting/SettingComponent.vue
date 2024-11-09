@@ -3,9 +3,11 @@
   import {ref} from "vue";
   import NotificationSetting from "./NotificationSetting.vue";
   import ContactSetting from "./ContactSetting.vue";
+  import BaseSetting from "./BaseSetting.vue";
 
   const props = defineProps({
-    user: User
+    user: User,
+    token: String,
   })
 
   const user = ref(props.user);
@@ -43,42 +45,13 @@
           </div>
         </div>
         <div class="col-md-8">
-          <div class="card mb-3">
-            <div class="card-body">
-              <div class="row">
-                <div class="col-sm-3">
-                  <h6 class="mb-0">Nom:</h6>
-                </div>
-                <div v-if="!edit" class="col-sm-9 text-secondary">{{ user.username }}</div>
-                <div class="col-sm-9">
-                  <input v-if="edit" class="form-control text-secondary m-0" type="text" :value="user.username">
-                </div>
-              </div>
-              <hr>
-              <div class="row">
-                <div class="col-sm-3">
-                  <h6 class="mb-0">Email</h6>
-                </div>
-                <div v-if="!edit" class="col-sm-9 text-secondary">{{user.email}}</div>
-                <div class="col-sm-9">
-                  <input v-if="edit" class="form-control text-secondary m-0" type="text" :value="user.email">
-                </div>
-              </div>
-              <hr>
-              <div class="row">
-                <div class="col-sm-12">
-                  <button @click="onEdit" class="btn btn-primary">{{edit ? 'Enregistrer':'Modifier'}}</button>
-                </div>
-              </div>
-            </div>
-          </div>
-
+          <BaseSetting :user :token/>
           <div class="row gutters-sm">
             <div class="col-sm-6 mb-3">
-              <NotificationSetting />
+              <NotificationSetting :user :token />
             </div>
             <div class="col-sm-6 mb-3">
-              <ContactSetting :user="user" />
+              <ContactSetting :user :token />
             </div>
           </div>
 
