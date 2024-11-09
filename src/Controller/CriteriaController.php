@@ -45,17 +45,9 @@ class CriteriaController extends AbstractController
             $this->addFlash('success', $this->translator->trans('flash.messages.update'));
             $this->searchService->save($searchCriteria,  $user, $request);
         }
-        $notificationForm = $this->createForm(NotificationType::class, $this->getUser());
-        $notificationForm->handleRequest($request);
-        if ($notificationForm->isSubmitted() && $notificationForm->isValid()){
-            $this->entityManager->flush();
-            $this->addFlash('success', $this->translator->trans('flash.messages.update'));
-            return $this->redirectToRoute('app_index');
-        }
         return $this->render('pages/criteria/criteria.html.twig',  [
             'identifier' => $this->getUser()->getUserIdentifier(),
             'form' => $form,
-            'notificationForm' => $notificationForm,
         ]);
     }
 
