@@ -50,6 +50,7 @@ class UserController extends AbstractController
 
         if ($settingForm->isSubmitted() && $settingForm->isValid()) {
             $this->entityManager->flush();
+            $this->addFlash("success", $this->translator->trans("flash.messages.update"));
         }
         return $this->render('pages/user-setting.html.twig', [
             'settingForm' => $settingForm,
