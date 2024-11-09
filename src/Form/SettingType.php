@@ -32,7 +32,8 @@ class SettingType extends AbstractType
                 'label' => 'form.phone',
                 'attr' => [
                     'class' => 'form-check-input',
-                ]
+                ],
+                'constraints' => [new NotNull(), new Type('boolean')]
             ])
             ->add('notifyByEmail', CheckboxType::class, [
                 'label' => 'form.email',
@@ -40,7 +41,7 @@ class SettingType extends AbstractType
                 'attr' => [
                     'class' => 'form-check-input',
                 ],
-                'constraints' => [new NotBlank(), new NotNull(), new Type('boolean')]
+                'constraints' => [new NotNull(), new Type('boolean')]
             ]);
         ;
     }
