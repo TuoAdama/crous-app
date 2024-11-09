@@ -7,6 +7,9 @@ use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Constraints\NotNull;
+use Symfony\Component\Validator\Constraints\Type;
 
 class SettingType extends AbstractType
 {
@@ -19,6 +22,10 @@ class SettingType extends AbstractType
                     'required' => true,
                 ],
                 'label' => false,
+                'constraints' => [
+                    new NotBlank(),
+                    new NotNull(),
+                ]
             ])
             ->add('notifyByNumber', CheckboxType::class, [
                 'required' => false,
@@ -32,7 +39,8 @@ class SettingType extends AbstractType
                 'required' => false,
                 'attr' => [
                     'class' => 'form-check-input',
-                ]
+                ],
+                'constraints' => [new NotBlank(), new NotNull(), new Type('boolean')]
             ]);
         ;
     }
