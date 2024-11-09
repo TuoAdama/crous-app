@@ -14,6 +14,7 @@ use App\Services\Token\SmsTokenValidator;
 use App\Services\UserService;
 use DateTime;
 use DateTimeImmutable;
+use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Form;
@@ -29,9 +30,9 @@ class UserController extends AbstractController
 {
 
     public function __construct(
-        private readonly UserService $userService,
+        private readonly UserService              $userService,
         private readonly EmailVerificationService $emailVerificationService,
-        private readonly TranslatorInterface $translator,
+        private readonly TranslatorInterface      $translator, private readonly EntityManagerInterface $entityManager,
     )
     {
     }
@@ -44,17 +45,12 @@ class UserController extends AbstractController
     {
         /** @var User $user */
         $user = $this->getUser();
-
-        $settingForm = $this->createForm(SettingType::class, [
-            'username' => $user->getUsername(),
-            'notifyByEmail' => $user->isNotifyByEmail(),
-            'notifyByNumber' => $user->isNotifyByNumber(),
-        ]);
+        $settingForm = $this->createForm(SettingType::class, $user);
         $settingForm->handleRequest($request);
-        if ($settingForm->isSubmitted() && $settingForm->isValid()) {
-            dd($settingForm->getData());
-        }
 
+        if ($settingForm->isSubmitted() && $settingForm->isValid()) {
+            $this->entityManager->flush();
+        }
         return $this->render('pages/user-setting.html.twig', [
             'settingForm' => $settingForm,
         ]);
