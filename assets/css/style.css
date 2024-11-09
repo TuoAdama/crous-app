@@ -1,0 +1,17 @@
+#showEmail {
+    background-color: #f5f6fe;
+}
+
+#editEmail {
+    background-color: #f5f6fe;
+    display: none;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+#editEmail:target {
+    display: block;
+}
+
+
