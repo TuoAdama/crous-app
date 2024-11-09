@@ -1,16 +1,30 @@
 <script setup>
   import User from "../models/User"
-  import {ref} from "vue";
+  import {computed, ref} from "vue";
 
   const props = defineProps({
     user: User,
   })
   const edit = ref(false);
-  const user = ref(props.user)
+  const user = ref({...props.user})
 
   const onEdit = () => {
-    edit.value = !edit.value;
+    if (!edit.value) {
+      edit.value = true;
+      return;
+    }
+    edit.value = false;
   }
+
+  const onCancel = () => {
+    edit.value = false;
+    user.value = props.user;
+  }
+
+  const disableBtn = computed(() => {
+    return (props.user.username === user.value.username) && (props.user.email === user.value.email);
+  });
+
 </script>
 
 <template>
@@ -22,7 +36,7 @@
         </div>
         <div v-if="!edit" class="col-sm-9 text-secondary">{{ user.username }}</div>
         <div class="col-sm-9">
-          <input v-if="edit" class="form-control text-secondary m-0" type="text" :value="user.username">
+          <input v-if="edit" class="form-control text-secondary m-0" type="text" v-model="user.username">
         </div>
       </div>
       <hr>
@@ -32,13 +46,15 @@
         </div>
         <div v-if="!edit" class="col-sm-9 text-secondary">{{user.email}}</div>
         <div class="col-sm-9">
-          <input v-if="edit" class="form-control text-secondary m-0" type="text" :value="user.email">
+          <input v-if="edit" class="form-control text-secondary m-0" type="text" v-model="user.email">
         </div>
       </div>
       <hr>
       <div class="row">
         <div class="col-sm-12">
-          <button @click="onEdit" class="btn btn-primary">{{edit ? 'Enregistrer':'Modifier'}}</button>
+          <button v-if="!edit" @click="edit=true" class="btn btn-primary">Modifier</button>
+          <button :disabled="disableBtn" v-if="edit" @click="onEdit" class="btn btn-primary">Enregistrer</button>
+          <button v-if="edit" @click="onCancel" class="btn btn-danger ms-3">Annuler</button>
         </div>
       </div>
     </div>
