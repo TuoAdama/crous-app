@@ -22,15 +22,19 @@
 			<div class="col-12 col-md-4">
 				<h3 class="section-title">Email:</h3>
 			</div>
-			<div class="col-12 col-md-4">
-				<div class="app-card-body">
-					<div class="mb-3">
-						{{ app.user.email }}
+			<div class="col-12 col-md-8 ">
+				<div class="row">
+					<div class="col-12 col-md-6">
+						<div class="app-card-body">
+							<div class="mb-3">
+								{{ app.user.email }}
+							</div>
+						</div>
 					</div>
-				</div><!--//app-card-body-->
-			</div>
-			<div class="col-md-4 d-flex justify-content-start justify-content-md-end">
-				<button class="btn btn-primary">Modifier</button>
+					<div class="col-12 col-md-6 d-flex justify-content-start justify-content-md-end">
+						<button class="btn btn-primary mt-lg-0 mt-3">Modifier</button>
+					</div>
+				</div>
 			</div>
 		</div><!--//row-->
 		<hr class="my-4">
@@ -38,15 +42,19 @@
 			<div class="col-12 col-md-4">
 				<h3 class="section-title">Téléphone:</h3>
 			</div>
-			<div class="col-12 col-md-4">
-				<div class="app-card-body">
-					<div class="mb-3">
-						{{ app.user.number ?? "Aucun numéro de téléphone" }}
+			<div class="col-12 col-md-8">
+				<div class="row">
+					<div class="col-12 col-md-6">
+						<div class="app-card-body">
+							<div class="mb-3">
+								{{ app.user.number ?? "Aucun numéro de téléphone" }}
+							</div>
+						</div>
 					</div>
-				</div><!--//app-card-body-->
-			</div>
-			<div class="col-md-4 d-flex justify-content-lg-end justify-content-start">
-				<button class="btn btn-primary">Modifier</button>
+					<div class="col-12 col-md-6 d-flex justify-content-start justify-content-md-end">
+						<button class="btn btn-primary mt-lg-0 mt-3">Modifier</button>
+					</div>
+				</div>
 			</div>
 		</div><!--//row-->
 		<hr class="my-4">
