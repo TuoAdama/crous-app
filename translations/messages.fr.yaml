@@ -13,6 +13,7 @@ flash:
     mail.resend: Un mail vous a été envoyé pour l'activation de votre compte
     reset.password: Un mail de réinitialisation vous a été envoyé !
     password.update: Mot de passe reinitialisé !
+    email.update:  Un mail de confirmation vous a été envoyé
 account:
   label: Mon compte
   logout: Déconnexion

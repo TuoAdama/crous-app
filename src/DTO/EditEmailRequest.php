@@ -1,26 +1,24 @@
 <?php
 
-namespace App\Entity\Request;
+namespace App\DTO;
 
-use App\Entity\User;
-use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use App\Services\Validator\CustomValidator;
 use Symfony\Component\Validator\Constraints as Assert;
 
-#[UniqueEntity(fields: ['email'], entityClass: User::class )]
 class EditEmailRequest
 {
     #[Assert\Email]
     public string $email;
     #[Assert\Email]
+    #[Assert\Expression(
+        'value === this.email',
+        message: 'emails are not identical',
+    )]
     public string $confirmEmail;
+
     #[Assert\NotBlank]
     public string $password;
+
     #[Assert\NotBlank]
     public string $token;
-
-
-    public function confirmEmail()
-    {
-        
-    }
 }

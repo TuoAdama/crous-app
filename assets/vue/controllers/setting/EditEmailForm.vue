@@ -21,12 +21,12 @@
       method: "POST",
       headers: {
         'Content-Type': 'application/json',
-        'Accept': 'application/json',
+        //'Accept': 'application/json',
       },
       body: JSON.stringify(body),
     }).then((response: Response) => {
       if (response.status === 200) {
-        props.onUpdate();
+        //props.onUpdate();
       }
     })
   }
