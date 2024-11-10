@@ -1,11 +1,14 @@
-<script setup>
+<script setup lang="ts">
 import User from "../models/User";
-import {ref} from "vue";
+import {PropType, ref} from "vue";
 import EditEmailForm from "./EditEmailForm.vue";
 import AddNumberSetting from "./AddNumberSetting.vue";
 
 const props = defineProps({
-  user: User
+  user: {
+    type: Object as PropType<User>,
+    required: true
+  },
 })
 
 const edit = ref(false);
