@@ -17,7 +17,7 @@
         <h6 class="mb-0">Nouvelle adresse e-mail:</h6>
       </div>
       <div class="col-sm-6">
-        <input class="form-control text-secondary m-0" type="text">
+        <input name="email" class="form-control text-secondary m-0" type="email">
       </div>
     </div>
     <hr>
@@ -26,7 +26,7 @@
         <h6 class="mb-0">Confirmation de l'e-mail:</h6>
       </div>
       <div class="col-sm-6">
-        <input class="form-control text-secondary m-0" type="text">
+        <input name="confirmEmail" class="form-control text-secondary m-0" type="email">
       </div>
     </div>
     <hr>
@@ -35,7 +35,7 @@
         <h6 class="mb-0">Mot de passe:</h6>
       </div>
       <div class="col-sm-6">
-        <input class="form-control text-secondary m-0" type="text">
+        <input class="form-control text-secondary m-0" name="password" type="password">
       </div>
     </div>
     <div class="row">
