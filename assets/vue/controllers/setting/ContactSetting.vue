@@ -9,6 +9,10 @@ const props = defineProps({
     type: Object as PropType<User>,
     required: true
   },
+  onUpdate: {
+    type: Function as PropType<(user: User) => void>,
+    required: true
+  }
 })
 
 const message = ref<string>("");
@@ -24,6 +28,7 @@ const onAddNumber = () => {
 
 const onUpdateEmail = (userUpdated: User) => {
   user.value = userUpdated;
+  props.onUpdate(userUpdated);
   message.value = "Un mail de confirmation vous été envoyé !";
   isEditEmail.value = false;
 }

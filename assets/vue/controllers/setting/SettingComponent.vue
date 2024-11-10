@@ -17,8 +17,12 @@
 
   provide<string, string>('token', props.token);
 
-  const user = ref<User>(props.user);
+  const user = ref<User>({...props.user});
   const edit = ref<boolean>(false);
+
+  const onUpdateUser = (updatedUser: User): void => {
+    user.value = updatedUser;
+  }
 
   const onEdit = () => {
     edit.value = !edit.value;
@@ -55,7 +59,7 @@
           <BaseSetting :user/>
           <div class="row gutters-sm">
             <div class="col mb-3">
-              <ContactSetting :user="user" />
+              <ContactSetting :user="user" :on-update="onUpdateUser" />
             </div>
           </div>
         </div>
