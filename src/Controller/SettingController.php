@@ -57,6 +57,7 @@ class SettingController extends AbstractController
 
         return $this->json([
             'message' => $this->translator->trans("flash.messages.email.update"),
+            'user' => $user,
         ], Response::HTTP_OK);
     }
 }

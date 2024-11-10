@@ -15,13 +15,15 @@ const message = ref<string>("");
 const edit = ref<boolean>(false);
 const isAddNumber = ref<boolean>(false);
 const isEditEmail = ref<boolean>(false);
+const user = ref<User>({...props.user});
 
 const onAddNumber = () => {
   isAddNumber.value = true;
   edit.value = true;
 }
 
-const onUpdateEmail = () => {
+const onUpdateEmail = (userUpdated: User) => {
+  user.value = userUpdated;
   message.value = "Un mail de confirmation vous été envoyé !";
   isEditEmail.value = false;
 }
@@ -39,7 +41,7 @@ const onUpdateEmail = () => {
             <h6 class="mb-0">Email:</h6>
             <span class="text-secondary">
             {{user.email}}
-
+            <span v-if="!user.emailIsVerified">(non vérifiée)</span>
             <button class="ms-3 btn btn-secondary" @click="isEditEmail = true">Modifier</button>
           </span>
           </li>

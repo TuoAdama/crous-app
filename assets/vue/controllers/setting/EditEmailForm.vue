@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import {PropType, inject, ref} from "vue";
+import User from "../models/User";
 
   const props = defineProps({
     onCancel: {
@@ -7,7 +8,7 @@ import {PropType, inject, ref} from "vue";
       required: true,
     },
     onUpdate: {
-      type: Function as PropType<() => void>,
+      type: Function as PropType<(user: User) => void>,
       required: true
     }
   })
@@ -16,12 +17,13 @@ import {PropType, inject, ref} from "vue";
   const loading = ref<boolean>(false)
   const errors = ref<Object>({})
 
-  const onSubmit = (e) => {
+  const onSubmit = async (e) => {
     loading.value = true;
     const formData =  new FormData(e.target);
     const body = {};
     formData.forEach((value, key) => body[key] = value);
-    fetch("/setting/edit/email", {
+
+    const response: Response = await  fetch("/setting/edit/email", {
       method: "POST",
       headers: {
         'Content-Type': 'application/json',
@@ -29,21 +31,16 @@ import {PropType, inject, ref} from "vue";
       },
       body: JSON.stringify(body),
     })
-    .then((response: Response) => {
-      if (response.status === 200) {
-        props.onUpdate();
-      }
-      return response.json();
-    })
-    .then(response => {
-      errors.value = response;
-    })
-    .catch(error => {
-      console.log("blalalal");
-    })
-      .finally(() => {
-      loading.value = false;
-    })
+    const result = await response.json();
+    if (response.status !==  200) {
+      errors.value = result;
+    }
+    if (response.status === 200) {
+      const {user} = result as {message: string, user: User}
+      props.onUpdate(user);
+    }
+
+    loading.value = false
   }
 </script>
 

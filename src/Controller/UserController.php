@@ -54,14 +54,7 @@ class UserController extends AbstractController
         }
         return $this->render('pages/user-setting.html.twig', [
             'settingForm' => $settingForm,
-            'userData' => [
-                'id' => $user->getId(),
-                'username' => $user->getUsername(),
-                'email' => $user->getEmail(),
-                'number' => $user->getNumber(),
-                'notifyByEmail' => $user->isNotifyByEmail(),
-                'notifyByNumber' => $user->isNotifyByNumber(),
-            ]
+            'userData' => $user->jsonSerialize(),
         ]);
     }
 
