@@ -2,8 +2,11 @@
 
 namespace App\Entity\Request;
 
+use App\Entity\User;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 
+#[UniqueEntity(fields: ['email'], entityClass: User::class )]
 class EditEmailRequest
 {
     #[Assert\Email]
@@ -14,4 +17,10 @@ class EditEmailRequest
     public string $password;
     #[Assert\NotBlank]
     public string $token;
+
+
+    public function confirmEmail()
+    {
+        
+    }
 }
