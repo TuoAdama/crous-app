@@ -3,23 +3,10 @@
 namespace App\Controller;
 
 use App\Entity\User;
-use App\Form\NotificationType;
-use App\Form\SettingType;
-use App\Form\UserEmailType;
-use App\Form\UserNumberType;
-use App\Form\UserType;
-use App\Form\VerificationNumberType;
-use App\Services\EmailVerificationService;
-use App\Services\Token\SmsTokenValidator;
 use App\Services\UserService;
-use DateTime;
-use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Form\Form;
-use Symfony\Component\Form\FormInterface;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
@@ -31,7 +18,6 @@ class UserController extends AbstractController
 
     public function __construct(
         private readonly UserService              $userService,
-        private readonly TranslatorInterface      $translator, private readonly EntityManagerInterface $entityManager,
     )
     {
     }
