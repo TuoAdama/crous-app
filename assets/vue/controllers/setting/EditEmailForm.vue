@@ -14,6 +14,7 @@ import {PropType, inject, ref} from "vue";
   const token: string = inject<string>("token");
 
   const loading = ref<boolean>(false)
+  const errors = ref<Object>({})
 
   const onSubmit = (e) => {
     loading.value = true;
@@ -27,11 +28,20 @@ import {PropType, inject, ref} from "vue";
         'Accept': 'application/json',
       },
       body: JSON.stringify(body),
-    }).then((response: Response) => {
+    })
+    .then((response: Response) => {
       if (response.status === 200) {
         props.onUpdate();
       }
-    }).finally(() => {
+      return response.json();
+    })
+    .then(response => {
+      errors.value = response;
+    })
+    .catch(error => {
+      console.log("blalalal");
+    })
+      .finally(() => {
       loading.value = false;
     })
   }
@@ -39,6 +49,7 @@ import {PropType, inject, ref} from "vue";
 
 <template>
   <form @submit.prevent="onSubmit">
+    <div class="alert alert-danger" v-if="'form' in errors">{{errors.form}}</div>
     <div class="p-3">
       <div class="row mb-3">
         <input type="hidden" name="token" :value="token">
@@ -47,6 +58,7 @@ import {PropType, inject, ref} from "vue";
         </div>
         <div class="col-sm-6">
           <input name="email" class="form-control text-secondary m-0" type="email">
+          <small v-if="'email' in errors" class="form-text text-muted text-danger">{{errors.email}}</small>
         </div>
       </div>
       <hr>
@@ -65,6 +77,7 @@ import {PropType, inject, ref} from "vue";
         </div>
         <div class="col-sm-6">
           <input class="form-control text-secondary m-0" name="password" type="password">
+          <small v-if="'password' in errors" class="form-text text-muted text-danger">{{errors.password}}</small>
         </div>
       </div>
       <div class="row">
