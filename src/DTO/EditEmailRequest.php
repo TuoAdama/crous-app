@@ -2,7 +2,6 @@
 
 namespace App\DTO;
 
-use App\Services\Validator\CustomValidator;
 use Symfony\Component\Validator\Constraints as Assert;
 
 class EditEmailRequest

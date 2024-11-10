@@ -3,9 +3,11 @@
 namespace App\Controller;
 
 use App\DTO\EditEmailRequest;
+use App\DTO\EditUserBaseInformation;
 use App\Entity\User;
 use App\Repository\UserRepository;
 use App\Services\EmailVerificationService;
+use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -25,7 +27,8 @@ class SettingController extends AbstractController
         private readonly UserPasswordHasherInterface $passwordInterface,
         private readonly UserRepository              $userRepository,
         private readonly EmailVerificationService    $emailVerificationService,
-        private readonly TranslatorInterface $translator,
+        private readonly TranslatorInterface         $translator,
+        private readonly EntityManagerInterface $entityManager,
     )
     {
     }
@@ -57,6 +60,27 @@ class SettingController extends AbstractController
 
         return $this->json([
             'message' => $this->translator->trans("flash.messages.email.update"),
+            'user' => $user,
+        ], Response::HTTP_OK);
+    }
+
+
+    #[Route('/edit/base-information', name: 'edit_base_information', methods: ['POST'])]
+    public function editBaseInformation(#[MapRequestPayload] EditUserBaseInformation $baseInformation): JsonResponse
+    {
+        if (!$this->isCsrfTokenValid('edit-user', $baseInformation->_token)){
+            return $this->json([
+                'form' => $this->translator->trans('form.errors.invalid'),
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+        /** @var User $user */
+        $user = $this->getUser();
+        $user->setUsername($baseInformation->username)
+            ->setNotifyByEmail($baseInformation->notifyByEmail)
+            ->setNotifyByNumber($baseInformation->notifyByNumber);
+        $this->entityManager->flush();
+        return $this->json([
+            'message' => $this->translator->trans("flash.messages.baseinformation.update"),
             'user' => $user,
         ], Response::HTTP_OK);
     }

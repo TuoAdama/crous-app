@@ -14,6 +14,7 @@ flash:
     reset.password: Un mail de réinitialisation vous a été envoyé !
     password.update: Mot de passe reinitialisé !
     email.update:  Un mail de confirmation vous a été envoyé
+    baseinformation.update: Information mise à jour !
 account:
   label: Mon compte
   logout: Déconnexion
@@ -23,6 +24,8 @@ hello: Bonjour
 form:
   phone: Téléphone
   email: Adresse e-mail
+  errors:
+    invalid: Form is invalid
 dashboard: Tableau de board
 notification: Notifications
 address: Adresse
