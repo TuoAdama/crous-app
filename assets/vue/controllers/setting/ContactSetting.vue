@@ -11,13 +11,19 @@ const props = defineProps({
   },
 })
 
-const edit = ref(false);
-const isAddNumber = ref(false);
-const isEditEmail = ref(false);
+const message = ref<string>("");
+const edit = ref<boolean>(false);
+const isAddNumber = ref<boolean>(false);
+const isEditEmail = ref<boolean>(false);
 
 const onAddNumber = () => {
   isAddNumber.value = true;
   edit.value = true;
+}
+
+const onUpdateEmail = () => {
+  message.value = "Un mail de confirmation vous été envoyé !";
+  isEditEmail.value = false;
 }
 
 </script>
@@ -26,6 +32,7 @@ const onAddNumber = () => {
   <div class="card h-100">
     <div class="card-body">
       <template v-if="!isEditEmail && !isAddNumber">
+        <div class="alert alert-warning" v-if="message.length">{{message}}</div>
         <h6 class="d-flex align-items-center mb-3">Coordonnées</h6>
         <ul class="list-group list-group-flush">
           <li class="list-group-item d-flex justify-content-between align-items-center flex-wrap">
@@ -46,7 +53,7 @@ const onAddNumber = () => {
           </li>
         </ul>
       </template>
-      <EditEmailForm v-if="isEditEmail && !isAddNumber" :on-cancel="() => isEditEmail = false"/>
+      <EditEmailForm v-if="isEditEmail && !isAddNumber" :on-update="onUpdateEmail" :on-cancel="() => isEditEmail = false"/>
       <AddNumberSetting v-if="isAddNumber && !isEditEmail" :on-cancel="() => isAddNumber = false"/>
     </div>
   </div>

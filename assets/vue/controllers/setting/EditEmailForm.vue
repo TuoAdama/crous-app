@@ -5,6 +5,10 @@
     onCancel: {
       type: Function as PropType<() => void>,
       required: true,
+    },
+    onUpdate: {
+      type: Function as PropType<() => void>,
+      required: true
     }
   })
   const token: string = inject<string>("token");
@@ -21,7 +25,9 @@
       },
       body: JSON.stringify(body),
     }).then((response: Response) => {
-      console.log({response});
+      if (response.status === 200) {
+        props.onUpdate();
+      }
     })
   }
 </script>
