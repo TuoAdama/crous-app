@@ -31,7 +31,6 @@ class UserController extends AbstractController
 
     public function __construct(
         private readonly UserService              $userService,
-        private readonly EmailVerificationService $emailVerificationService,
         private readonly TranslatorInterface      $translator, private readonly EntityManagerInterface $entityManager,
     )
     {
@@ -45,15 +44,7 @@ class UserController extends AbstractController
     {
         /** @var User $user */
         $user = $this->getUser();
-        $settingForm = $this->createForm(SettingType::class, $user);
-        $settingForm->handleRequest($request);
-
-        if ($settingForm->isSubmitted() && $settingForm->isValid()) {
-            $this->entityManager->flush();
-            $this->addFlash("success", $this->translator->trans("flash.messages.update"));
-        }
         return $this->render('pages/user-setting.html.twig', [
-            'settingForm' => $settingForm,
             'userData' => $user->jsonSerialize(),
         ]);
     }
@@ -75,16 +66,6 @@ class UserController extends AbstractController
     /**
      * @throws Exception
      */
-    public function onUpdateEmail(User $user): Response
-    {
-        $this->emailVerificationService->notify($user);
-        $this->addFlash('warning', 'Un mail de confirmation vous a été envoyé');
-        return $this->redirectToRoute('user.setting');
-    }
-
-    /**
-     * @throws Exception
-     */
     public function onUpdateNumber(User $user): Response
     {
         $this->userService->verifyNumber($user);
@@ -93,17 +74,6 @@ class UserController extends AbstractController
         return $this->redirectToRoute('user.verification.number', [
             'token' =>  $token
         ]);
-    }
-
-
-
-    public function onUpdated(FormInterface $form, Request $request): void
-    {
-        $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()){
-            $this->userService->flush();
-            $this->addFlash('success', $this->translator->trans("flash.messages.update"));
-        }
     }
 
 }
