@@ -1,5 +1,5 @@
 <script setup lang="ts">
-  import {PropType, inject} from "vue";
+import {PropType, inject, ref} from "vue";
 
   const props = defineProps({
     onCancel: {
@@ -13,7 +13,10 @@
   })
   const token: string = inject<string>("token");
 
+  const loading = ref<boolean>(false)
+
   const onSubmit = (e) => {
+    loading.value = true;
     const formData =  new FormData(e.target);
     const body = {};
     formData.forEach((value, key) => body[key] = value);
@@ -21,13 +24,15 @@
       method: "POST",
       headers: {
         'Content-Type': 'application/json',
-        //'Accept': 'application/json',
+        'Accept': 'application/json',
       },
       body: JSON.stringify(body),
     }).then((response: Response) => {
       if (response.status === 200) {
-        //props.onUpdate();
+        props.onUpdate();
       }
+    }).finally(() => {
+      loading.value = false;
     })
   }
 </script>
@@ -64,8 +69,8 @@
       </div>
       <div class="row">
         <div class="col-12">
-          <button type="submit" class="btn btn-primary">Enregistrer</button>
-          <button class="btn btn-danger ms-3" @click="props.onCancel">Annuler</button>
+          <button :disabled="loading" type="submit" class="btn btn-primary">{{loading ? 'Chargement...':'Enregistrer'}}</button>
+          <button :disabled="loading" class="btn btn-danger ms-3" @click="props.onCancel">Annuler</button>
         </div>
       </div>
     </div>

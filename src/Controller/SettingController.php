@@ -13,7 +13,6 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
-use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -53,7 +52,7 @@ class SettingController extends AbstractController
         if (!empty($errors)){
             return new JsonResponse($errors, Response::HTTP_BAD_REQUEST);
         }
-
+        $user->setEmail($editEmailRequest->email);
         $this->emailVerificationService->notify($user);
 
         return $this->json([
