@@ -1,5 +1,13 @@
-<script setup>
-  const props = defineProps(["onCancel"])
+<script setup lang="ts">
+  import {PropType, inject} from "vue";
+
+  const props = defineProps({
+    onCancel: {
+      type: Function as PropType<() => void>,
+      required: true,
+    }
+  })
+  const token: string = inject<string>("token");
 </script>
 
 <template>
