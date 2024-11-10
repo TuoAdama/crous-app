@@ -40,7 +40,7 @@ class UserController extends AbstractController
      * @throws Exception
      */
     #[Route('/setting', name: 'user.setting')]
-    public function setting(Request $request): Response
+    public function setting(): Response
     {
         /** @var User $user */
         $user = $this->getUser();
