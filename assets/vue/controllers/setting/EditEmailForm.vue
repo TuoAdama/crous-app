@@ -13,6 +13,16 @@
     const formData =  new FormData(e.target);
     const body = {};
     formData.forEach((value, key) => body[key] = value);
+    fetch("/setting/edit/email", {
+      method: "POST",
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+      },
+      body: JSON.stringify(body),
+    }).then((response: Response) => {
+      console.log({response});
+    })
   }
 </script>
 
