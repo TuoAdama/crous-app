@@ -1,16 +1,24 @@
-<script setup>
+<script setup lang="ts">
   import User from "../models/User"
-  import {ref} from "vue";
+  import {PropType, provide, ref} from "vue";
   import ContactSetting from "./ContactSetting.vue";
   import BaseSetting from "./BaseSetting.vue";
 
   const props = defineProps({
-    user: User,
-    token: String,
+    user: {
+      type: Object as PropType<User>,
+      required: true
+    },
+    token: {
+      type: String,
+      required: true
+    },
   })
 
-  const user = ref(props.user);
-  const edit = ref(false);
+  provide<string, string>('token', props.token);
+
+  const user = ref<User>(props.user);
+  const edit = ref<boolean>(false);
 
   const onEdit = () => {
     edit.value = !edit.value;
@@ -44,10 +52,10 @@
           </div>
         </div>
         <div class="col-md-8">
-          <BaseSetting :user :token/>
+          <BaseSetting :user/>
           <div class="row gutters-sm">
             <div class="col mb-3">
-              <ContactSetting :user :token />
+              <ContactSetting :user="user" />
             </div>
           </div>
         </div>

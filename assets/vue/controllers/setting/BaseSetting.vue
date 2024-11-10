@@ -1,12 +1,15 @@
-<script setup>
+<script setup lang="ts">
   import User from "../models/User"
-  import {computed, ref} from "vue";
+  import {computed, PropType, ref} from "vue";
 
   const props = defineProps({
-    user: User,
+    user: {
+      type: Object as PropType<User>,
+      required: true
+    },
   })
-  const edit = ref(false);
-  const user = ref({...props.user})
+  const edit = ref<boolean>(false);
+  const user = ref<User>({...props.user})
 
   const onEdit = () => {
     if (!edit.value) {
