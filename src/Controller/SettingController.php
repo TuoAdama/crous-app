@@ -25,7 +25,7 @@ class SettingController extends AbstractController
         private readonly UserPasswordHasherInterface $passwordInterface,
         private readonly UserRepository              $userRepository,
         private readonly EmailVerificationService    $emailVerificationService,
-        private readonly TranslatorInterface $translator
+        private readonly TranslatorInterface $translator,
     )
     {
     }
