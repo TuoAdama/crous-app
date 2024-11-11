@@ -11,6 +11,7 @@ const edit = ref(false);
 const isAddNumber = ref(false);
 const isEditEmail = ref(false);
 const user = ref({...props.user});
+const loading = ref(false);
 
 const onAddNumber = () => {
   isAddNumber.value = true;
@@ -22,6 +23,16 @@ const onUpdateEmail = (userUpdated) => {
   props.onUpdate(userUpdated);
   message.value = "Un mail de confirmation vous été envoyé !";
   isEditEmail.value = false;
+}
+
+const onResendVerification = async () => {
+  loading.value = true;
+  const response = await fetch("/setting/resend/email/verification");
+  if(response.ok){
+    const data = await response.json();
+    message.value = data.message;
+    loading.value = false;
+  }
 }
 
 </script>
@@ -37,7 +48,12 @@ const onUpdateEmail = (userUpdated) => {
             <h6 class="mb-0">Email:</h6>
             <span class="text-secondary">
             {{user.email}}
-            <span v-if="!user.emailIsVerified">(non vérifiée)</span>
+            <span v-if="!user.emailIsVerified">(non vérifiée) -
+              <button :disabled="loading" @click="onResendVerification" class="btn btn-link text-primary">
+                <span v-if="!loading">Vérifier ?</span>
+                <span v-if="loading">envoi ...</span>
+              </button>
+            </span>
             <button class="ms-3 btn btn-secondary" @click="isEditEmail = true">Modifier</button>
           </span>
           </li>

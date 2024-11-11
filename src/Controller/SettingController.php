@@ -84,4 +84,20 @@ class SettingController extends AbstractController
             'user' => $user,
         ], Response::HTTP_OK);
     }
+
+
+    /**
+     * @throws Exception
+     */
+    #[Route('/resend/email/verification', name: 'resend_mail_verification', methods: ['GET'])]
+    public function resendEmailVerification(): JsonResponse
+    {
+        sleep(10);
+        /** @var User $user */
+        $user = $this->getUser();
+        $this->emailVerificationService->notify($user);
+        return $this->json([
+            'message' => $this->translator->trans("flash.messages.email.resend"),
+        ]);
+    }
 }
