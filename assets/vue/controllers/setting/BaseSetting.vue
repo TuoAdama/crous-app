@@ -2,9 +2,11 @@
   import {computed, inject, ref} from "vue";
   import {MessageType} from "../enum/MessageType";
 
-  const props = defineProps(["user", "onUpdate"]);
+  const props = defineProps(["user","onUpdate"]);
   const edit = ref(false);
   const user = ref({...props.user})
+  const oldUser = ref({...props.user});
+
   const loading = ref(false);
   const message = ref(null);
 
@@ -23,9 +25,16 @@
     user.value = props.user;
   }
 
-  const disableBtn = computed(() => {
-    return (props.user.username === user.value.username) && (props.user.email === user.value.email)
-     && (props.user.notifyByEmail === user.value.notifyByEmail) && (props.user.notifyByNumber === user.value.notifyByNumber)
+  const isBaseInformationChange =  computed(() => {
+    const currentUser = user.value;
+    const oldUserValue = oldUser.value;
+
+    return oldUserValue.username !== currentUser.username
+        || oldUserValue.email !== currentUser.email
+        || oldUserValue.username !== currentUser.username
+        || oldUserValue.username !== currentUser.username
+        || oldUserValue.notifyByEmail !== currentUser.notifyByEmail
+        || oldUserValue.notifyByNumber !== currentUser.notifyByNumber;
   });
 
   const onSubmit = async () => {
@@ -42,11 +51,12 @@
     });
 
     const data = await response.json();
-    alert(response.status);
+
     if (response.status === 200) {
       const {user: userUpdated, message: responseMessage} = data;
       user.value = userUpdated;
-      props.onUpdate(userUpdated);
+      oldUser.value = {...userUpdated};
+      props.onUpdate({...userUpdated});
       message.value = {
         type: MessageType.SUCCESS,
         content: responseMessage,
@@ -102,10 +112,10 @@
         <hr>
         <div class="row">
           <div class="col-sm-12">
-            <button :disabled="disableBtn || loading" @click="onEdit" type="submit" class="btn btn-primary">
+            <button :disabled="!isBaseInformationChange" @click="onEdit" type="submit" class="btn btn-primary">
               {{loading ? 'Chargement...':'Enregistrer'}}
             </button>
-            <button :disabled="loading" v-if="edit" @click="onCancel" class="btn btn-danger ms-3">Annuler</button>
+            <button :disabled="!isBaseInformationChange || loading" v-if="isBaseInformationChange" @click="onCancel" class="btn btn-danger ms-3">Annuler</button>
           </div>
         </div>
       </div>
