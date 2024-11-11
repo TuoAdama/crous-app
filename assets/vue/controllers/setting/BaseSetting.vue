@@ -37,18 +37,17 @@
      && (props.user.notifyByEmail === user.value.notifyByEmail) && (props.user.notifyByNumber === user.value.notifyByNumber)
   });
 
-  const onSubmit = async (e) => {
+  const onSubmit = async () => {
     loading.value = true;
-    const body = {};
-    (new FormData(e.target)).forEach((value: string, key: string) => body[key] = value);
-
+    const {username, notifyByEmail, notifyByNumber} = user.value;
+    const body = {username, notifyByEmail, notifyByNumber, token};
     const response = await fetch("/setting/edit/base-information", {
       method: "POST",
       headers: {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
       },
-      body: JSON.stringify(body)
+      body: JSON.stringify(body),
     });
 
     const data = await response.json();

@@ -68,7 +68,7 @@ class SettingController extends AbstractController
     #[Route('/edit/base-information', name: 'edit_base_information', methods: ['POST'])]
     public function editBaseInformation(#[MapRequestPayload] EditUserBaseInformation $baseInformation): JsonResponse
     {
-        if (!$this->isCsrfTokenValid('edit-user', $baseInformation->_token)){
+        if (!$this->isCsrfTokenValid('edit-user', $baseInformation->token)){
             return $this->json([
                 'form' => $this->translator->trans('form.errors.invalid'),
             ], Response::HTTP_UNPROCESSABLE_ENTITY);
