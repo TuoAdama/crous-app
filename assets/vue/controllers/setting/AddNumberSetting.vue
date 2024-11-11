@@ -1,12 +1,5 @@
-<script setup lang="ts">
-  import {PropType} from "vue";
-
-  const props = defineProps({
-    onCancel: {
-      type: Function as PropType<() => void>,
-      required: true
-    }
-  })
+<script setup>
+  const props = defineProps(["onCancel"])
 </script>
 
 <template>

@@ -1,26 +1,16 @@
-<script setup lang="ts">
-  import User from "../models/User"
-  import {PropType, provide, ref} from "vue";
+<script setup>
+  import { provide, ref} from "vue";
   import ContactSetting from "./ContactSetting.vue";
   import BaseSetting from "./BaseSetting.vue";
 
-  const props = defineProps({
-    user: {
-      type: Object as PropType<User>,
-      required: true
-    },
-    token: {
-      type: String,
-      required: true
-    },
-  })
+  const props = defineProps(["user", "token"])
 
-  provide<string, string>('token', props.token);
+  provide('token', props.token);
 
-  const user = ref<User>({...props.user});
-  const edit = ref<boolean>(false);
+  const user = ref({...props.user});
+  const edit = ref(false);
 
-  const onUpdateUser = (updatedUser: User): void => {
+  const onUpdateUser = (updatedUser) => {
     user.value = updatedUser;
   }
 
@@ -56,7 +46,7 @@
           </div>
         </div>
         <div class="col-md-8">
-          <BaseSetting :user/>
+          <BaseSetting :user :on-update="onUpdateUser" />
           <div class="row gutters-sm">
             <div class="col mb-3">
               <ContactSetting :user="user" :on-update="onUpdateUser" />

@@ -1,23 +1,14 @@
-<script setup lang="ts">
-  import User from "../models/User"
-  import {computed, inject, PropType, ref} from "vue";
+<script setup>
+  import {computed, inject, ref} from "vue";
+  import {MessageType} from "../enum/MessageType";
 
-  const props = defineProps({
-    user: {
-      type: Object as PropType<User>,
-      required: true
-    },
-    onUpdate: {
-      type: Function as PropType<(user: User) => void>,
-      required: true
-    }
-  })
-  const edit = ref<boolean>(false);
-  const user = ref<User>({...props.user})
-  const loading = ref<boolean>(false);
-  const message = ref<string>("");
+  const props = defineProps(["user", "onUpdate"]);
+  const edit = ref(false);
+  const user = ref({...props.user})
+  const loading = ref(false);
+  const message = ref(null);
 
-  const token: string = inject<string>('token');
+  const token = inject('token') ?? "";
 
   const onEdit = () => {
     if (!edit.value) {
@@ -51,13 +42,21 @@
     });
 
     const data = await response.json();
-
+    alert(response.status);
     if (response.status === 200) {
-      const {user: userUpdated} = data as {message: string, user: User};
+      const {user: userUpdated, message: responseMessage} = data;
       user.value = userUpdated;
       props.onUpdate(userUpdated);
-    }else {
-      message.value = message.value;
+      message.value = {
+        type: MessageType.SUCCESS,
+        content: responseMessage,
+      }
+    } else {
+
+      message.value = {
+        type: MessageType.ERROR,
+        content: 'Form is invalid',
+      }
     }
 
     loading.value = false;
@@ -69,7 +68,7 @@
   <form @submit.prevent="onSubmit">
     <div class="card mb-3">
       <div class="card-body">
-        <div class="alert alert-danger" v-if="message.length">{{ message }}</div>
+        <div :class="`alert alert-${message.type}`" v-if="message != null">{{ message.content }}</div>
         <div class="row">
           <div class="col-sm-3">
             <h6 class="mb-0">Nom:</h6>

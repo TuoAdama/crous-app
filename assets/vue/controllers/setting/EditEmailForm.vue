@@ -1,29 +1,19 @@
-<script setup lang="ts">
-import {PropType, inject, ref} from "vue";
-import User from "../models/User";
+<script setup>
+import {inject, ref} from "vue";
 
-  const props = defineProps({
-    onCancel: {
-      type: Function as PropType<() => void>,
-      required: true,
-    },
-    onUpdate: {
-      type: Function as PropType<(user: User) => void>,
-      required: true
-    }
-  })
-  const token: string = inject<string>("token");
+  const props = defineProps(["onCancel", "OnUpdate"])
+  const token = inject("token") ?? "";
 
-  const loading = ref<boolean>(false)
-  const errors = ref<Object>({})
+  const loading = ref(false)
+  const errors = ref({})
 
   const onSubmit = async (e) => {
     loading.value = true;
     const formData =  new FormData(e.target);
     const body = {};
-    formData.forEach((value, key) => body[key] = value);
+    formData.forEach((value, key) => body[key] = value.toString());
 
-    const response: Response = await  fetch("/setting/edit/email", {
+    const response = await  fetch("/setting/edit/email", {
       method: "POST",
       headers: {
         'Content-Type': 'application/json',
@@ -36,7 +26,7 @@ import User from "../models/User";
       errors.value = result;
     }
     if (response.status === 200) {
-      const {user} = result as {message: string, user: User}
+      const {user} = result;
       props.onUpdate(user);
     }
 

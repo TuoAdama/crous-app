@@ -8,10 +8,10 @@ class EditUserBaseInformation
 {
     #[Assert\NotBlank]
     public string $username;
-    #[Assert\NotBlank]
+    #[Assert\NotNull]
     #[Assert\Type('boolean')]
     public bool $notifyByEmail;
-    #[Assert\NotBlank]
+    #[Assert\NotNull]
     #[Assert\Type('boolean')]
     public bool $notifyByNumber;
 

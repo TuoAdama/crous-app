@@ -1,32 +1,23 @@
-<script setup lang="ts">
+<script setup>
 import User from "../models/User";
-import {PropType, ref} from "vue";
+import {ref} from "vue";
 import EditEmailForm from "./EditEmailForm.vue";
 import AddNumberSetting from "./AddNumberSetting.vue";
 
-const props = defineProps({
-  user: {
-    type: Object as PropType<User>,
-    required: true
-  },
-  onUpdate: {
-    type: Function as PropType<(user: User) => void>,
-    required: true
-  }
-})
+const props = defineProps(["user", "onUpdate"]);
 
-const message = ref<string>("");
-const edit = ref<boolean>(false);
-const isAddNumber = ref<boolean>(false);
-const isEditEmail = ref<boolean>(false);
-const user = ref<User>({...props.user});
+const message = ref("");
+const edit = ref(false);
+const isAddNumber = ref(false);
+const isEditEmail = ref(false);
+const user = ref({...props.user});
 
 const onAddNumber = () => {
   isAddNumber.value = true;
   edit.value = true;
 }
 
-const onUpdateEmail = (userUpdated: User) => {
+const onUpdateEmail = (userUpdated) => {
   user.value = userUpdated;
   props.onUpdate(userUpdated);
   message.value = "Un mail de confirmation vous été envoyé !";
