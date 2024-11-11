@@ -47,17 +47,4 @@ class UserController extends AbstractController
         ]);
     }
 
-    /**
-     * @throws Exception
-     */
-    public function onUpdateNumber(User $user): Response
-    {
-        $this->userService->verifyNumber($user);
-        $token = $this->userService->updateToken($user);
-        $this->userService->flush();
-        return $this->redirectToRoute('user.verification.number', [
-            'token' =>  $token
-        ]);
-    }
-
 }

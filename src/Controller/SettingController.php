@@ -3,10 +3,12 @@
 namespace App\Controller;
 
 use App\DTO\EditEmailRequest;
+use App\DTO\EditNumberRequest;
 use App\DTO\EditUserBaseInformation;
 use App\Entity\User;
 use App\Repository\UserRepository;
 use App\Services\EmailVerificationService;
+use App\Services\UserService;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -29,6 +31,7 @@ class SettingController extends AbstractController
         private readonly EmailVerificationService    $emailVerificationService,
         private readonly TranslatorInterface         $translator,
         private readonly EntityManagerInterface $entityManager,
+        private readonly UserService $userService,
     )
     {
     }
@@ -92,12 +95,27 @@ class SettingController extends AbstractController
     #[Route('/resend/email/verification', name: 'resend_mail_verification', methods: ['GET'])]
     public function resendEmailVerification(): JsonResponse
     {
-        sleep(10);
         /** @var User $user */
         $user = $this->getUser();
         $this->emailVerificationService->notify($user);
         return $this->json([
             'message' => $this->translator->trans("flash.messages.email.resend"),
+        ]);
+    }
+
+    /**
+     * @throws Exception
+     */
+    #[Route('/resend/number/verification', name: 'resend_number_verification', methods: ['POST'])]
+    public function onUpdateNumber(#[MapRequestPayload] EditNumberRequest $request): Response
+    {
+        /** @var User $user */
+        $user = $this->getUser();
+        $this->userService->verifyNumber($user);
+        $token = $this->userService->updateToken($user);
+        $this->userService->flush();
+        return $this->redirectToRoute('user.verification.number', [
+            'token' =>  $token
         ]);
     }
 }
