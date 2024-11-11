@@ -22,7 +22,7 @@
 
   const onCancel = () => {
     edit.value = false;
-    user.value = props.user;
+    user.value = {...props.user};
   }
 
   const isBaseInformationChange =  computed(() => {
@@ -115,7 +115,7 @@
             <button :disabled="!isBaseInformationChange" @click="onEdit" type="submit" class="btn btn-primary">
               {{loading ? 'Chargement...':'Enregistrer'}}
             </button>
-            <button :disabled="!isBaseInformationChange || loading" v-if="isBaseInformationChange" @click="onCancel" class="btn btn-danger ms-3">Annuler</button>
+            <button type="button" :disabled="!isBaseInformationChange" v-if="isBaseInformationChange && !loading" @click="onCancel" class="btn btn-danger ms-3">Annuler</button>
           </div>
         </div>
       </div>
