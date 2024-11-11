@@ -10,10 +10,10 @@ class EditUserBaseInformation
     public string $username;
     #[Assert\NotBlank]
     #[Assert\Type('boolean')]
-    public string $notifyByEmail;
+    public bool $notifyByEmail;
     #[Assert\NotBlank]
     #[Assert\Type('boolean')]
-    public string $notifyByNumber;
+    public bool $notifyByNumber;
 
     #[Assert\NotBlank]
     public string $token;
