@@ -28,7 +28,7 @@ const onUpdateEmail = (userUpdated) => {
 const onResendVerification = async () => {
   loading.value = true;
   const response = await fetch("/setting/resend/email/verification");
-  if(response.ok){
+  if (response.ok) {
     const data = await response.json();
     message.value = data.message;
     loading.value = false;
@@ -41,13 +41,13 @@ const onResendVerification = async () => {
   <div class="card h-100">
     <div class="card-body">
       <template v-if="!isEditEmail && !isAddNumber">
-        <div class="alert alert-warning" v-if="message.length">{{message}}</div>
+        <div class="alert alert-warning" v-if="message.length">{{ message }}</div>
         <h6 class="d-flex align-items-center mb-3">Coordonnées</h6>
         <ul class="list-group list-group-flush">
           <li class="list-group-item d-flex justify-content-between align-items-center flex-wrap">
             <h6 class="mb-0">Email:</h6>
             <span class="text-secondary">
-            {{user.email}}
+            {{ user.email }}
             <span v-if="!user.emailIsVerified">(non vérifiée) -
               <button :disabled="loading" @click="onResendVerification" class="btn btn-link text-primary">
                 <span v-if="!loading">Vérifier ?</span>
@@ -60,13 +60,24 @@ const onResendVerification = async () => {
           <li class="list-group-item d-flex justify-content-between align-items-center flex-wrap">
             <h6 class="mb-0">Téléphone:</h6>
             <span class="text-secondary">
-            {{user.number ?? "Aucun numéro"}}
+              <span v-if="user.number">
+                <span>{{ user.number }}</span>
+                <span v-if="!user.numberIsVerified">
+                    <span> (non vérifié)</span>
+                    <button class="btn btn-link text-primary">
+                      <span v-if="!loading">Vérifier ?</span>
+                      <span v-if="loading">envoi ...</span>
+                    </button>
+                </span>
+              </span>
+              <span v-else>Aucun numéro</span>
             <button class="ms-3 btn btn-secondary" @click="onAddNumber">Modifier</button>
           </span>
           </li>
         </ul>
       </template>
-      <EditEmailForm v-if="isEditEmail && !isAddNumber" :user="user" :on-update="onUpdateEmail" :on-cancel="() => isEditEmail = false"/>
+      <EditEmailForm v-if="isEditEmail && !isAddNumber" :user="user" :on-update="onUpdateEmail"
+                     :on-cancel="() => isEditEmail = false"/>
       <AddNumberSetting v-if="isAddNumber && !isEditEmail" :on-cancel="() => isAddNumber = false"/>
     </div>
   </div>
