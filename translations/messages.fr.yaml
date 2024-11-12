@@ -28,6 +28,8 @@ form:
   email: Adresse e-mail
   errors:
     invalid: Form is invalid
+    number:
+      exist: Le numéro existe déjà
 dashboard: Tableau de board
 notification: Notifications
 address: Adresse

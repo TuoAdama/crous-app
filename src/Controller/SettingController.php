@@ -109,8 +109,19 @@ class SettingController extends AbstractController
     #[Route('/resend/number/verification', name: 'resend_number_verification', methods: ['POST'])]
     public function onUpdateNumber(#[MapRequestPayload] EditNumberRequest $request): Response
     {
+        if (!$this->isCsrfTokenValid('edit-user', $request->token)){
+            return $this->json([
+                'message' => $this->translator->trans('form.errors.invalid'),
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+        if ($this->userRepository->findBy(['number' => $request->number]) != null){
+            return $this->json([
+                'message' => $this->translator->trans('form.errors.number.exist'),
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
         /** @var User $user */
         $user = $this->getUser();
+        $user->setNumber($request->number);
         $this->userService->verifyNumber($user);
         $token = $this->userService->updateToken($user);
         $this->userService->flush();
