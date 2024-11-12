@@ -1,8 +1,8 @@
 <script setup>
-import User from "../models/User";
 import {ref} from "vue";
 import EditEmailForm from "./EditEmailForm.vue";
 import AddNumberSetting from "./AddNumberSetting.vue";
+import ResendButton from "./ResendButton.vue";
 
 const props = defineProps(["user", "onUpdate"]);
 
@@ -47,29 +47,27 @@ const onResendVerification = async () => {
           <li class="list-group-item d-flex justify-content-between align-items-center flex-wrap">
             <h6 class="mb-0">Email:</h6>
             <span class="text-secondary">
-            {{ user.email }}
-            <span v-if="!user.emailIsVerified">(non vérifiée) -
-              <button :disabled="loading" @click="onResendVerification" class="btn btn-link text-primary">
-                <span v-if="!loading">Vérifier ?</span>
-                <span v-if="loading">envoi ...</span>
-              </button>
-            </span>
+              <ResendButton
+                  :is-loading="loading"
+                  :is-verified="user.emailIsVerified"
+                  :on-click="onResendVerification"
+              >
+                {{ user.email }}
+              </ResendButton>
             <button class="ms-3 btn btn-secondary" @click="isEditEmail = true">Modifier</button>
           </span>
           </li>
           <li class="list-group-item d-flex justify-content-between align-items-center flex-wrap">
             <h6 class="mb-0">Téléphone:</h6>
             <span class="text-secondary">
-              <span v-if="user.number">
-                <span>{{ user.number }}</span>
-                <span v-if="!user.numberIsVerified">
-                    <span> (non vérifié)</span>
-                    <button class="btn btn-link text-primary">
-                      <span v-if="!loading">Vérifier ?</span>
-                      <span v-if="loading">envoi ...</span>
-                    </button>
-                </span>
-              </span>
+              <ResendButton
+                  v-if="user.number"
+                  :is-loading="loading"
+                  :is-verified="user.numberIsVerified"
+                  :on-click="() => console.log('Hello, world')"
+              >
+                {{user.number}}
+              </ResendButton>
               <span v-else>Aucun numéro</span>
             <button class="ms-3 btn btn-secondary" @click="onAddNumber">Modifier</button>
           </span>
