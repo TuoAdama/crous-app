@@ -1,5 +1,5 @@
 <script setup>
-import {ref} from "vue";
+import {inject, ref} from "vue";
 import EditEmailForm from "./EditEmailForm.vue";
 import AddNumberSetting from "./AddNumberSetting.vue";
 import ResendButton from "./ResendButton.vue";
@@ -12,6 +12,9 @@ const isAddNumber = ref(false);
 const isEditEmail = ref(false);
 const user = ref({...props.user});
 const loading = ref(false);
+const isSendNumberVerificationLoading = ref(false);
+
+const token = inject("token") ?? "";
 
 const onAddNumber = () => {
   isAddNumber.value = true;
@@ -33,6 +36,10 @@ const onResendVerification = async () => {
     message.value = data.message;
     loading.value = false;
   }
+}
+
+const onSendNumberVerification = async () => {
+  window.location.href = "/setting/verification/resend";
 }
 
 </script>
@@ -62,9 +69,9 @@ const onResendVerification = async () => {
             <span class="text-secondary">
               <ResendButton
                   v-if="user.number"
-                  :is-loading="loading"
+                  :is-loading="isSendNumberVerificationLoading"
                   :is-verified="user.numberIsVerified"
-                  :on-click="() => console.log('Hello, world')"
+                  :on-click="onSendNumberVerification"
               >
                 {{user.number}}
               </ResendButton>
