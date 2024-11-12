@@ -1,7 +1,7 @@
 <script setup>
 import {inject, ref} from "vue";
 
-  const props = defineProps(["onCancel", "OnUpdate"])
+  const props = defineProps(["onCancel", "onUpdate"])
   const token = inject("token") ?? "";
 
   const loading = ref(false)
@@ -28,6 +28,7 @@ import {inject, ref} from "vue";
     if (response.status === 200) {
       const {user} = result;
       props.onUpdate(user);
+
     }
 
     loading.value = false
