@@ -56,7 +56,9 @@ class SettingController extends AbstractController
             $errors["email"] = "email is already used";
         }
         if (!empty($errors)){
-            return new JsonResponse($errors, Response::HTTP_UNPROCESSABLE_ENTITY);
+            return new JsonResponse([
+                'errors' => $errors,
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
         $user->setEmail($editEmailRequest->email);
         $this->emailVerificationService->notify($user);

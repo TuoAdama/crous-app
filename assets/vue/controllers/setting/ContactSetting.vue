@@ -66,7 +66,7 @@ const onResendVerification = async () => {
           </li>
         </ul>
       </template>
-      <EditEmailForm v-if="isEditEmail && !isAddNumber" :on-update="onUpdateEmail" :on-cancel="() => isEditEmail = false"/>
+      <EditEmailForm v-if="isEditEmail && !isAddNumber" :user="user" :on-update="onUpdateEmail" :on-cancel="() => isEditEmail = false"/>
       <AddNumberSetting v-if="isAddNumber && !isEditEmail" :on-cancel="() => isAddNumber = false"/>
     </div>
   </div>
