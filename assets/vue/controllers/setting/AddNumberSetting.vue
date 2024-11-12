@@ -20,14 +20,14 @@ import {MessageType} from "../enum/MessageType";
       body: JSON.stringify({token, number: number.value}),
     })
     const data = await response.json();
-    let responseMessage = null;
     let responseType = null;
 
+    let responseMessage = data.message;
     if (response.status === 200) {
         showVerificationForm.value = true;
+        responseType = MessageType.SUCCESS;
     } else if (response.status === 422) {
       responseType = MessageType.ERROR;
-      responseMessage = data.message;
     } else if (response.status === 500) {
       responseType = MessageType.ERROR;
       responseMessage = "Une erreur est survenue, veuillez ressayer plus tard";
@@ -66,6 +66,7 @@ import {MessageType} from "../enum/MessageType";
     </div>
   </form>
   <form v-else>
+    <div :class="`alert alert-${message.type}`" v-if="message.type">{{ message.content }}</div>
     <div class="p-3">
       <div class="row mb-3">
         <div class="col-sm-12">
@@ -73,7 +74,7 @@ import {MessageType} from "../enum/MessageType";
         </div>
         <div class="col-12 col-lg-12 mt-3 text-center">
           <div class="d-flex justify-content-center w-100">
-            <input name="number" v-model="number" class="col-3 ms-1 w-50 form-control text-secondary m-0" type="text" pattern="0[1-9]{1}[0-9]{8}" required>
+            <input name="number" class="col-3 ms-1 w-50 form-control text-secondary m-0" type="text" pattern="0[1-9]{1}[0-9]{8}" required>
           </div>
         </div>
       </div>

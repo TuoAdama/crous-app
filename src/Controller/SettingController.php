@@ -125,8 +125,8 @@ class SettingController extends AbstractController
         $this->userService->verifyNumber($user);
         $token = $this->userService->updateToken($user);
         $this->userService->flush();
-        return $this->redirectToRoute('user.verification.number', [
-            'token' =>  $token
-        ]);
+        return $this->json([
+            'message' => $this->translator->trans('sms.messages.number.verification'),
+        ], Response::HTTP_OK);
     }
 }
