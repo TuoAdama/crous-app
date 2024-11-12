@@ -359,6 +359,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, JsonSer
        return [
            'id' => $this->id,
            'email' => $this->email,
+           'number' => $this->number,
            'username' => $this->username,
            'emailIsVerified' => $this->emailIsVerified,
            'numberIsVerified' => $this->number_is_verified,

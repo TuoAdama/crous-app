@@ -61,8 +61,7 @@ const onResendVerification = async () => {
             <h6 class="mb-0">Téléphone:</h6>
             <span class="text-secondary">
             {{user.number ?? "Aucun numéro"}}
-            <button v-if="user.number" class="ms-3 btn btn-secondary" >Modifier</button>
-            <button v-if="!user.number" class="ms-3 btn btn-secondary" @click="onAddNumber">Ajouter</button>
+            <button class="ms-3 btn btn-secondary" @click="onAddNumber">Modifier</button>
           </span>
           </li>
         </ul>
