@@ -127,6 +127,7 @@ class SettingController extends AbstractController
         $this->userService->flush();
         return $this->json([
             'message' => $this->translator->trans('sms.messages.number.verification'),
+            'token' => $token,
         ], Response::HTTP_OK);
     }
 }
