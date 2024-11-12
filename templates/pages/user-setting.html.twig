@@ -3,62 +3,7 @@
 {% block content_title %}Profil{% endblock %}
 
 {% block content %}
-	<div  {{ stimulus_controller('disable-button', {
-		oldNumber: numberForm.vars.value.number
-	}) }}>
-		{{ form_start(form) }}
-		<div class="row g-4 settings-section">
-			<div class="col-12 col-md-4">
-				<h3 class="section-title">Nom d'utilisateur</h3>
-			</div>
-			<div class="col-12 col-md-6">
-				<div class="app-card-body">
-					<div class="mb-3">
-						{{ form_widget(form) }}
-					</div>
-					<button type="submit" class="btn app-btn-primary" >Mettre à jour</button>
-				</div><!--//app-card-body-->
-			</div>
-		</div><!--//row-->
-		{{ form_end(form) }}
-		<hr class="my-4">
-		<div class="row g-4 settings-section">
-			<div class="col-12 col-md-4">
-				<h3 class="section-title">Adresse mail</h3>
-			</div>
-			<div class="col-12 col-md-6">
-				<div class="app-card-body">
-					{{ form_start(emailForm) }}
-						{{ form_row(emailForm.email) }}
-					{{ form_end(emailForm) }}
-				</div>
-			</div>
-		</div><!--//row-->
-		<hr class="my-4">
-		<div class="row g-4 settings-section">
-			<div class="col-12 col-md-4">
-				<h3 class="section-title">Numéro de télephone</h3>
-			</div>
-			<div class="col-12 col-md-6">
-				{{ form_start(numberForm, {'attr': {'class':'settings-form'}}) }}
-					<div class="mb-3">
-						<label for="setting-input-2" class="form-label">Numéro:</label>
-						{{ form_row(numberForm.number, {'attr': {'data-action': 'disable-button#onChangeNumber'}}) }}
-						<button disabled type="submit" class="mt-3 btn app-btn-primary" {{ stimulus_target('disable-button', 'numberButton') }}>Mettre à jour</button>
-					</div>
-				{{ form_end(numberForm) }}
-			</div>
-		</div><!--//row-->
-		<hr class="my-4">
-		<div class="row g-4 settings-section">
-			<div class="col-12 col-md-4">
-				<h3 class="section-title">Notifications</h3>
-			</div>
-			<div class="col-12 col-md-6">
-				{% include '_partials/_notification-form.html.twig' %}
-			</div>
-		</div><!--//row-->
-	</div>
+	<div {{ vue_component('setting/SettingComponent', {user: userData, token: csrf_token('edit-user')}) }}></div>
 {% endblock %}
 
 

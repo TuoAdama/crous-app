@@ -13,6 +13,10 @@ flash:
     mail.resend: Un mail vous a été envoyé pour l'activation de votre compte
     reset.password: Un mail de réinitialisation vous a été envoyé !
     password.update: Mot de passe reinitialisé !
+    email.update:  Un mail de confirmation vous a été envoyé
+    baseinformation.update: Information mise à jour !
+    email:
+      resend: "Un mail de vérification vous a été envoyé !"
 account:
   label: Mon compte
   logout: Déconnexion
@@ -22,6 +26,10 @@ hello: Bonjour
 form:
   phone: Téléphone
   email: Adresse e-mail
+  errors:
+    invalid: Form is invalid
+    number:
+      exist: Le numéro existe déjà
 dashboard: Tableau de board
 notification: Notifications
 address: Adresse
@@ -81,3 +89,7 @@ contact.success.message: Votre message a bien été envoyé !
 btn:
   edit: Modifier
   delete: Supprimer
+sms:
+  messages:
+    number:
+      verification: Un sms de vérification vous a été envoyé

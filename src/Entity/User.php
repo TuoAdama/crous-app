@@ -6,6 +6,7 @@ use App\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use JsonSerializable;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -15,7 +16,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[UniqueEntity('email')]
 #[UniqueEntity('number')]
 #[ORM\HasLifecycleCallbacks]
-class User implements UserInterface, PasswordAuthenticatedUserInterface
+class User implements UserInterface, PasswordAuthenticatedUserInterface, JsonSerializable
 {
 
     CONST TOKEN_SESSION_KEY = "user_token";
@@ -351,5 +352,19 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function onPrePersist(): void
     {
 
+    }
+
+    public function jsonSerialize(): array
+    {
+       return [
+           'id' => $this->id,
+           'email' => $this->email,
+           'number' => $this->number,
+           'username' => $this->username,
+           'emailIsVerified' => $this->emailIsVerified,
+           'numberIsVerified' => $this->number_is_verified,
+           'notifyByNumber' => $this->notifyByNumber,
+           'notifyByEmail' => $this->notifyByEmail,
+       ];
     }
 }
