@@ -28,10 +28,9 @@ class NumberVerificationController extends AbstractController
     {
         /** @var User $user */
         $user = $this->getUser();
-        $isValid = $this->smsTokenValidator->isValid($user, $token);
-        if (!$isValid){
-            throw $this->createNotFoundException();
-        }
+
+        $this->smsTokenValidator->validate($user, $token);
+
         $form = $this->createForm(VerificationNumberType::class, []);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()){

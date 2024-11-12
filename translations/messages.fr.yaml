@@ -93,3 +93,5 @@ sms:
   messages:
     number:
       verification: Un sms de vérification vous a été envoyé
+token:
+  expired: Le lien a expiré

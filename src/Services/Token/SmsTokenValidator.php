@@ -6,5 +6,5 @@ use App\Entity\User;
 
 interface SmsTokenValidator
 {
-    public function isValid(User $user, $token): bool;
+    public function validate(User $user, $token): void;
 }
