@@ -1,6 +1,7 @@
 <script setup>
 import {inject, ref} from "vue";
 import {MessageType} from "../enum/MessageType";
+import NumerVerificationForm from "./NumerVerificationForm.vue";
 
   const props = defineProps(["onCancel"])
   const token = inject("token") ?? "";
@@ -65,26 +66,9 @@ import {MessageType} from "../enum/MessageType";
       </div>
     </div>
   </form>
-  <form v-else>
+  <NumerVerificationForm v-else>
     <div :class="`alert alert-${message.type}`" v-if="message.type">{{ message.content }}</div>
-    <div class="p-3">
-      <div class="row mb-3">
-        <div class="col-sm-12">
-          <h6 class="mb-0 text-center">Entrez le code vérfication:</h6>
-        </div>
-        <div class="col-12 col-lg-12 mt-3 text-center">
-          <div class="d-flex justify-content-center w-100">
-            <input name="number" class="col-3 ms-1 w-50 form-control text-secondary m-0" type="text" pattern="0[1-9]{1}[0-9]{8}" required>
-          </div>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col-12 text-center">
-          <button class="btn btn-primary">Valider</button>
-        </div>
-      </div>
-    </div>
-  </form>
+  </NumerVerificationForm>
 </template>
 
 <style scoped>
