@@ -51,22 +51,27 @@ const onSendNumberVerification = async () => {
         <div class="alert alert-warning" v-if="message.length">{{ message }}</div>
         <h6 class="d-flex align-items-center mb-3">Coordonnées</h6>
         <ul class="list-group list-group-flush">
-          <li class="list-group-item d-flex justify-content-between align-items-center flex-wrap">
+          <li class="list-group-item d-flex flex-column flex-lg-row justify-content-start justify-content-lg-between align-items-lg-center flex-wrap">
             <h6 class="mb-0">Email:</h6>
-            <span class="text-secondary">
-              <ResendButton
-                  :is-loading="loading"
-                  :is-verified="user.emailIsVerified"
-                  :on-click="onResendVerification"
-              >
-                {{ user.email }}
-              </ResendButton>
-            <button class="ms-3 btn btn-secondary" @click="isEditEmail = true">Modifier</button>
-          </span>
+            <div class="d-flex flex-column flex-lg-row">
+              <span class="text-secondary my-2">
+                <ResendButton
+                    :is-loading="loading"
+                    :is-verified="user.emailIsVerified"
+                    :on-click="onResendVerification"
+                >
+                  {{ user.email }}
+                </ResendButton>
+            </span>
+              <div>
+                <button class="ms-O  ms-lg-3 btn btn-secondary" @click="isEditEmail = true">Modifier</button>
+              </div>
+            </div>
           </li>
-          <li class="list-group-item d-flex justify-content-between align-items-center flex-wrap">
+          <li class="mt-2 mt-md-0 list-group-item d-flex flex-column flex-lg-row justify-content-start justify-content-lg-between align-items-start align-items-lg-center flex-wrap">
             <h6 class="mb-0">Téléphone:</h6>
-            <span class="text-secondary">
+            <div class="d-flex flex-column flex-lg-row">
+              <span class="text-secondary">
               <ResendButton
                   v-if="user.number"
                   :is-loading="isSendNumberVerificationLoading"
@@ -75,9 +80,12 @@ const onSendNumberVerification = async () => {
               >
                 {{user.number}}
               </ResendButton>
-              <span v-else>Aucun numéro</span>
-            <button class="ms-3 btn btn-secondary" @click="onAddNumber">Modifier</button>
-          </span>
+                <span v-else>Aucun numéro</span>
+            </span>
+              <div>
+                <button class="ms-O  ms-lg-3 btn btn-secondary" @click="onAddNumber">Modifier</button>
+              </div>
+            </div>
           </li>
         </ul>
       </template>
