@@ -14,6 +14,8 @@ import {MessageType} from "../enum/MessageType";
 
   const onSubmit = async (e) => {
     const errorMessage = getFormMessageError();
+    message.value.type = null
+    message.value.content = null;
     if (errorMessage) {
       message.value.type = MessageType.ERROR;
       message.value.content = errorMessage;
