@@ -226,7 +226,7 @@ class SearchCriteria implements JsonSerializable
             'user' => $this->user,
             'type' => $this->type,
             'price' => $this->price,
-            'searchCount' => $this->searchResults->count(),
+            'resultCount' => $this->searchResults->count(),
             'createdAt' => $this->createdAt->format('d/m/Y'),
             'updatedAt' => $this->updatedAt->format('d/m/Y'),
         ];

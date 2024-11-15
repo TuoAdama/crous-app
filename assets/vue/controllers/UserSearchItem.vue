@@ -28,7 +28,7 @@
 <template>
   <div class="col-12 col-md-5 mb-5">
     <div class="card position-relative">
-      <a href="#"><span class="bg-danger text-white end-0 top-0 position-absolute py-1 px-2 border m-2 rounded-2">{{criteria.searchCount}}</span></a>
+      <a href="#"><span class="bg-danger text-white end-0 top-0 position-absolute py-1 px-2 border m-2 rounded-2">{{criteria.resultCount}}</span></a>
       <div class="card-body p-2 d-flex align-items-center">
         <div class="ms-3">
           <div class="fs-5">{{ criteria?.location.properties.name}}</div>
