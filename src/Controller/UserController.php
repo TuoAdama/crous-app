@@ -15,7 +15,7 @@ class UserController extends AbstractController
 {
 
     public function __construct(
-        private readonly UserService              $userService,
+        private readonly UserService $userService,
     )
     {
     }
@@ -42,8 +42,10 @@ class UserController extends AbstractController
         /** @var User $user */
         $user = $this->getUser();
         $this->userService->verifyNumber($user);
+        $token = $this->userService->updateToken($user);
+        $this->userService->flush();
         return $this->redirectToRoute('user.verification.number', [
-            'token' => $user->getNumberTokenVerification(),
+            'token' => $token,
         ]);
     }
 
