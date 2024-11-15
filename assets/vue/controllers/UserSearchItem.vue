@@ -39,7 +39,7 @@
       </div>
       <div class="card-actions px-2 py-1  justify-content-between">
         <div class="card-action-buttons">
-          <a class="btn btn-text-primary mdc-ripple-upgraded" :href="`/criteria/${criteria.id}`">Modifier</a>
+          <a class="btn btn-text-primary mdc-ripple-upgraded" :href="`/criteria/edit/${criteria.id}`">Modifier</a>
           <form class="d-inline" method="post" @submit.prevent="onSubmit">
             <input type="hidden" name="method" value="DELETE">
             <input type="hidden" name="token" :value="token">
