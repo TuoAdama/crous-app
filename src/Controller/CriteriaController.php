@@ -44,6 +44,7 @@ class CriteriaController extends AbstractController
             $user = $this->getUser();
             $this->addFlash('success', $this->translator->trans('flash.messages.update'));
             $this->searchService->save($searchCriteria,  $user, $request);
+            return $this->redirectToRoute('app_index');
         }
         return $this->render('pages/criteria/criteria.html.twig',  [
             'identifier' => $this->getUser()->getUserIdentifier(),
