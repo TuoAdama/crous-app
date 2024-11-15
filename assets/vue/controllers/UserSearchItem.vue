@@ -44,7 +44,7 @@
             <input type="hidden" name="method" value="DELETE">
             <input type="hidden" name="token" :value="token">
             <input type="hidden" name="id" :value="criteria.id" />
-            <button type="submit" onclick="confirm('Vous être sur !')" class="btn btn-text-primary mdc-ripple-upgraded">Supprimer</button>
+            <button type="submit" onclick="confirm('Êtes-vous sûre d\'éffectuer cette opération ?')" class="btn btn-text-primary mdc-ripple-upgraded">Supprimer</button>
           </form>
         </div>
       </div>
