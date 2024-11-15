@@ -8,9 +8,9 @@ const props = defineProps({
   path: String
 })
 
-const criteriaWithResults = ref({...props.criteriaWithResults});
+const criteriaWithResults = ref([...props.criteriaWithResults]);
 
-function onDelete (){
+function onDelete (id){
   criteriaWithResults.value = criteriaWithResults.value.filter(i => i.criteria.id !== id);
 }
 

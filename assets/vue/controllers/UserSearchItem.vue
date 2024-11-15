@@ -19,8 +19,9 @@
             }
         })
         .catch(error => {
+          console.log(error)
           alert("Une erreur est survenue");
-          window.location.reload();
+          //window.location.reload();
         })
     }
 </script>
