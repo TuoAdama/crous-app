@@ -8,10 +8,10 @@ const props = defineProps({
   path: String
 })
 
-const criteriaWithResults = ref(props.criteriaWithResults);
+const criteriaWithResults = ref({...props.criteriaWithResults});
 
-function onDelete (id){
-  criteriaWithResults.value = criteriaWithResults.value.filter(i => i.id != id);
+function onDelete (){
+  criteriaWithResults.value = criteriaWithResults.value.filter(i => i.criteria.id !== id);
 }
 
 </script>
@@ -23,7 +23,7 @@ function onDelete (id){
         :token="token"
         :criteriaWithResults="item"
         :path="props.path"
-        :onDelete="() => onDelete(item.id)"
+        :onDelete="() => onDelete(item.criteria.id)"
     />
   </div>
 </template>
