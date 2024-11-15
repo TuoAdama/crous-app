@@ -3,15 +3,15 @@ import {ref} from "vue";
 import UserSearchItem from "./UserSearchItem.vue";
 
 const props = defineProps({
-  criteria: [],
+  criteriaWithResults: [],
   token:  String,
   path: String
 })
 
-const criteria = ref(props.criteria);
+const criteriaWithResults = ref(props.criteriaWithResults);
 
 function onDelete (id){
-  criteria.value = criteria.value.filter(i => i.id != id);
+  criteriaWithResults.value = criteriaWithResults.value.filter(i => i.id != id);
 }
 
 </script>
@@ -19,9 +19,9 @@ function onDelete (id){
 <template>
   <div class="row">
     <UserSearchItem
-        v-for="item in criteria"
+        v-for="item in criteriaWithResults"
         :token="token"
-        :criteria="item"
+        :criteriaWithResults="item"
         :path="props.path"
         :onDelete="() => onDelete(item.id)"
     />

@@ -1,9 +1,6 @@
-{% for criteria in userCriteria %}
-
-{% endfor %}
 <div {{ vue_component('UserSearchComponent',
             {
-                criteria: userCriteria,
+                criteriaWithResults: criteriaWithResults,
                 token: csrf_token('delete'),
                 path: path('app_criteria_delete')
             })

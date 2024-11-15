@@ -2,13 +2,12 @@
 
 namespace App\Services;
 
+use App\DTO\Response\CriteriaResultResponse;
 use App\Entity\SearchCriteria;
-use App\Entity\SearchResult;
 use App\Entity\User;
 use App\Message\SearchResultMessage;
 use App\Repository\SearchCriteriaRepository;
 use App\Repository\SearchResultRepository;
-use Doctrine\Common\Collections\Criteria;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -172,24 +171,22 @@ class SearchService
 
     /**
      * @param User $user
-     * @return array|null
+     * @return array
      */
-    function getResults(User $user): array|null
+    function getCriteriaWithResults(User $user): array
     {
-        /** @var SearchCriteria|bool $criteria */
-        $criteria = $user->getSearchCriterias()->first();
-        if ($criteria === false){
-            return null;
+        $allCriteria = $this->getUserCriteria($user);
+        $results = [];
+        foreach ($allCriteria as $criteria) {
+            $criteriaResult = $criteria->getSearchResults();
+            $criteriaResultResponse = new CriteriaResultResponse($criteria);
+
+            if (count($criteriaResult) !== 0) {
+                $criteriaResultResponse->setLink($this->getLink($criteria));
+            }
+            $results[] = $criteriaResultResponse;
         }
-        /** @var SearchResult|bool $results */
-        $results = $criteria->getSearchResults()->first();
-        if ($results === false){
-            return null;
-        }
-        return [
-            'link' => $this->getLink($criteria),
-            'results' => $results->getResults()
-        ];
+        return $results;
     }
 
 

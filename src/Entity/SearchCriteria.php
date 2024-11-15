@@ -220,13 +220,16 @@ class SearchCriteria implements JsonSerializable
 
     public function jsonSerialize(): array
     {
+        /** @var SearchResult $result */
+        $result = $this->searchResults->first();
+
         return  [
             'id' => $this->id,
             'location' => $this->location,
             'user' => $this->user,
             'type' => $this->type,
             'price' => $this->price,
-            'resultCount' => $this->searchResults->count(),
+            'resultCount' => $result ? count($result->getResults()) : 0,
             'createdAt' => $this->createdAt->format('d/m/Y'),
             'updatedAt' => $this->updatedAt->format('d/m/Y'),
         ];
