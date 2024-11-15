@@ -28,13 +28,16 @@
 <template>
   <div class="col-12 col-md-5 mb-5">
     <div class="card">
-      <div class="card-body px-4 py-2 d-flex align-items-center">
+      <div class="card-body p-2 d-flex align-items-center">
         <div class="ms-3">
           <div class="fs-5">{{ criteria?.location.properties.name}}</div>
           <div class="small text-muted">Ajouté le {{criteria?.updatedAt}}</div>
+          <div class="mt-3">
+            <span class="me-2 bg-secondary text-white py-1 px-2 rounded-1" v-for="type in criteria.type">{{type}}</span>
+          </div>
         </div>
       </div>
-      <div class="card-actions p-3 justify-content-between">
+      <div class="card-actions px-2 py-1  justify-content-between">
         <div class="card-action-buttons">
           <a class="btn btn-text-primary mdc-ripple-upgraded" :href="`/criteria/${criteria.id}`">Modifier</a>
           <form class="d-inline" method="post" @submit.prevent="onSubmit">
