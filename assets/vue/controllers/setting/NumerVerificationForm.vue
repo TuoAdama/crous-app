@@ -12,7 +12,7 @@
         </div>
         <div class="col-12 col-lg-12 mt-3 text-center">
           <div class="d-flex justify-content-center w-100">
-            <input name="number" class="col-3 ms-1 w-50 form-control text-secondary m-0" type="text" pattern="0[1-9]{1}[0-9]{8}" required>
+            <input name="number" class="col-3 ms-1 w-50 form-control text-secondary m-0" type="number" required>
           </div>
         </div>
       </div>
