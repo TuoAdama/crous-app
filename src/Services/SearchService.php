@@ -2,13 +2,12 @@
 
 namespace App\Services;
 
+use App\DTO\Response\CriteriaResultResponse;
 use App\Entity\SearchCriteria;
-use App\Entity\SearchResult;
 use App\Entity\User;
 use App\Message\SearchResultMessage;
 use App\Repository\SearchCriteriaRepository;
 use App\Repository\SearchResultRepository;
-use Doctrine\Common\Collections\Criteria;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -34,6 +33,7 @@ class SearchService
     private int $multiple;
 
     private string $resultLink;
+    private int $limit;
 
     /**
      * @throws ContainerExceptionInterface
@@ -62,6 +62,7 @@ class SearchService
         $this->multiple = $this->params->get('multiple');
         $this->url = $this->params->get('url');
         $this->resultLink = $this->params->get('result.link');
+        $this->limit = $this->params->get('criteria.fetch.limit');
     }
 
     /**
@@ -119,40 +120,61 @@ class SearchService
 
     public function run(): void
     {
-        $results = [];
-        $ids = [];
-        $criterias = $this->criteriaRepository->findAllAvailableCriteria();
-        if (count($criterias) != 0) {
-            foreach ($criterias as $criteria) {
-                $searchResult = $this->search($criteria);
-                if (count($searchResult) == 0) {
-                    continue;
+        $page = 1;
+        $hasCriteria = true;
+        while ($hasCriteria) {
+            $allCriteria = $this->criteriaRepository->findFirstTop($page, $this->limit);
+            $hasCriteria = count($allCriteria);
+            if ($hasCriteria) {
+                $results = [];
+                foreach ($allCriteria as $criteria) {
+                    $searchResult = $this->search($criteria);
+                    if (!$this->isResponseBodyContainsResults($searchResult, $criteria)) {
+                        $criteriaOldResult =  $criteria->getSearchResults();
+                        if ($criteriaOldResult->count() > 0){
+                            foreach ($criteriaOldResult as $oldResult) {
+                                $this->entityManager->remove($oldResult);
+                            }
+                        }
+                        continue;
+                    }
+                    $results[] = [
+                        'criteria' => $criteria,
+                        'results' => $searchResult['results'],
+                    ];
                 }
-                if (!key_exists('results', $searchResult)) {
-                    continue;
+                $this->entityManager->flush();
+                if (count($results)) {
+                    $this->storeSearchResults($results);
                 }
-                $searchResult = $searchResult['results'];
-                if (!key_exists('items', $searchResult) || count($searchResult['items']) == 0) {
-                    continue;
-                }
-                $items = $searchResult['items'];
-                // Check if information are already registered
-                $exist = $this->comparisonService->exists($criteria, $items);
-                if ($exist){
-                    $this->logger->info('criteria_id = '.$criteria->getId());
-                    continue;
-                }
-                $ids[] = $criteria->getId();
-                $results[] = [
-                    'criteria' => $criteria,
-                    'results' => $searchResult,
-                ];
+                $page++;
             }
         }
+    }
 
-        if (count($results)) {
-            $this->storeSearchResults($results);
+
+    /**
+     * Check if response body from api request contains new criteria response
+     * @param array $searchResult
+     * @param $criteria
+     * @return bool
+     */
+    public function isResponseBodyContainsResults(array $searchResult, $criteria): bool
+    {
+        if (count($searchResult) === 0 || !key_exists('results', $searchResult)) {
+            return false;
         }
+        $results = $searchResult['results'];
+        if (!key_exists('items', $results) || count($results['items']) == 0) {
+            return false;
+        }
+
+        $exist = $this->comparisonService->exists($criteria, $results['items']);
+        if ($exist){
+            $this->logger->info('criteria_id = '.$criteria->getId());
+            return false;
+        }
+        return true;
     }
 
     /**
@@ -172,24 +194,22 @@ class SearchService
 
     /**
      * @param User $user
-     * @return array|null
+     * @return array
      */
-    function getResults(User $user): array|null
+    function getCriteriaWithResults(User $user): array
     {
-        /** @var SearchCriteria|bool $criteria */
-        $criteria = $user->getSearchCriterias()->first();
-        if ($criteria === false){
-            return null;
+        $allCriteria = $this->getUserCriteria($user);
+        $results = [];
+        foreach ($allCriteria as $criteria) {
+            $criteriaResult = $criteria->getSearchResults();
+            $criteriaResultResponse = new CriteriaResultResponse($criteria);
+
+            if (count($criteriaResult) !== 0) {
+                $criteriaResultResponse->setLink($this->getLink($criteria));
+            }
+            $results[] = $criteriaResultResponse;
         }
-        /** @var SearchResult|bool $results */
-        $results = $criteria->getSearchResults()->first();
-        if ($results === false){
-            return null;
-        }
-        return [
-            'link' => $this->getLink($criteria),
-            'results' => $results->getResults()
-        ];
+        return $results;
     }
 
 

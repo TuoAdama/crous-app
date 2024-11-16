@@ -24,6 +24,7 @@ class SearchCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->searchService->run();
+        $output->write('<info>Search launched</info>');
         return Command::SUCCESS;
     }
 }

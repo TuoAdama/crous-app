@@ -32,23 +32,18 @@ class CriteriaController extends AbstractController
     {
     }
 
-    #[Route('/criteria/{id?}', name: 'app_criteria')]
+    #[Route('/criteria/add', name: 'app_criteria')]
     #[IsGranted('IS_AUTHENTICATED_FULLY')]
-    public function index(#[MapEntity] ?SearchCriteria $criteria, Request $request): Response
+    public function index(Request $request): Response
     {
-        $searchCriteria = $criteria ?? new SearchCriteria();
-        $form = $this->createForm(SearchCriteriaType::class, $searchCriteria);
-        $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()){
-            /** @var User $user */
-            $user = $this->getUser();
-            $this->addFlash('success', $this->translator->trans('flash.messages.update'));
-            $this->searchService->save($searchCriteria,  $user, $request);
-        }
-        return $this->render('pages/criteria/criteria.html.twig',  [
-            'identifier' => $this->getUser()->getUserIdentifier(),
-            'form' => $form,
-        ]);
+        return $this->handleCriteria(new SearchCriteria(), $request);
+    }
+
+    #[Route('/criteria/edit/{id}', name: 'app_criteria_edit')]
+    #[IsGranted('IS_AUTHENTICATED_FULLY')]
+    public function edit(#[MapEntity] SearchCriteria $criteria, Request $request): Response
+    {
+        return $this->handleCriteria($criteria, $request);
     }
 
     #[Route('/criteria/delete', name: 'app_criteria_delete', methods: ['POST'])]
@@ -71,5 +66,22 @@ class CriteriaController extends AbstractController
         return $this->json([
             'type' => 'success',
         ], Response::HTTP_OK);
+    }
+
+
+    private function handleCriteria(SearchCriteria $searchCriteria, Request $request): Response{
+        $form = $this->createForm(SearchCriteriaType::class, $searchCriteria);
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()){
+            /** @var User $user */
+            $user = $this->getUser();
+            $this->addFlash('success', $this->translator->trans('flash.messages.update'));
+            $this->searchService->save($searchCriteria,  $user, $request);
+            return $this->redirectToRoute('app_index');
+        }
+        return $this->render('pages/criteria/criteria.html.twig',  [
+            'identifier' => $this->getUser()->getUserIdentifier(),
+            'form' => $form,
+        ]);
     }
 }
