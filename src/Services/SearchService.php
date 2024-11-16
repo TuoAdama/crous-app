@@ -118,40 +118,53 @@ class SearchService
 
     public function run(): void
     {
-        $results = [];
-        $ids = [];
-        $criterias = $this->criteriaRepository->findAllAvailableCriteria();
-        if (count($criterias) != 0) {
-            foreach ($criterias as $criteria) {
+        $allCriteria = $this->criteriaRepository->findAllAvailableCriteria();
+        if (count($allCriteria) != 0) {
+            $results = [];
+            foreach ($allCriteria as $criteria) {
                 $searchResult = $this->search($criteria);
-                if (count($searchResult) == 0) {
+                if (!$this->isResponseBodyContainsResults($searchResult, $criteria)) {
+                    $criteriaOldResult =  $criteria->getSearchResults();
+                    if ($criteriaOldResult->count() > 0){
+                        $criteriaOldResult->clear();
+                    }
                     continue;
                 }
-                if (!key_exists('results', $searchResult)) {
-                    continue;
-                }
-                $searchResult = $searchResult['results'];
-                if (!key_exists('items', $searchResult) || count($searchResult['items']) == 0) {
-                    continue;
-                }
-                $items = $searchResult['items'];
-                // Check if information are already registered
-                $exist = $this->comparisonService->exists($criteria, $items);
-                if ($exist){
-                    $this->logger->info('criteria_id = '.$criteria->getId());
-                    continue;
-                }
-                $ids[] = $criteria->getId();
                 $results[] = [
                     'criteria' => $criteria,
-                    'results' => $searchResult,
+                    'results' => $searchResult['results'],
                 ];
             }
+            $this->entityManager->flush();
+            if (count($results)) {
+                $this->storeSearchResults($results);
+            }
+        }
+    }
+
+
+    /**
+     * Check if response body from api request contains new criteria response
+     * @param array $searchResult
+     * @param $criteria
+     * @return bool
+     */
+    public function isResponseBodyContainsResults(array $searchResult, $criteria): bool
+    {
+        if (count($searchResult) === 0 || !key_exists('results', $searchResult)) {
+            return false;
+        }
+        $results = $searchResult['results'];
+        if (!key_exists('items', $results) || count($results['items']) == 0) {
+            return false;
         }
 
-        if (count($results)) {
-            $this->storeSearchResults($results);
+        $exist = $this->comparisonService->exists($criteria, $results['items']);
+        if ($exist){
+            $this->logger->info('criteria_id = '.$criteria->getId());
+            return false;
         }
+        return true;
     }
 
     /**
