@@ -121,7 +121,6 @@ class SearchService
     public function run(): void
     {
         $page = 1;
-        $this->limit =  2;
         $hasCriteria = true;
         while ($hasCriteria) {
             $allCriteria = $this->criteriaRepository->findFirstTop($page, $this->limit);
