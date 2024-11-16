@@ -33,6 +33,7 @@ class SearchService
     private int $multiple;
 
     private string $resultLink;
+    private int $limit;
 
     /**
      * @throws ContainerExceptionInterface
@@ -61,6 +62,7 @@ class SearchService
         $this->multiple = $this->params->get('multiple');
         $this->url = $this->params->get('url');
         $this->resultLink = $this->params->get('result.link');
+        $this->limit = $this->params->get('criteria.fetch.limit');
     }
 
     /**
@@ -118,28 +120,35 @@ class SearchService
 
     public function run(): void
     {
-        $allCriteria = $this->criteriaRepository->findAllAvailableCriteria();
-        if (count($allCriteria) != 0) {
-            $results = [];
-            foreach ($allCriteria as $criteria) {
-                $searchResult = $this->search($criteria);
-                if (!$this->isResponseBodyContainsResults($searchResult, $criteria)) {
-                    $criteriaOldResult =  $criteria->getSearchResults();
-                    if ($criteriaOldResult->count() > 0){
-                        foreach ($criteriaOldResult as $oldResult) {
-                            $this->entityManager->remove($oldResult);
+        $page = 1;
+        $this->limit =  2;
+        $hasCriteria = true;
+        while ($hasCriteria) {
+            $allCriteria = $this->criteriaRepository->findFirstTop($page, $this->limit);
+            $hasCriteria = count($allCriteria);
+            if ($hasCriteria) {
+                $results = [];
+                foreach ($allCriteria as $criteria) {
+                    $searchResult = $this->search($criteria);
+                    if (!$this->isResponseBodyContainsResults($searchResult, $criteria)) {
+                        $criteriaOldResult =  $criteria->getSearchResults();
+                        if ($criteriaOldResult->count() > 0){
+                            foreach ($criteriaOldResult as $oldResult) {
+                                $this->entityManager->remove($oldResult);
+                            }
                         }
+                        continue;
                     }
-                    continue;
+                    $results[] = [
+                        'criteria' => $criteria,
+                        'results' => $searchResult['results'],
+                    ];
                 }
-                $results[] = [
-                    'criteria' => $criteria,
-                    'results' => $searchResult['results'],
-                ];
-            }
-            $this->entityManager->flush();
-            if (count($results)) {
-                $this->storeSearchResults($results);
+                $this->entityManager->flush();
+                if (count($results)) {
+                    $this->storeSearchResults($results);
+                }
+                $page++;
             }
         }
     }

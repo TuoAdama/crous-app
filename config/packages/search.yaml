@@ -15,3 +15,5 @@ parameters:
     # Represente le jour auquel un resulat rétrouvé est supprimé
     delete.after.change: 5
     result.link: "%url.domain%/tools/%idTool%/search?bounds=LAT-1_LON-1_LAT-2_LON-2"
+
+    criteria.fetch.limit: 100

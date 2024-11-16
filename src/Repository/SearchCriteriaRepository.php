@@ -43,4 +43,14 @@ class SearchCriteriaRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    public function findFirstTop(int $page, int $limit): array
+    {
+        return $this->createQueryBuilder('c')
+            ->where("c.deletedAt is NULL")
+            ->setFirstResult(($page-1) * $limit)
+            ->setMaxResults($limit)
+            ->getQuery()
+            ->getResult();
+    }
 }
