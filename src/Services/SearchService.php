@@ -126,7 +126,9 @@ class SearchService
                 if (!$this->isResponseBodyContainsResults($searchResult, $criteria)) {
                     $criteriaOldResult =  $criteria->getSearchResults();
                     if ($criteriaOldResult->count() > 0){
-                        $criteriaOldResult->clear();
+                        foreach ($criteriaOldResult as $oldResult) {
+                            $this->entityManager->remove($oldResult);
+                        }
                     }
                     continue;
                 }
