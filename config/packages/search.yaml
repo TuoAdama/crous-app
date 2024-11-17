@@ -17,3 +17,5 @@ parameters:
     result.link: "%url.domain%/tools/%idTool%/search?bounds=LAT-1_LON-1_LAT-2_LON-2"
 
     criteria.fetch.limit: 100
+
+    criteria.search.result.schedule: 5 # every five minutes
