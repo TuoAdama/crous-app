@@ -3,6 +3,7 @@ monolog:
         - deprecation # Deprecations are logged in the dedicated "deprecation" channel when it exists
         - queue
         - sms
+        - searchScheduler
 
 when@dev:
     monolog:
@@ -29,6 +30,11 @@ when@dev:
                 channels: ['sms']
                 level: debug
                 path: "%kernel.logs_dir%/sms.log"
+            searchScheduler:
+                type: stream
+                path: "%kernel.logs_dir%/search-scheduler.log"
+                level: debug
+                channels: ['searchScheduler']
 
 when@test:
     monolog:

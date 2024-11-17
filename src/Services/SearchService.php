@@ -42,6 +42,7 @@ class SearchService
     public function __construct(
         private readonly ParameterBagInterface    $params,
         private readonly LoggerInterface          $logger,
+        private readonly LoggerInterface          $searchSchedulerLogger,
         private readonly SearchCriteriaRepository $criteriaRepository,
         private readonly SearchResultRepository   $searchResultRepository,
         private readonly ApiRequest               $apiRequest,
@@ -120,6 +121,7 @@ class SearchService
 
     public function run(): void
     {
+        $this->searchSchedulerLogger->info("start searching..");
         $page = 1;
         $hasCriteria = true;
         while ($hasCriteria) {
@@ -150,6 +152,7 @@ class SearchService
                 $page++;
             }
         }
+        $this->searchSchedulerLogger->info("end searching..");
     }
 
 
