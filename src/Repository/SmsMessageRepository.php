@@ -22,39 +22,13 @@ class SmsMessageRepository extends ServiceEntityRepository
         parent::__construct($registry, SmsMessage::class);
     }
 
-//    /**
-//     * @return SmsMessage[] Returns an array of SmsMessage objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('s')
-//            ->andWhere('s.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('s.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
 
-//    public function findOneBySomeField($value): ?SmsMessage
-//    {
-//        return $this->createQueryBuilder('s')
-//            ->andWhere('s.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
-    /**
-     * @throws NonUniqueResultException
-     */
     public function getAllUnsentSmsMessages(): array
     {
         return $this->createQueryBuilder('s')
             ->andWhere('s.sent = :sent')
             ->setParameter('sent', false)
             ->getQuery()
-            ->getOneOrNullResult();
+            ->getResult();
     }
 }
