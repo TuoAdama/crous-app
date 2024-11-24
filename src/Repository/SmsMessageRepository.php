@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\SmsMessage;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -45,4 +46,15 @@ class SmsMessageRepository extends ServiceEntityRepository
 //            ->getOneOrNullResult()
 //        ;
 //    }
+    /**
+     * @throws NonUniqueResultException
+     */
+    public function getAllUnsentSmsMessages(): array
+    {
+        return $this->createQueryBuilder('s')
+            ->andWhere('s.sent = :sent')
+            ->setParameter('sent', false)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
 }
