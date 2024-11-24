@@ -4,24 +4,30 @@ namespace App\Services;
 
 use App\Entity\SmsMessage;
 use App\Repository\SmsMessageRepository;
+use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\NonUniqueResultException;
 
 class SmsMessageService
 {
 
     public function __construct(
-        private SmsMessageRepository $smsMessageRepository
+        private readonly SmsMessageRepository $smsMessageRepository,
+        private readonly EntityManagerInterface $entityManager
     )
     {
     }
 
+    /**
+     * @throws NonUniqueResultException
+     */
     function getAllUnsentSmsMessages(): array
     {
-        $this->smsMessageRepository->getAllUnsentSmsMessages();
-        return [];
+        return $this->smsMessageRepository->getAllUnsentSmsMessages();
     }
 
-    public function store(SmsMessage $smsMessage): SmsMessage
+    public function store(SmsMessage $smsMessage): void
     {
-        return null;
+        $this->entityManager->persist($smsMessage);
+        $this->entityManager->flush();
     }
 }
