@@ -20,7 +20,7 @@ class SmsMessage
     private ?string $message = null;
 
     #[ORM\Column]
-    private ?bool $sent = null;
+    private ?bool $sent = false;
 
     #[ORM\Column]
     private ?\DateTimeImmutable $createdAt = null;
