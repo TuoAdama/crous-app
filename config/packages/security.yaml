@@ -20,6 +20,8 @@ security:
                 login_path: app_login
             logout:
                 path: app_logout
+        api:
+            pattern: ^/api
 
             # activate different ways to authenticate
             # https://symfony.com/doc/current/security.html#the-firewall
