@@ -8,7 +8,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
 
-#[Route('/api')]
+#[Route('/api/messages')]
 class SmsMessageAPI extends AbstractController
 {
     public function __construct(
@@ -20,7 +20,7 @@ class SmsMessageAPI extends AbstractController
     /**
      * @throws NonUniqueResultException
      */
-    #[Route('/messages/unsent', methods: ['GET'])]
+    #[Route('/unsent', methods: ['GET'])]
     public function getUnsentMessages(): JsonResponse
     {
         return $this->json($this->smsMessageService->getAllUnsentSmsMessages());
