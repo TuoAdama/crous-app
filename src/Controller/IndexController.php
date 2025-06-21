@@ -19,7 +19,14 @@ class IndexController extends AbstractController
     {
     }
 
-    #[Route('/', name: 'app_index')]
+
+    #[Route('/', name: 'app_home')]
+    public function home(): Response
+    {
+        return $this->render('pages/home/index.html.twig');
+    }
+
+    #[Route('/profile', name: 'app_index')]
     #[IsGranted('IS_AUTHENTICATED_FULLY')]
     public function index(): Response
     {
