@@ -20,44 +20,47 @@
       <li
           v-for="(suggestion, index) in filteredSuggestions"
           :key="index"
-          @mousedown.prevent="selectSuggestion(suggestion)"
+          @mousedown.prevent="selectSuggestion(suggestion.text)"
           :class="[
           'px-4 py-2 cursor-pointer',
           index === highlightedIndex ? 'bg-blue-100' : 'hover:bg-gray-100',
         ]"
       >
-        {{ suggestion }}
+        {{ suggestion.text }}
       </li>
     </ul>
   </div>
 </template>
 
 <script setup>
-import { ref, computed } from 'vue';
+import { ref } from 'vue';
+
+const props = defineProps({
+  url: String
+})
+
+const parameters = {
+  country: "France",
+  limit: 18,
+  lang: "fr",
+  minimumInputLength: 3,
+}
+
+
+console.log(`SearchInput.vue: props.url: ${props.url}`)
 
 const query = ref('');
 const showSuggestions = ref(false);
 const highlightedIndex = ref(-1);
 
-const suggestions = [
-  'Paris',
-  'Lyon',
-  'Marseille',
-  'Toulouse',
-  'Nice',
-  'Nantes',
-  'Strasbourg',
-  'Montpellier',
-  'Bordeaux',
-  'Lille',
-];
-
-const filteredSuggestions = computed(() => {
-  const q = query.value.toLowerCase();
-  return q ? suggestions.filter((item) => item.toLowerCase().includes(q)) : [];
-});
+const filteredSuggestions = ref([])
 
 function onInput() {
+  if (query.value.length < parameters.minimumInputLength) {
+    showSuggestions.value = false;
+    return;
+  }
+  onSearch();
   showSuggestions.value = true;
   highlightedIndex.value = -1;
 }
@@ -66,6 +69,25 @@ function onArrowDown() {
   if (highlightedIndex.value < filteredSuggestions.value.length - 1) {
     highlightedIndex.value++;
   }
+}
+
+function onSearch(){
+  const url = new URL(props.url)
+  url.searchParams.set('q', query.value);
+
+  fetch(url, {
+    method: 'GET',
+  }).then(response => {
+    if (response.ok) {
+      return response.json();
+    } else {
+      throw new Error('Network response was not ok');
+    }
+  }).then(data => {
+    filteredSuggestions.value = formatData(data);
+  }).catch(error => {
+    console.error('There has been a problem with your fetch operation:', error);
+  });
 }
 
 function onArrowUp() {
@@ -79,7 +101,7 @@ function onEnter() {
       highlightedIndex.value >= 0 &&
       highlightedIndex.value < filteredSuggestions.value.length
   ) {
-    selectSuggestion(filteredSuggestions.value[highlightedIndex.value]);
+    selectSuggestion(filteredSuggestions.value[highlightedIndex.value].text);
   }
 }
 
@@ -93,5 +115,29 @@ function hideSuggestions() {
   setTimeout(() => {
     showSuggestions.value = false;
   }, 100);
+}
+
+function formatData(data) {
+  let cities = data.features;
+  if (cities.length === 0) {
+    return [];
+  }
+  cities = cities.filter(function (city) {
+    return city.properties.country === parameters.country
+  });
+  if (cities.length === 0) {
+    return [];
+  }
+  return cities.map(function (result) {
+    const postcode = result.properties.postcode;
+    const name = result.properties.name + (
+        postcode ? ` (${result.properties.postcode})` : ''
+    );
+    return {
+      id: result.properties.osm_id,
+      text: name,
+      results: result,
+    }
+  });
 }
 </script>
