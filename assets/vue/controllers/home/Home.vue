@@ -1,5 +1,6 @@
-<script setup lang="ts">
+<script setup>
   import {ref} from "vue";
+  import SearchInput from "./SearchInput.vue";
   const isMenuOpen = ref(false);
   const showAdvancedFilters = ref(false);
   const search = ref({
@@ -61,12 +62,7 @@
     <div class="bg-white p-4 sm:p-6 rounded-lg shadow-md w-full max-w-4xl flex flex-col space-y-4">
       <form class="flex flex-col space-y-4">
         <div class="sm:grid sm:grid-cols-2 md:grid-cols-2 gap-4">
-          <input
-              v-model="search.city"
-              type="text"
-              placeholder="Ville (ex. Paris, Lyon)"
-              class="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
-          />
+          <SearchInput />
           <select
               v-model="search.type"
               class="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
