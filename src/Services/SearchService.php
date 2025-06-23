@@ -88,7 +88,7 @@ class SearchService
             'residence' => $this->residence,
             'sector' => $this->sector,
             'precision' => $this->precision,
-            'occupationModes' => $this->occupationModes,
+            'occupationModes' => $searchCriteria->getType(),
             'equipment' => $this->equipment,
             'price' => [
                 'min' => $this->min,

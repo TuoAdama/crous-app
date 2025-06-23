@@ -71,7 +71,10 @@ class SearchController extends AbstractController
 
         $searchCriteria = new SearchCriteria();
 
-        $searchCriteria->setLocation($data['location'] ?? []);
+        $searchCriteria->setLocation($data['location'] ?? [])
+                       ->setType($data['occupationModes'])
+                       ->setPrice($data['price']['max'] ?? null);
+
 
         return $this->json($searchService->search($searchCriteria), Response::HTTP_OK);
 

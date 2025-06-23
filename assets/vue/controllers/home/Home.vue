@@ -7,12 +7,12 @@
   const search = ref({
     city: '',
     type: '',
-    budgetMin: null,
     budgetMax: null,
     surface: null,
   });
 
   const items = ref([]);
+  const results = ref({});
   const showCreatedAlertBtn = ref(false);
 
   function getImageURI(item) {
@@ -27,20 +27,52 @@
   function toggleMenu() {
     isMenuOpen.value = !isMenuOpen.value;
   }
-  function toggleAdvancedFilters() {
-    showAdvancedFilters.value = !showAdvancedFilters.value;
+
+  // onChange Budget Max
+  function onChangeBugdetMax() {
+    apply();
   }
-  function onSubmit(value) {
+
+  function onChangePriceMax() {
+    apply();
+  }
+
+
+  function onChangArea() {
+    apply();
+  }
+
+  function onchangeOccupationMode() {
+    apply();
+  }
+
+  function apply() {
+    if (!results.value || Object.keys(results.value).length === 0) {
+      console.log(results.value)
+      return;
+    }
     showCreatedAlertBtn.value = true;
+
+    const requestBody = {
+      location: results.value,
+      area: {
+        min: search.value.surface || 0,
+      },
+      price: {
+        max: search.value.budgetMax || 300,
+      },
+      occupationModes: search.value.type !== "" ? [search.value.type] : [],
+    }
+
+    console.log({requestBody})
+
     fetch("/api/search/results", {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
       },
-      body: JSON.stringify({
-        location: value.results,
-      }),
+      body: JSON.stringify(requestBody),
     }).then(response => {
       if (response.ok) {
         return response.json();
@@ -56,6 +88,15 @@
       console.error('There was a problem with the fetch operation:', error);
     });
   }
+
+  function toggleAdvancedFilters() {
+    showAdvancedFilters.value = !showAdvancedFilters.value;
+  }
+  function onSubmit(value) {
+    results.value = value.results;
+    apply();
+  }
+
 </script>
 
 <template>
@@ -90,24 +131,19 @@
           <SearchInput :url :onSubmit="onSubmit"/>
           <select
               v-model="search.type"
+              @change="onchangeOccupationMode"
               class="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
           >
             <option value="">Type de logement</option>
-            <option value="studio">Studio</option>
-            <option value="colocation">Colocation</option>
-            <option value="chambre">Chambre</option>
+            <option value="alone">Individuel</option>
+            <option value="couple">Couple</option>
+            <option value="house_sharing">Colocation</option>
           </select>
         </div>
         <div v-show="showAdvancedFilters" class="flex-col space-y-4 sm:grid sm:grid-cols-2 md:grid-cols-3 gap-4">
-          <!-- Champ Budget min avec styles identiques à Budget max -->
-          <input
-              v-model.number="search.budgetMin"
-              type="number"
-              placeholder="Budget min (€)"
-              class="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
-          />
           <!-- Champ Budget max avec styles identiques à Budget min -->
           <input
+              @change="onChangeBugdetMax"
               v-model.number="search.budgetMax"
               type="number"
               placeholder="Budget max (€)"
@@ -115,6 +151,7 @@
           />
           <input
               v-model.number="search.surface"
+              @change="onChangArea"
               type="number"
               placeholder="Surface (m²)"
               class="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
