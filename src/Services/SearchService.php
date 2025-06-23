@@ -92,7 +92,7 @@ class SearchService
             'equipment' => $this->equipment,
             'price' => [
                 'min' => $this->min,
-                'max' => $searchCriteria->getPrice() * $this->multiple,
+                'max' => ($searchCriteria->getPrice() ?? 300) * $this->multiple,
             ],
             'location' => [
                 [

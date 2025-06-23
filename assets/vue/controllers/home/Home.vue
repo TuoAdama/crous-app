@@ -11,28 +11,51 @@
     budgetMax: null,
     surface: null,
   });
-  const listings = ref([
-    {
-      title: 'Studio cosy à Paris',
-      price: 650,
-      location: 'Paris, 15e arr.',
-      image: 'https://via.placeholder.com/300x200',
-    },
-    {
-      title: 'Colocation à Lyon',
-      price: 450,
-      location: 'Lyon, 7e arr.',
-      image: 'https://via.placeholder.com/300x200',
-    },
-  ]);
 
+  const items = ref([]);
+  const showCreatedAlertBtn = ref(false);
+
+  function getImageURI(item) {
+    const imageName = item.medias[0].src;
+    return `https://trouverunlogement.lescrous.fr/media/cache/resolve/preview/${imageName}`;
+  }
+
+  function getPrice(item){
+    const minPrice = item.occupationModes[0].rent.min;
+    return (minPrice / 100).toFixed(2);
+  }
   function toggleMenu() {
     isMenuOpen.value = !isMenuOpen.value;
   }
   function toggleAdvancedFilters() {
     showAdvancedFilters.value = !showAdvancedFilters.value;
   }
-
+  function onSubmit(value) {
+    showCreatedAlertBtn.value = true;
+    fetch("/api/search/results", {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+      },
+      body: JSON.stringify({
+        location: value.results,
+      }),
+    }).then(response => {
+      if (response.ok) {
+        return response.json();
+      } else {
+        throw new Error('Network response was not ok');
+      }
+    }).then(response => {
+      let results = response.results;
+      if (results && results.items){
+        items.value = results.items;
+      }
+    }).catch(error => {
+      console.error('There was a problem with the fetch operation:', error);
+    });
+  }
 </script>
 
 <template>
@@ -64,7 +87,7 @@
     <div class="bg-white p-4 sm:p-6 rounded-lg shadow-md w-full max-w-4xl flex flex-col space-y-4">
       <form class="flex flex-col space-y-4">
         <div class="sm:grid sm:grid-cols-2 md:grid-cols-2 gap-4">
-          <SearchInput :url />
+          <SearchInput :url :onSubmit="onSubmit"/>
           <select
               v-model="search.type"
               class="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
@@ -101,6 +124,9 @@
           <button type="submit" class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition duration-200 w-full sm:w-auto">
             Rechercher
           </button>
+          <button v-if="showCreatedAlertBtn" style="background-color: #b91c1c" type="submit" class="text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition duration-200 w-full sm:w-auto">
+            Créer une alerte
+          </button>
           <button
               type="button"
               @click="toggleAdvancedFilters"
@@ -117,12 +143,12 @@
   <div class="p-4 sm:p-8">
     <h2 class="text-xl sm:text-2xl font-bold mb-4">Logements disponibles</h2>
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-      <div v-for="listing in listings" :key="listing.title" class="bg-white rounded-lg shadow-md overflow-hidden">
-        <img :src="listing.image" :alt="listing.title" class="w-full h-40 sm:h-48 object-cover"/>
+      <div v-for="item in items" :key="item.label" class="bg-white rounded-lg shadow-md overflow-hidden">
+        <img :src="getImageURI(item)" :alt="item.label" class="w-full h-40 sm:h-48 object-cover"/>
         <div class="p-4">
-          <h3 class="text-base sm:text-lg font-semibold">{{ listing.title }}</h3>
-          <p class="text-gray-600 text-sm sm:text-base">{{ listing.location }}</p>
-          <p class="text-blue-600 font-bold text-sm sm:text-base">{{ listing.price }} €/mois</p>
+          <h3 class="text-base sm:text-lg font-semibold">{{ item.label }}</h3>
+          <p class="text-gray-600 text-sm sm:text-base">{{ item.location }}</p>
+          <p class="text-blue-600 font-bold text-sm sm:text-base">{{ getPrice(item) }} €/mois</p>
           <a href="#" class="mt-2 inline-block bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 text-sm sm:text-base">
             Voir détails
           </a>

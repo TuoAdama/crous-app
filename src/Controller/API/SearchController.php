@@ -6,6 +6,7 @@ use App\Entity\SearchCriteria;
 use App\Entity\User;
 use App\Repository\SearchCriteriaRepository;
 use App\Services\SearchCriteriaValidator;
+use App\Services\SearchService;
 use DateTimeImmutable;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -53,5 +54,26 @@ class SearchController extends AbstractController
         $searchCriteria->setCreatedAt(new DateTimeImmutable());
         $this->criteriaRepository->save($searchCriteria);
         return $this->json($request->getContent());
+    }
+
+
+    #[Route('/search/results', name: 'search.results', methods: ['POST'])]
+    public function getSearchResults(Request $request, SearchService $searchService)
+    {
+        $content = $request->getContent();
+
+        if ($content === null){
+            return $this->json([
+                'message' => 'No content provided',
+            ], Response::HTTP_BAD_REQUEST);
+        }
+        $data = json_decode($content, true);
+
+        $searchCriteria = new SearchCriteria();
+
+        $searchCriteria->setLocation($data['location'] ?? []);
+
+        return $this->json($searchService->search($searchCriteria), Response::HTTP_OK);
+
     }
 }

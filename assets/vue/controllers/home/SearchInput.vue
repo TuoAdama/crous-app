@@ -20,7 +20,7 @@
       <li
           v-for="(suggestion, index) in filteredSuggestions"
           :key="index"
-          @mousedown.prevent="selectSuggestion(suggestion.text)"
+          @mousedown.prevent="selectSuggestion(suggestion)"
           :class="[
           'px-4 py-2 cursor-pointer',
           index === highlightedIndex ? 'bg-blue-100' : 'hover:bg-gray-100',
@@ -36,7 +36,8 @@
 import { ref } from 'vue';
 
 const props = defineProps({
-  url: String
+  url: String,
+  onSubmit: Function,
 })
 
 const parameters = {
@@ -101,14 +102,15 @@ function onEnter() {
       highlightedIndex.value >= 0 &&
       highlightedIndex.value < filteredSuggestions.value.length
   ) {
-    selectSuggestion(filteredSuggestions.value[highlightedIndex.value].text);
+    selectSuggestion(filteredSuggestions.value[highlightedIndex.value]);
   }
 }
 
 function selectSuggestion(value) {
-  query.value = value;
+  query.value = value.text;
   showSuggestions.value = false;
   highlightedIndex.value = -1;
+  props.onSubmit(value);
 }
 
 function hideSuggestions() {
