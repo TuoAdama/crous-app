@@ -4,7 +4,11 @@
   import HouseItem from "../components/housing/HouseItem.vue";
   const isMenuOpen = ref(false);
   const showAdvancedFilters = ref(false);
-  const url = "https://trouverunlogement.lescrous.fr/photon/api?limit=18&osm_tag=amenity%3Acollege&osm_tag=amenity%3Alibrary&osm_tag=amenity%3Aschool&osm_tag=amenity%3Auniversity&osm_tag=place%3Acountry&osm_tag=place%3Aregion&osm_tag=place%3Astate&osm_tag=place%3Acity&osm_tag=place%3Atown&osm_tag=place%3Avillage&osm_tag=place%3Ahouse&osm_tag=landuse%3Aresidential";
+
+  const props = defineProps({
+    configs: Object,
+  })
+
   const search = ref({
     city: '',
     type: '',
@@ -23,11 +27,6 @@
   function onChangeBugdetMax() {
     apply();
   }
-
-  function onChangePriceMax() {
-    apply();
-  }
-
 
   function onChangArea() {
     apply();
@@ -121,7 +120,7 @@
     <div class="bg-white p-4 sm:p-6 rounded-lg shadow-md w-full max-w-4xl flex flex-col space-y-4">
       <form class="flex flex-col space-y-4">
         <div class="sm:grid sm:grid-cols-2 md:grid-cols-2 gap-4">
-          <SearchInput :url :onSubmit="onSubmit"/>
+          <SearchInput :url="props.configs.searchUrl" :onSubmit="onSubmit"/>
           <select
               v-model="search.type"
               @change="onchangeOccupationMode"
@@ -173,7 +172,7 @@
   <div class="p-4 sm:p-8">
     <h2 class="text-xl sm:text-2xl font-bold mb-4">Logements disponibles</h2>
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-      <HouseItem v-for="item in items" :item :key="item.id" :idTool="39"/>
+      <HouseItem v-for="item in items" :item :key="item.id" :idTool="props.configs.idTool"/>
     </div>
   </div>
 </template>

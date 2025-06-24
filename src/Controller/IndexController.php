@@ -12,7 +12,6 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 class IndexController extends AbstractController
 {
-
     public function __construct(
         private readonly SearchService $searchService
     )
@@ -21,9 +20,13 @@ class IndexController extends AbstractController
 
 
     #[Route('/', name: 'app_home')]
-    public function home(): Response
+    public function home(
+
+    ): Response
     {
-        return $this->render('pages/home/index.html.twig');
+        return $this->render('pages/home/index.html.twig', [
+            'config' => $this->searchService->getConfigs(),
+        ]);
     }
 
     #[Route('/profile', name: 'app_index')]

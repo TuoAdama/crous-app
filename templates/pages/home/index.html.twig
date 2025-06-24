@@ -1,5 +1,5 @@
 {% extends 'pages/home/base.html.twig' %}
 
 {% block body %}
-    <div {{ vue_component('home/Home') }}></div>
+    <div {{ vue_component('home/Home', {configs:  config}) }}></div>
 {% endblock %}

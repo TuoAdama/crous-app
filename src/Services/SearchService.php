@@ -10,6 +10,7 @@ use App\Repository\SearchCriteriaRepository;
 use App\Repository\SearchResultRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Messenger\MessageBusInterface;
 use UnexpectedValueException;
@@ -34,6 +35,8 @@ class SearchService
 
     private string $resultLink;
     private int $limit;
+
+    private string $searchUrl = "";
 
     /**
      * @throws ContainerExceptionInterface
@@ -64,6 +67,7 @@ class SearchService
         $this->url = $this->params->get('url');
         $this->resultLink = $this->params->get('result.link');
         $this->limit = $this->params->get('criteria.fetch.limit');
+        $this->searchUrl = $this->params->get("url.search");
     }
 
     /**
@@ -243,6 +247,26 @@ class SearchService
     public function getUserCriteria(User $user): array
     {
         return $this->criteriaRepository->findBy(['user' => $user]);
+    }
+
+
+    public function getConfigs(): array
+    {
+        return [
+            'precision' => $this->precision,
+            'idTool' => $this->idTool,
+            'needAggregation' => $this->needAggregation,
+            'residence' => $this->residence,
+            'sector' => $this->sector,
+            'page' => $this->page,
+            'occupationModes' => $this->occupationModes,
+            'min' => $this->min,
+            'equipment' => $this->equipment,
+            'multiple' => $this->multiple,
+            'url' => $this->url,
+            'resultLink' => $this->resultLink,
+            'searchUrl' => $this->searchUrl,
+        ];
     }
 
 }
