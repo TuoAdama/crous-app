@@ -1,6 +1,7 @@
 <script setup>
   import {ref} from "vue";
   import SearchInput from "./SearchInput.vue";
+  import HouseItem from "../components/housing/HouseItem.vue";
   const isMenuOpen = ref(false);
   const showAdvancedFilters = ref(false);
   const url = "https://trouverunlogement.lescrous.fr/photon/api?limit=18&osm_tag=amenity%3Acollege&osm_tag=amenity%3Alibrary&osm_tag=amenity%3Aschool&osm_tag=amenity%3Auniversity&osm_tag=place%3Acountry&osm_tag=place%3Aregion&osm_tag=place%3Astate&osm_tag=place%3Acity&osm_tag=place%3Atown&osm_tag=place%3Avillage&osm_tag=place%3Ahouse&osm_tag=landuse%3Aresidential";
@@ -14,16 +15,6 @@
   const items = ref([]);
   const results = ref({});
   const showCreatedAlertBtn = ref(false);
-
-  function getImageURI(item) {
-    const imageName = item.medias[0].src;
-    return `https://trouverunlogement.lescrous.fr/media/cache/resolve/preview/${imageName}`;
-  }
-
-  function getPrice(item){
-    const minPrice = item.occupationModes[0].rent.min;
-    return (minPrice / 100).toFixed(2);
-  }
   function toggleMenu() {
     isMenuOpen.value = !isMenuOpen.value;
   }
@@ -64,7 +55,7 @@
       occupationModes: search.value.type !== "" ? [search.value.type] : [],
     }
 
-    console.log({requestBody})
+    console.log({requestBody, results: results.value})
 
     fetch("/api/search/results", {
       method: 'POST',
@@ -81,6 +72,8 @@
       }
     }).then(response => {
       let results = response.results;
+
+      console.log({results})
       if (results && results.items){
         items.value = results.items;
       }
@@ -180,17 +173,7 @@
   <div class="p-4 sm:p-8">
     <h2 class="text-xl sm:text-2xl font-bold mb-4">Logements disponibles</h2>
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-      <div v-for="item in items" :key="item.label" class="bg-white rounded-lg shadow-md overflow-hidden">
-        <img :src="getImageURI(item)" :alt="item.label" class="w-full h-40 sm:h-48 object-cover"/>
-        <div class="p-4">
-          <h3 class="text-base sm:text-lg font-semibold">{{ item.label }}</h3>
-          <p class="text-gray-600 text-sm sm:text-base">{{ item.location }}</p>
-          <p class="text-blue-600 font-bold text-sm sm:text-base">{{ getPrice(item) }} €/mois</p>
-          <a href="#" class="mt-2 inline-block bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 text-sm sm:text-base">
-            Voir détails
-          </a>
-        </div>
-      </div>
+      <HouseItem v-for="item in items" :item :key="item.id" :idTool="39"/>
     </div>
   </div>
 </template>

@@ -47,9 +47,6 @@ const parameters = {
   minimumInputLength: 3,
 }
 
-
-console.log(`SearchInput.vue: props.url: ${props.url}`)
-
 const query = ref('');
 const showSuggestions = ref(false);
 const highlightedIndex = ref(-1);
