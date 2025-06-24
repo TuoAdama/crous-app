@@ -2,6 +2,7 @@
   import {ref} from "vue";
   import SearchInput from "./SearchInput.vue";
   import HouseItem from "../components/housing/HouseItem.vue";
+  import NotFoundHouse from "../components/housing/NotFoundHouse.vue";
   const isMenuOpen = ref(false);
   const showAdvancedFilters = ref(false);
 
@@ -19,6 +20,7 @@
   const items = ref([]);
   const results = ref({});
   const showCreatedAlertBtn = ref(false);
+  const notFound = ref(false);
   function toggleMenu() {
     isMenuOpen.value = !isMenuOpen.value;
   }
@@ -42,6 +44,7 @@
       return;
     }
     showCreatedAlertBtn.value = true;
+    notFound.value = false;
 
     const requestBody = {
       location: results.value,
@@ -71,11 +74,14 @@
       }
     }).then(response => {
       let results = response.results;
-
-      console.log({results})
-      if (results && results.items){
-        items.value = results.items;
+      if (!results || !results.items || results.items.length === 0) {
+        notFound.value = true;
+        items.value = [];
+        return;
       }
+      items.value = results.items;
+      notFound.value = items.value.length === 0;
+
     }).catch(error => {
       console.error('There was a problem with the fetch operation:', error);
     });
@@ -85,6 +91,7 @@
     showAdvancedFilters.value = !showAdvancedFilters.value;
   }
   function onSubmit(value) {
+    console.log({value})
     results.value = value.results;
     apply();
   }
@@ -115,7 +122,7 @@
   </nav>
 
   <!-- Section de recherche -->
-  <div class="bg-gray-100 min-h-[50vh] flex flex-col justify-center items-center text-center px-4">
+  <div class="bg-gray-100 min-h-[40vh] flex flex-col justify-center items-center text-center px-4">
     <h1 class="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-800 mb-6">Trouvez votre logement étudiant idéal</h1>
     <div class="bg-white p-4 sm:p-6 rounded-lg shadow-md w-full max-w-4xl flex flex-col space-y-4">
       <form class="flex flex-col space-y-4">
@@ -168,8 +175,11 @@
     </div>
   </div>
 
+  <NotFoundHouse v-if="notFound" />
+
+
   <!-- Liste des logements -->
-  <div class="p-4 sm:p-8">
+  <div class="p-4 sm:p-8" v-if="items.length > 0">
     <h2 class="text-xl sm:text-2xl font-bold mb-4">Logements disponibles</h2>
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
       <HouseItem v-for="item in items" :item :key="item.id" :idTool="props.configs.idTool"/>
