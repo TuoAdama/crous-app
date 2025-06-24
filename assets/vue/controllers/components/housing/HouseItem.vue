@@ -1,4 +1,5 @@
 <script setup>
+import defaultImage from './default-image.jpg';
 
 const props = defineProps({
   item: Object,
@@ -12,7 +13,7 @@ function getPrice(item){
 
 function getImageURI(item) {
   if (!item.medias || item.medias.length === 0) {
-    return 'https://trouverunlogement.lescrous.fr/media/cache/resolve/preview/default.jpg';
+    return defaultImage;
   }
   const imageName = item.medias[0].src;
   return `https://trouverunlogement.lescrous.fr/media/cache/resolve/preview/${imageName}`;
