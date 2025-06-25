@@ -13,6 +13,11 @@ use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Messenger\MessageBusInterface;
+use Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface;
+use Symfony\Contracts\HttpClient\Exception\DecodingExceptionInterface;
+use Symfony\Contracts\HttpClient\Exception\RedirectionExceptionInterface;
+use Symfony\Contracts\HttpClient\Exception\ServerExceptionInterface;
+use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
 use UnexpectedValueException;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
@@ -49,9 +54,9 @@ class SearchService
         private readonly SearchCriteriaRepository $criteriaRepository,
         private readonly SearchResultRepository   $searchResultRepository,
         private readonly ApiRequest               $apiRequest,
-        private readonly ComparisonService $comparisonService,
-        private readonly MessageBusInterface $bus,
-        private readonly EntityManagerInterface $entityManager,
+        private readonly ComparisonService        $comparisonService,
+        private readonly MessageBusInterface      $bus,
+        private readonly EntityManagerInterface   $entityManager,
     )
     {
         $this->precision = $this->params->get('precision');
@@ -136,8 +141,8 @@ class SearchService
                 foreach ($allCriteria as $criteria) {
                     $searchResult = $this->search($criteria);
                     if (!$this->isResponseBodyContainsResults($searchResult, $criteria)) {
-                        $criteriaOldResult =  $criteria->getSearchResults();
-                        if ($criteriaOldResult->count() > 0){
+                        $criteriaOldResult = $criteria->getSearchResults();
+                        if ($criteriaOldResult->count() > 0) {
                             foreach ($criteriaOldResult as $oldResult) {
                                 $this->entityManager->remove($oldResult);
                             }
@@ -177,8 +182,8 @@ class SearchService
         }
 
         $exist = $this->comparisonService->exists($criteria, $results['items']);
-        if ($exist){
-            $this->logger->info('criteria_id = '.$criteria->getId());
+        if ($exist) {
+            $this->logger->info('criteria_id = ' . $criteria->getId());
             return false;
         }
         return true;
@@ -190,11 +195,11 @@ class SearchService
      */
     public function storeSearchResults(array $results): void
     {
-       $results = $this->searchResultRepository->updateOrStoreAll($results);
-       $ids = [];
+        $results = $this->searchResultRepository->updateOrStoreAll($results);
+        $ids = [];
         foreach ($results as $result) {
             $ids[] = $result->getId();
-       }
+        }
         $this->bus->dispatch(new SearchResultMessage($ids));
     }
 
@@ -226,11 +231,11 @@ class SearchService
      */
     function getLink(SearchCriteria $criteria): string
     {
-       $lat1 = $criteria->getLat1();
-       $lon1 = $criteria->getLon1();
-       $lat2 = $criteria->getLat2();
-       $lon2 = $criteria->getLon2();
-       return str_replace(['LAT-1', 'LON-1', 'LAT-2', 'LON-2'], [$lat1, $lon1, $lat2, $lon2], $this->resultLink);
+        $lat1 = $criteria->getLat1();
+        $lon1 = $criteria->getLon1();
+        $lat2 = $criteria->getLat2();
+        $lon2 = $criteria->getLon2();
+        return str_replace(['LAT-1', 'LON-1', 'LAT-2', 'LON-2'], [$lat1, $lon1, $lat2, $lon2], $this->resultLink);
     }
 
 
@@ -267,6 +272,55 @@ class SearchService
             'resultLink' => $this->resultLink,
             'searchUrl' => $this->searchUrl,
         ];
+    }
+
+    public function getLocationByQuery(array $parameters): array
+    {
+         if(!key_exists('q', $parameters) || empty($parameters['q'])) {
+             return [];
+         }
+
+         $query = $parameters['q'];
+
+         $data = $this->apiRequest->get($this->searchUrl, [
+            'query' => [
+                'q' => $query,
+            ],
+            'timeout' => 2.5,
+            'headers' => [
+                'Accept' => 'application/json',
+            ]
+        ]);
+
+        if (!key_exists('features', $data) || !is_array($data['features']) || empty($data['features'])) {
+            return [];
+        }
+
+        $features = $data['features'];
+        $location = [];
+
+        foreach ($features as $feature) {
+            if (!key_exists('properties', $feature) || !is_array($feature['properties'])) {
+                continue;
+            }
+
+            $name = strtolower($feature['properties']['name']) ?? '';
+            if ($name === strtolower($query)) {
+                $location = $feature;
+                break;
+            }
+        }
+
+        if (empty($location)) {
+            return [];
+        }
+
+        $searchCriteria = new SearchCriteria();
+        $searchCriteria->setLocation($location)
+            ->setPrice($parameters['price_min'] ?? null)
+            ->setType($parameters['type'] ?? []);
+
+        return $this->search($searchCriteria);
     }
 
 }

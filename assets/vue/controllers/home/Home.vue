@@ -3,6 +3,7 @@
   import SearchInput from "./SearchInput.vue";
   import HouseItem from "../components/housing/HouseItem.vue";
   import NotFoundHouse from "../components/housing/NotFoundHouse.vue";
+  import SearchService from "../service/SearchService";
   const isMenuOpen = ref(false);
   const showAdvancedFilters = ref(false);
 
@@ -16,6 +17,39 @@
     budgetMax: null,
     surface: null,
   });
+
+  let query = "";
+
+  function input(value) {
+    query = value;
+  }
+
+
+  async function onSearch() {
+
+    const url =  new URL(window.location.origin);
+    url.searchParams.set('q', query);
+    url.searchParams.set('type', search.value.type);
+    url.searchParams.set('price_min', search.value.budgetMax || 300);
+    url.searchParams.set('area', search.value.surface || 0);
+    window.history.pushState({}, '', url.toString());
+
+    const apiUrl =  new URL("/api/search/location/", window.location.origin);
+    url.searchParams.forEach( (value, key) => {
+      apiUrl.searchParams.set(key, value);
+    });
+    const response = await SearchService.findLocationByQuery(apiUrl.toString());
+
+    if (!response || !response.results || response.results.length === 0) {
+      results.value = {};
+      notFound.value = true;
+      items.value = [];
+      return;
+    }
+    results.value = response.results;
+    notFound.value = false;
+    items.value = response.results.items || [];
+  }
 
   const items = ref([]);
   const results = ref({});
@@ -142,9 +176,10 @@
   <div class="bg-gray-100 min-h-[40vh] flex flex-col justify-center items-center text-center px-4">
     <h1 class="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-800 mb-6">Trouvez votre logement étudiant idéal</h1>
     <div class="bg-white p-4 sm:p-6 rounded-lg shadow-md w-full max-w-4xl flex flex-col space-y-4">
-      <form class="flex flex-col space-y-4">
+      <form class="flex flex-col space-y-4" @submit.prevent="onSearch">
         <div class="sm:grid sm:grid-cols-2 md:grid-cols-2 gap-4">
           <SearchInput
+            @input="input"
             :url="props.configs.searchUrl"
             :onSubmit="onSubmit"
             :reset="resetInput"

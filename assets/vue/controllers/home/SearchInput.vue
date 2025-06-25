@@ -41,6 +41,8 @@ const props = defineProps({
   reset: Boolean, // Passage en boolean
 })
 
+const emit = defineEmits(['input']);
+
 const parameters = {
   country: "France",
   limit: 18,
@@ -55,6 +57,7 @@ const highlightedIndex = ref(-1);
 const filteredSuggestions = ref([])
 
 function onInput() {
+  emit('input', query.value);
   if (query.value.length < parameters.minimumInputLength) {
     showSuggestions.value = false;
     return;

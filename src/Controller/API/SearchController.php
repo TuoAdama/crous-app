@@ -22,6 +22,7 @@ class SearchController extends AbstractController
     public function __construct(
         private readonly SearchCriteriaValidator $searchValidator,
         private readonly SearchCriteriaRepository $criteriaRepository,
+        private readonly SearchService $searchService
     )
     {
     }
@@ -75,8 +76,28 @@ class SearchController extends AbstractController
                        ->setType($data['occupationModes'])
                        ->setPrice($data['price']['max'] ?? null);
 
-
         return $this->json($searchService->search($searchCriteria), Response::HTTP_OK);
 
+    }
+
+
+    #[Route('/search/location', name: 'search.location', methods: ['GET'])]
+    public function getLocationByQuery(Request $request): JsonResponse
+    {
+        $parameters = [];
+        if ($request->query->get('q')){
+            $parameters['q'] = $request->query->get('q');
+        }
+        if ($request->query->get('type')){
+            $parameters['type'] = [$request->query->get('type')];
+        }
+        if ($request->query->get('price_min')){
+            $parameters['price_min'] = $request->query->get('price_min');
+        }
+        if ($request->query->get('area')){
+            $parameters['area'] = $request->query->get('area');
+        }
+
+        return $this->json($this->searchService->getLocationByQuery($parameters), Response::HTTP_OK);
     }
 }

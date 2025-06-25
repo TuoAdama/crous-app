@@ -50,4 +50,18 @@ export default class SearchService {
             throw error;
         });
     }
+
+    static async findLocationByQuery(apiUrl: string) {
+        const response = await fetch(apiUrl, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+            },
+        })
+        if (!response.ok) {
+            return [];
+        }
+        return await response.json();
+    }
 }

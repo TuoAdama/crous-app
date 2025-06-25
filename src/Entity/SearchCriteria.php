@@ -87,7 +87,7 @@ class SearchCriteria implements JsonSerializable
         return $this->price;
     }
 
-    public function setPrice(int $price): static
+    public function setPrice(?int $price): static
     {
         $this->price = $price;
 
