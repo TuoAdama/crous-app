@@ -33,11 +33,12 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 
 const props = defineProps({
   url: String,
   onSubmit: Function,
+  reset: Boolean, // Passage en boolean
 })
 
 const parameters = {
@@ -139,4 +140,12 @@ function formatData(data) {
     }
   });
 }
+
+// Ajout du watcher pour reset le champ de recherche (reset est maintenant un booléen)
+watch(() => props.reset, () => {
+  query.value = '';
+  filteredSuggestions.value = [];
+  highlightedIndex.value = -1;
+  showSuggestions.value = false;
+});
 </script>

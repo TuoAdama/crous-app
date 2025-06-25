@@ -1,5 +1,5 @@
 <script setup lang="ts">
-
+  const emit = defineEmits(['reset-filters']);
 </script>
 
 <template>
@@ -12,7 +12,7 @@
       Désolé, nous n'avons trouvé aucun logement correspondant à vos critères. Essayez de modifier vos filtres ou élargissez votre recherche.
     </p>
     <button
-        @click="$emit('reset-filters')"
+        @click="emit('reset-filters')"
         class="px-3 py-2 sm:px-4 sm:py-2 bg-blue-600 text-white text-sm sm:text-base rounded-md hover:bg-blue-700 transition-colors"
     >
       Réinitialiser les filtres

@@ -21,6 +21,9 @@
   const results = ref({});
   const showCreatedAlertBtn = ref(false);
   const notFound = ref(false);
+  // Remplacement par un booléen
+  const resetInput = ref(false);
+
   function toggleMenu() {
     isMenuOpen.value = !isMenuOpen.value;
   }
@@ -96,6 +99,20 @@
     apply();
   }
 
+  function resetFilters() {
+    search.value = {
+      city: '',
+      type: '',
+      budgetMax: null,
+      surface: null,
+    };
+    results.value = {};
+    showCreatedAlertBtn.value = false;
+    notFound.value = false;
+    // Inverse la valeur pour forcer le reset du SearchInput
+    resetInput.value = !resetInput.value;
+  }
+
 </script>
 
 <template>
@@ -127,7 +144,11 @@
     <div class="bg-white p-4 sm:p-6 rounded-lg shadow-md w-full max-w-4xl flex flex-col space-y-4">
       <form class="flex flex-col space-y-4">
         <div class="sm:grid sm:grid-cols-2 md:grid-cols-2 gap-4">
-          <SearchInput :url="props.configs.searchUrl" :onSubmit="onSubmit"/>
+          <SearchInput
+            :url="props.configs.searchUrl"
+            :onSubmit="onSubmit"
+            :reset="resetInput"
+          />
           <select
               v-model="search.type"
               @change="onchangeOccupationMode"
@@ -175,7 +196,7 @@
     </div>
   </div>
 
-  <NotFoundHouse v-if="notFound" />
+  <NotFoundHouse v-if="notFound" @reset-filters="resetFilters" />
 
 
   <!-- Liste des logements -->
