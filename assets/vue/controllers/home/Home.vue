@@ -4,6 +4,7 @@
   import HouseItem from "../components/housing/HouseItem.vue";
   import NotFoundHouse from "../components/housing/NotFoundHouse.vue";
   import SearchService from "../service/SearchService";
+  import HistoryService from "../service/HistoryService";
   const isMenuOpen = ref(false);
   const showAdvancedFilters = ref(false);
 
@@ -12,7 +13,6 @@
   })
 
   const search = ref({
-    city: '',
     type: '',
     budgetMax: null,
     surface: null,
@@ -27,12 +27,7 @@
 
   async function onSearch() {
 
-    const url =  new URL(window.location.origin);
-    url.searchParams.set('q', query);
-    url.searchParams.set('type', search.value.type);
-    url.searchParams.set('price_min', search.value.budgetMax || 300);
-    url.searchParams.set('area', search.value.surface || 0);
-    window.history.pushState({}, '', url.toString());
+    const url =  HistoryService.updateHistory(window.location.origin, {query, ...search.value})
 
     const apiUrl =  new URL("/api/search/location/", window.location.origin);
     url.searchParams.forEach( (value, key) => {
@@ -49,6 +44,11 @@
     results.value = response.results;
     notFound.value = false;
     items.value = response.results.items || [];
+  }
+
+
+  function updateURL(query, params) {
+    return HistoryService.updateHistory(window.location.origin, {query, ...search.value})
   }
 
   const items = ref([]);
@@ -77,7 +77,6 @@
 
   function apply() {
     if (!results.value || Object.keys(results.value).length === 0) {
-      console.log(results.value)
       return;
     }
     showCreatedAlertBtn.value = true;
@@ -93,8 +92,6 @@
       },
       occupationModes: search.value.type !== "" ? [search.value.type] : [],
     }
-
-    console.log({requestBody, results: results.value})
 
     fetch("/api/search/results", {
       method: 'POST',
@@ -122,20 +119,22 @@
     }).catch(error => {
       console.error('There was a problem with the fetch operation:', error);
     });
+    HistoryService.updateHistory(window.location.origin, {
+      query: results.value.properties.name,
+      ...search.value,
+    })
   }
 
   function toggleAdvancedFilters() {
     showAdvancedFilters.value = !showAdvancedFilters.value;
   }
   function onSubmit(value) {
-    console.log({value})
     results.value = value.results;
     apply();
   }
 
   function resetFilters() {
     search.value = {
-      city: '',
       type: '',
       budgetMax: null,
       surface: null,
