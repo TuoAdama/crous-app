@@ -2,6 +2,7 @@
 
 namespace App\Controller\API;
 
+use App\DTO\Request\SearchRequestQuery;
 use App\Entity\SearchCriteria;
 use App\Entity\User;
 use App\Repository\SearchCriteriaRepository;
@@ -12,6 +13,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Attribute\MapQueryString;
 use Symfony\Component\Routing\Annotation\Route;
 
 
@@ -82,22 +84,8 @@ class SearchController extends AbstractController
 
 
     #[Route('/search/location', name: 'search.location', methods: ['GET'])]
-    public function getLocationByQuery(Request $request): JsonResponse
+    public function getLocationByQuery(#[MapQueryString] SearchRequestQuery $query): JsonResponse
     {
-        $parameters = [];
-        if ($request->query->get('q')){
-            $parameters['q'] = $request->query->get('q');
-        }
-        if ($request->query->get('type')){
-            $parameters['type'] = [$request->query->get('type')];
-        }
-        if ($request->query->get('price_min')){
-            $parameters['price_min'] = $request->query->get('price_min');
-        }
-        if ($request->query->get('area')){
-            $parameters['area'] = $request->query->get('area');
-        }
-
-        return $this->json($this->searchService->getLocationByQuery($parameters), Response::HTTP_OK);
+        return $this->json($this->searchService->getLocationByQuery($query), Response::HTTP_OK);
     }
 }

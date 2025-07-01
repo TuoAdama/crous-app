@@ -1,136 +1,66 @@
 <script setup>
-  import {ref} from "vue";
-  import SearchInput from "./SearchInput.vue";
-  import HouseItem from "../components/housing/HouseItem.vue";
-  import NotFoundHouse from "../components/housing/NotFoundHouse.vue";
-  import SearchService from "../service/SearchService";
-  import HistoryService from "../service/HistoryService";
-  const isMenuOpen = ref(false);
-  const showAdvancedFilters = ref(false);
+import {onMounted, ref} from "vue";
+import SearchInput from "./SearchInput.vue";
+import HouseItem from "../components/housing/HouseItem.vue";
+import NotFoundHouse from "../components/housing/NotFoundHouse.vue";
+import SearchService from "../service/SearchService";
+import HistoryService from "../service/HistoryService";
 
-  const props = defineProps({
-    configs: Object,
-  })
 
-  const search = ref({
-    type: '',
-    budgetMax: null,
-    surface: null,
-  });
+const props = defineProps({
+configs: Object,
+params: Object,
+data: Object
+});
 
-  let query = "";
+const isMenuOpen = ref(false);
+const showAdvancedFilters = ref(false);
+const items = ref([]);
+const showCreatedAlertBtn = ref(false);
+const notFound = ref(false);
+const resetInput = ref(false);
+const search = ref({
+  q: "",
+  type: '',
+  budgetMax: null,
+  surface: null,
+});
 
-  function input(value) {
-    query = value;
+onMounted(() => {
+  search.value = {
+    q: props.params.q || '',
+    type: props.params.type || '',
+    budgetMax: props.params.budgetMax || null,
+    surface: props.params.surface || null,
+  };
+  if (props.data.results) {
+    items.value = props.data.results.items || [];
   }
+})
 
 
-  async function onSearch() {
+  async function onSubmit() {
 
-    const url =  HistoryService.updateHistory(window.location.origin, {query, ...search.value})
-
+    const url =  HistoryService.updateHistory(window.location.origin, search.value)
     const apiUrl =  new URL("/api/search/location/", window.location.origin);
+
     url.searchParams.forEach( (value, key) => {
       apiUrl.searchParams.set(key, value);
     });
-    const response = await SearchService.findLocationByQuery(apiUrl.toString());
+
+    const response = await SearchService.search(apiUrl.toString());
 
     if (!response || !response.results || response.results.length === 0) {
-      results.value = {};
       notFound.value = true;
       items.value = [];
       return;
     }
-    results.value = response.results;
     notFound.value = false;
     items.value = response.results.items || [];
   }
 
-
-  function updateURL(query, params) {
-    return HistoryService.updateHistory(window.location.origin, {query, ...search.value})
-  }
-
-  const items = ref([]);
-  const results = ref({});
-  const showCreatedAlertBtn = ref(false);
-  const notFound = ref(false);
-  // Remplacement par un booléen
-  const resetInput = ref(false);
-
-  function toggleMenu() {
-    isMenuOpen.value = !isMenuOpen.value;
-  }
-
-  // onChange Budget Max
-  function onChangeBugdetMax() {
-    apply();
-  }
-
-  function onChangArea() {
-    apply();
-  }
-
-  function onchangeOccupationMode() {
-    apply();
-  }
-
-  function apply() {
-    if (!results.value || Object.keys(results.value).length === 0) {
-      return;
-    }
-    showCreatedAlertBtn.value = true;
-    notFound.value = false;
-
-    const requestBody = {
-      location: results.value,
-      area: {
-        min: search.value.surface || 0,
-      },
-      price: {
-        max: search.value.budgetMax || 300,
-      },
-      occupationModes: search.value.type !== "" ? [search.value.type] : [],
-    }
-
-    fetch("/api/search/results", {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
-      },
-      body: JSON.stringify(requestBody),
-    }).then(response => {
-      if (response.ok) {
-        return response.json();
-      } else {
-        throw new Error('Network response was not ok');
-      }
-    }).then(response => {
-      let results = response.results;
-      if (!results || !results.items || results.items.length === 0) {
-        notFound.value = true;
-        items.value = [];
-        return;
-      }
-      items.value = results.items;
-      notFound.value = items.value.length === 0;
-
-    }).catch(error => {
-      console.error('There was a problem with the fetch operation:', error);
-    });
-    HistoryService.updateHistory(window.location.origin, {
-      query: results.value.properties.name,
-      ...search.value,
-    })
-  }
-
   function toggleAdvancedFilters() {
     showAdvancedFilters.value = !showAdvancedFilters.value;
-  }
-  function onSubmit(value) {
-    results.value = value.results;
-    apply();
   }
 
   function resetFilters() {
@@ -139,7 +69,6 @@
       budgetMax: null,
       surface: null,
     };
-    results.value = {};
     showCreatedAlertBtn.value = false;
     notFound.value = false;
     // Inverse la valeur pour forcer le reset du SearchInput
@@ -175,17 +104,16 @@
   <div class="bg-gray-100 min-h-[40vh] flex flex-col justify-center items-center text-center px-4">
     <h1 class="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-800 mb-6">Trouvez votre logement étudiant idéal</h1>
     <div class="bg-white p-4 sm:p-6 rounded-lg shadow-md w-full max-w-4xl flex flex-col space-y-4">
-      <form class="flex flex-col space-y-4" @submit.prevent="onSearch">
+      <form class="flex flex-col space-y-4" @submit.prevent="onSubmit">
         <div class="sm:grid sm:grid-cols-2 md:grid-cols-2 gap-4">
           <SearchInput
-            @input="input"
+            @input="(value) => search.q = value"
             :url="props.configs.searchUrl"
-            :onSubmit="onSubmit"
             :reset="resetInput"
+            :value="params.q || ''"
           />
           <select
               v-model="search.type"
-              @change="onchangeOccupationMode"
               class="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
           >
             <option value="">Type de logement</option>
@@ -197,7 +125,6 @@
         <div v-show="showAdvancedFilters" class="flex-col space-y-4 sm:grid sm:grid-cols-2 md:grid-cols-3 gap-4">
           <!-- Champ Budget max avec styles identiques à Budget min -->
           <input
-              @change="onChangeBugdetMax"
               v-model.number="search.budgetMax"
               type="number"
               placeholder="Budget max (€)"
@@ -205,7 +132,6 @@
           />
           <input
               v-model.number="search.surface"
-              @change="onChangArea"
               type="number"
               placeholder="Surface (m²)"
               class="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"

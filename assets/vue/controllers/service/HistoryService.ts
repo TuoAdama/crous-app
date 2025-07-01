@@ -1,5 +1,5 @@
 type URLParams = {
-    query: string,
+    q: string,
     type: string,
     budgetMax?: number,
     surface?: number,
@@ -8,9 +8,9 @@ type URLParams = {
 export default class HistoryService {
     static updateHistory(domain: string, properties: URLParams): URL {
         const url = new URL(domain);
-        url.searchParams.set('q', properties.query);
+        url.searchParams.set('q', properties.q);
         if (properties.budgetMax) {
-            url.searchParams.set('price_max', properties.budgetMax.toString());
+            url.searchParams.set('price_min', properties.budgetMax.toString());
         }
         if (properties.surface){
             url.searchParams.set('area', properties.surface.toString());

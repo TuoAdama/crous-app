@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\DTO\Request\SearchRequestQuery;
 use App\DTO\Response\CriteriaResultResponse;
 use App\Entity\SearchCriteria;
 use App\Entity\User;
@@ -9,19 +10,13 @@ use App\Message\SearchResultMessage;
 use App\Repository\SearchCriteriaRepository;
 use App\Repository\SearchResultRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use Psr\Log\LoggerInterface;
-use Symfony\Component\DependencyInjection\Attribute\Autowire;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Messenger\MessageBusInterface;
-use Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface;
-use Symfony\Contracts\HttpClient\Exception\DecodingExceptionInterface;
-use Symfony\Contracts\HttpClient\Exception\RedirectionExceptionInterface;
-use Symfony\Contracts\HttpClient\Exception\ServerExceptionInterface;
-use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
-use UnexpectedValueException;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Messenger\MessageBusInterface;
+use UnexpectedValueException;
 
 class SearchService
 {
@@ -274,17 +269,15 @@ class SearchService
         ];
     }
 
-    public function getLocationByQuery(array $parameters): array
+    public function getLocationByQuery(SearchRequestQuery $query): array
     {
-         if(!key_exists('q', $parameters) || empty($parameters['q'])) {
+         if(empty($query->q)) {
              return [];
          }
 
-         $query = $parameters['q'];
-
          $data = $this->apiRequest->get($this->searchUrl, [
             'query' => [
-                'q' => $query,
+                'q' => $query->q,
             ],
             'timeout' => 2.5,
             'headers' => [
@@ -305,7 +298,7 @@ class SearchService
             }
 
             $name = strtolower($feature['properties']['name']) ?? '';
-            if ($name === strtolower($query)) {
+            if ($name === strtolower($query->q)) {
                 $location = $feature;
                 break;
             }
@@ -317,8 +310,8 @@ class SearchService
 
         $searchCriteria = new SearchCriteria();
         $searchCriteria->setLocation($location)
-            ->setPrice($parameters['price_min'] ?? null)
-            ->setType($parameters['type'] ?? []);
+            ->setPrice($query->minPrice ?? null)
+            ->setType($query->type != null ? [$query->type] : []);
 
         return $this->search($searchCriteria);
     }

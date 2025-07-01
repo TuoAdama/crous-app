@@ -33,12 +33,16 @@
 </template>
 
 <script setup>
-import { ref, watch } from 'vue';
+import {ref, watch} from 'vue';
 
 const props = defineProps({
   url: String,
   onSubmit: Function,
-  reset: Boolean, // Passage en boolean
+  reset: Boolean,
+  value: {
+    type: String,
+    default: '',
+  },
 })
 
 const emit = defineEmits(['input']);
@@ -50,7 +54,7 @@ const parameters = {
   minimumInputLength: 3,
 }
 
-const query = ref('');
+const query = ref(props.value);
 const showSuggestions = ref(false);
 const highlightedIndex = ref(-1);
 
@@ -108,10 +112,10 @@ function onEnter() {
 }
 
 function selectSuggestion(value) {
-  query.value = value.text;
+  query.value = value.properties.name;
   showSuggestions.value = false;
   highlightedIndex.value = -1;
-  props.onSubmit(value);
+  emit('input', query.value);
 }
 
 function hideSuggestions() {
@@ -133,13 +137,12 @@ function formatData(data) {
   }
   return cities.map(function (result) {
     const postcode = result.properties.postcode;
-    const name = result.properties.name + (
+    const nameWithPostalCode = result.properties.name + (
         postcode ? ` (${result.properties.postcode})` : ''
     );
     return {
-      id: result.properties.osm_id,
-      text: name,
-      results: result,
+      text: nameWithPostalCode,
+      properties: result.properties,
     }
   });
 }
