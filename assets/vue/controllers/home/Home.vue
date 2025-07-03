@@ -5,6 +5,7 @@ import HouseItem from "../components/housing/HouseItem.vue";
 import NotFoundHouse from "../components/housing/NotFoundHouse.vue";
 import SearchService from "../service/SearchService";
 import HistoryService from "../service/HistoryService";
+import AlertButton from "../components/alert/AlertButton.vue";
 
 
 const props = defineProps({
@@ -16,7 +17,7 @@ data: Object
 const isMenuOpen = ref(false);
 const showAdvancedFilters = ref(false);
 const items = ref([]);
-const showCreatedAlertBtn = ref(false);
+const showAlertBtn = ref(false);
 const notFound = ref(false);
 const resetInput = ref(false);
 const search = ref({
@@ -49,6 +50,8 @@ onMounted(() => {
     });
 
     const response = await SearchService.search(apiUrl.toString());
+
+    showAlertBtn.value = true;
 
     if (!response || !response.results || response.results.length === 0) {
       notFound.value = true;
@@ -141,9 +144,7 @@ onMounted(() => {
           <button type="submit" class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition duration-200 w-full sm:w-auto">
             Rechercher
           </button>
-          <button v-if="showCreatedAlertBtn" style="background-color: #b91c1c" type="submit" class="text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition duration-200 w-full sm:w-auto">
-            Créer une alerte
-          </button>
+          <AlertButton v-if="showAlertBtn"/>
           <button
               type="button"
               @click="toggleAdvancedFilters"
