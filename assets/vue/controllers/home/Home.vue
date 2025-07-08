@@ -7,6 +7,7 @@ import SearchService from "../service/SearchService";
 import HistoryService from "../service/HistoryService";
 import AlertButton from "../components/alert/AlertButton.vue";
 import Navbar from "./Navbar.vue";
+import FilterSection from "../components/filter/FilterSection.vue";
 
 
 const props = defineProps({
@@ -93,23 +94,15 @@ onMounted(() => {
     <h1 class="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-800 mb-6">Trouvez votre logement étudiant idéal</h1>
     <div class="bg-white p-4 sm:p-6 rounded-lg shadow-md w-full max-w-4xl flex flex-col space-y-4">
       <form class="flex flex-col space-y-4" @submit.prevent="onSubmit">
-        <div class="sm:grid sm:grid-cols-2 md:grid-cols-2 gap-4">
+        <div class="">
           <SearchInput
             @input="(value) => search.q = value"
             :url="props.configs.searchUrl"
             :reset="resetInput"
             :value="params.q || ''"
           />
-          <select
-              v-model="search.type"
-              class="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
-          >
-            <option value="">Type de logement</option>
-            <option value="alone">Individuel</option>
-            <option value="couple">Couple</option>
-            <option value="house_sharing">Colocation</option>
-          </select>
         </div>
+        <FilterSection />
         <div v-show="showAdvancedFilters" class="flex-col space-y-4 sm:grid sm:grid-cols-2 md:grid-cols-3 gap-4">
           <!-- Champ Budget max avec styles identiques à Budget min -->
           <input
