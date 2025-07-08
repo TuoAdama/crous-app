@@ -30,8 +30,8 @@
     <i :class="icon"></i>
     <span v-if="!isUpdated" class="mr-4 ms-2">{{name}}</span>
     <slot v-if="isUpdated" name="update-content"></slot>
-    <i @clik="emit('onReset')" v-if="!isUpdated" class="fa-solid fa-caret-down"></i>
-    <i v-if="isUpdated" class="fa-solid fa-xmark"></i>
+    <i v-if="!isUpdated" class="fa-solid fa-caret-down"></i>
+    <i @click.stop="emit('onReset')" v-if="isUpdated" class="fa-solid fa-xmark hover:bg-red-100"></i>
   </div>
 </template>
 
