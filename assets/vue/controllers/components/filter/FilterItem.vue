@@ -10,21 +10,13 @@
 
  const emit = defineEmits(['onShowModal', 'onReset']);
 
- function onCancel() {
-   alert("Cancelled: " + props.name);
- }
-
- function onClick() {
-   alert(props.name)
- }
-
 </script>
 
 <template>
   <div @click="emit('onShowModal')"
        :class="['relative p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 mx-2 justify-center items-center p-2', isUpdated ? 'color-filter' : 'bg-white']"
   >
-    <FilterModal v-if="showModal" :title="name">
+    <FilterModal v-if="showModal" :title="name" @blur="emit('onShowModal')">
       <slot name="modal"></slot>
     </FilterModal>
     <i :class="icon"></i>

@@ -29,9 +29,13 @@ const search = ref({
   surface: null,
 });
 
-onMounted(() => {
+const filterValues = ref({
+  typeLocation: '',
+  minPrice: null,
+  minArea: null,
+});
 
-  console.log({user: props.user})
+onMounted(() => {
 
   search.value = {
     q: props.params.q || '',
@@ -83,11 +87,28 @@ onMounted(() => {
     resetInput.value = !resetInput.value;
   }
 
+  function updateFilter(value) {
+    filterValues.value = {
+      ...filterValues.value,
+      ...value,
+    };
+
+    console.log({filter: value})
+  }
+
+
+
 </script>
 
 <template>
 
   <Navbar :is-auth="props.user !== null"/>
+
+  <ul class="border border-gray-300 p-4 mb-4 bg-white rounded-lg shadow-md">
+    <li>{{filterValues.minArea}}</li>
+    <li>{{filterValues.minPrice}}</li>
+    <li>{{filterValues.typeLocation}}</li>
+  </ul>
 
   <!-- Section de recherche -->
   <div class="bg-gray-100 min-h-[40vh] flex flex-col justify-center items-center text-center px-4">
@@ -102,7 +123,7 @@ onMounted(() => {
             :value="params.q || ''"
           />
         </div>
-        <FilterSection />
+        <FilterSection @update="updateFilter"/>
         <div v-show="showAdvancedFilters" class="flex-col space-y-4 sm:grid sm:grid-cols-2 md:grid-cols-3 gap-4">
           <!-- Champ Budget max avec styles identiques à Budget min -->
           <input

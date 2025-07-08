@@ -2,6 +2,9 @@
 import FilterItem from "./FilterItem.vue";
 import {ref} from "vue";
 
+
+const emit = defineEmits(['update']);
+
 const modalIndex = ref(-1);
 const typeLocationIsUpdated = ref(false);
 const minPriceIsUpdated = ref(false);
@@ -26,12 +29,15 @@ function onUpdateFilter(index) {
   switch (index) {
     case 0:
       typeLocationIsUpdated.value = true;
+      emit('update', { typeLocation: locationType.value });
       break;
     case 1:
       minPriceIsUpdated.value = true;
+      emit('update', { minPrice: minPrice.value });
       break;
     case 2:
       minAreaIsUpdated.value = true;
+      emit('update', { minArea: minArea.value });
       break;
   }
 }
