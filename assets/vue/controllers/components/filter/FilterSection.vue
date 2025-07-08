@@ -1,25 +1,35 @@
 <script setup>
+import FilterItem from "./FilterItem.vue";
+import {ref} from "vue";
+
+const modalIndex = ref(-1);
+
+function showModel(index) {
+  if (modalIndex.value === index) {
+    modalIndex.value = -1; // Close the modal if it's already open
+    return;
+  }
+  modalIndex.value = index;
+}
 
 </script>
 
 <template>
   <div class="flex justify-between items-center">
     <div class="flex">
-      <div class="color-filter p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 mx-2 justify-center items-center p-2">
-        <i class="fa-solid fa-tag"></i>
-        <span class="mr-2">Type de logements</span>
-        <i class="fa-solid fa-xmark"></i>
-      </div>
-      <div class="color-filter p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 mx-2 justify-center items-center p-2">
-        <i class="fa-solid fa-tag"></i>
-        <span class="ms-1 mr-2">Type de logements</span>
-        <i class="fa-solid fa-xmark"></i>
-      </div>
-      <div class="color-filter p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 mx-2 justify-center items-center p-2">
-        <i class="fa-solid fa-tag"></i>
-        <span class="mr-2">Type de logements</span>
-        <i class="fa-solid fa-xmark"></i>
-      </div>
+      <FilterItem :showModal="modalIndex === 0" @onShowModal="() => showModel(0)" name="Type logement" icon="fa-solid fa-house">
+        <select class="w-full bg-white border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-600">
+          <option value="couple">Couple</option>
+          <option value="colocation">Colocation</option>
+          <option value="individuel">Individuel</option>
+        </select>
+      </FilterItem>
+      <FilterItem :showModal="modalIndex === 1" @onShowModal="() => showModel(1)" name="Prix minimum" icon="fa-solid fa-tag">
+        <input type="number" placeholder="Prix minimum (€)" class="w-full bg-white border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-600" />
+      </FilterItem>
+      <FilterItem :showModal="modalIndex === 2" @onShowModal="() => showModel(2)" name="Surface minimum" icon="fa-solid fa-clone">
+        <input type="number" placeholder="Surface minimum (m²)" class="w-full bg-white border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-600" />
+      </FilterItem>
     </div>
     <div>
       <button style="background-color: #b91c1c" class="flex rounded-md items-center gap-2 px-4 py-2 text-white">
