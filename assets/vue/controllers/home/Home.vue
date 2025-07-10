@@ -24,24 +24,20 @@ const notFound = ref(false);
 const resetInput = ref(false);
 const search = ref({
   q: "",
-  type: '',
-  budgetMax: null,
-  surface: null,
-});
-
-const filterValues = ref({
   typeLocation: '',
-  minPrice: null,
-  minArea: null,
+  minPrice: 0,
+  minArea: 0,
+  properties: {},
 });
 
 onMounted(() => {
 
   search.value = {
     q: props.params.q || '',
-    type: props.params.type || '',
-    budgetMax: props.params.budgetMax || null,
-    surface: props.params.surface || null,
+    typeLocation: props.params.type || '',
+    minPrice: props.params.budgetMax || null,
+    minArea: props.params.surface || null,
+    properties: {},
   };
   if (props.data.results) {
     items.value = props.data.results.items || [];
@@ -50,7 +46,6 @@ onMounted(() => {
 
 
   async function onSubmit() {
-
     const url =  HistoryService.updateHistory(window.location.origin, search.value)
     const apiUrl =  new URL("/api/search/location/", window.location.origin);
 
@@ -77,9 +72,9 @@ onMounted(() => {
 
   function resetFilters() {
     search.value = {
-      type: '',
-      budgetMax: null,
-      surface: null,
+      typeLocation: '',
+      minPrice: null,
+      minArea: null,
     };
     showCreatedAlertBtn.value = false;
     notFound.value = false;
@@ -88,12 +83,26 @@ onMounted(() => {
   }
 
   function updateFilter(value) {
-    filterValues.value = {
-      ...filterValues.value,
+    search.value = {
+      ...search.value,
       ...value,
     };
 
-    console.log({filter: value})
+    if (Object.keys(search.value.properties).length === 0) {
+      return;
+    }
+
+    const url = new URL(window.location.origin);
+
+    const extent = search.value.properties.extent.join(',');
+
+    url.searchParams.set('extent', extent);
+    url.searchParams.set('type', search.value.typeLocation);
+    url.searchParams.set('min_price', search.value.minPrice);
+    url.searchParams.set('min_area', search.value.minArea);
+
+    HistoryService.update(url.toString());
+
   }
 
 
@@ -104,12 +113,6 @@ onMounted(() => {
 
   <Navbar :is-auth="props.user !== null"/>
 
-  <ul class="border border-gray-300 p-4 mb-4 bg-white rounded-lg shadow-md">
-    <li>{{filterValues.minArea}}</li>
-    <li>{{filterValues.minPrice}}</li>
-    <li>{{filterValues.typeLocation}}</li>
-  </ul>
-
   <!-- Section de recherche -->
   <div class="bg-gray-100 min-h-[40vh] flex flex-col justify-center items-center text-center px-4">
     <h1 class="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-800 mb-6">Trouvez votre logement étudiant idéal</h1>
@@ -117,7 +120,7 @@ onMounted(() => {
       <form class="flex flex-col space-y-4" @submit.prevent="onSubmit">
         <div class="">
           <SearchInput
-            @input="(value) => search.q = value"
+            @change="updateFilter"
             :url="props.configs.searchUrl"
             :reset="resetInput"
             :value="params.q || ''"

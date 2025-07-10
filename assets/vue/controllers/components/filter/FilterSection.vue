@@ -48,14 +48,17 @@ function onReset(index) {
     case 0:
       typeLocationIsUpdated.value = false;
       locationType.value = "";
+      emit('update', { typeLocation: "" });
       break;
     case 1:
       minPriceIsUpdated.value = false;
       minPrice.value = null;
+      emit('update', { minPrice: null });
       break;
     case 2:
       minAreaIsUpdated.value = false;
       minArea.value = null;
+      emit('update', { minArea: null });
       break;
   }
 }

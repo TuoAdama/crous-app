@@ -45,7 +45,7 @@ const props = defineProps({
   },
 })
 
-const emit = defineEmits(['input']);
+const emit = defineEmits(['change']);
 
 const parameters = {
   country: "France",
@@ -61,7 +61,6 @@ const highlightedIndex = ref(-1);
 const filteredSuggestions = ref([])
 
 function onInput() {
-  emit('input', query.value);
   if (query.value.length < parameters.minimumInputLength) {
     showSuggestions.value = false;
     return;
@@ -115,7 +114,7 @@ function selectSuggestion(value) {
   query.value = value.properties.name;
   showSuggestions.value = false;
   highlightedIndex.value = -1;
-  emit('input', query.value);
+  emit('change', {properties: value.properties});
 }
 
 function hideSuggestions() {
