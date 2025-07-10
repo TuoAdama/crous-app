@@ -23,7 +23,6 @@ const showAlertBtn = ref(false);
 const notFound = ref(false);
 const resetInput = ref(false);
 const search = ref({
-  q: "",
   typeLocation: '',
   minPrice: 0,
   minArea: 0,
@@ -33,11 +32,12 @@ const search = ref({
 onMounted(() => {
 
   search.value = {
-    q: props.params.q || '',
     typeLocation: props.params.type || '',
     minPrice: props.params.budgetMax || null,
     minArea: props.params.surface || null,
-    properties: {},
+    properties: {
+      extent: props.params.extent ??  [],
+    },
   };
   if (props.data.results) {
     items.value = props.data.results.items || [];

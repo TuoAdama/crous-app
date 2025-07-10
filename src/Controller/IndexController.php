@@ -26,14 +26,16 @@ class IndexController extends AbstractController
         if ($query === null) {
             $query = new SearchRequestQuery();
         }
+
         $results = $this->searchService->getLocationByQuery($query);
+
         return $this->render('pages/home/index.html.twig', [
             'config' => $this->searchService->getConfigs(),
             'data' => $results,
             'params' => [
-                'q' => $query->q,
+                'extent' => $query->extent,
                 'type' => $query->type,
-                'area' => $query->area,
+                'minArea' => $query->minArea,
                 'minPrice' => $query->minPrice
             ]
         ]);

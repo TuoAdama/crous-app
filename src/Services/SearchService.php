@@ -271,47 +271,15 @@ class SearchService
 
     public function getLocationByQuery(SearchRequestQuery $query): array
     {
-         if(empty($query->q)) {
-             return [];
-         }
+        $searchCriteria = new SearchCriteria();
 
-         $data = $this->apiRequest->get($this->searchUrl, [
-            'query' => [
-                'q' => $query->q,
-            ],
-            'timeout' => 2.5,
-            'headers' => [
-                'Accept' => 'application/json',
+        $searchCriteria->setLocation([
+            'properties' => [
+                'extent' => explode(',', $query->extent),
             ]
         ]);
-
-        if (!key_exists('features', $data) || !is_array($data['features']) || empty($data['features'])) {
-            return [];
-        }
-
-        $features = $data['features'];
-        $location = [];
-
-        foreach ($features as $feature) {
-            if (!key_exists('properties', $feature) || !is_array($feature['properties'])) {
-                continue;
-            }
-
-            $name = strtolower($feature['properties']['name']) ?? '';
-            if ($name === strtolower($query->q)) {
-                $location = $feature;
-                break;
-            }
-        }
-
-        if (empty($location)) {
-            return [];
-        }
-
-        $searchCriteria = new SearchCriteria();
-        $searchCriteria->setLocation($location)
-            ->setPrice($query->minPrice ?? null)
-            ->setType($query->type != null ? [$query->type] : []);
+        $searchCriteria->setType(isset($query->type) ? [$query->type] : []);
+        $searchCriteria->setPrice($query->minPrice ?? null);
 
         return $this->search($searchCriteria);
     }

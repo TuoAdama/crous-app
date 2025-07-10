@@ -6,9 +6,10 @@ use Symfony\Component\Serializer\Annotation\SerializedName;
 
 class SearchRequestQuery
 {
-    public ?string $q = "";
+    public string $extent;
     public ?string $type = null;
-    public ?string $area = null;
-    #[SerializedName("price_min")]
+    #[SerializedName("min_price")]
     public ?int $minPrice =  null;
+    #[SerializedName("min_area")]
+    public ?int $minArea = null;
 }
