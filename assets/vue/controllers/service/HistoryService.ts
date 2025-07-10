@@ -1,23 +1,19 @@
-type URLParams = {
-    q: string,
-    typeLocation: string,
-    minPrice?: number,
-    minArea?: number,
-};
-
 export default class HistoryService {
-    static updateHistory(domain: string, properties: URLParams): URL {
+    static updateHistory(domain: string, properties: any): URL {
         const url = new URL(domain);
-        url.searchParams.set('q', properties.q);
-        if (properties.minPrice) {
-            url.searchParams.set('price_min', properties.minPrice.toString());
+
+        const extent = properties.properties.extent.join(',');
+
+        url.searchParams.set('extent', extent);
+        url.searchParams.set('type', properties.typeLocation);
+        if (properties.minPrice){
+            url.searchParams.set('min_price', properties.minPrice);
         }
         if (properties.minArea){
-            url.searchParams.set('area', properties.minArea.toString());
+            url.searchParams.set('min_area', properties.minArea);
         }
-        if (properties.typeLocation.length > 0) {
-            url.searchParams.set('type', properties.typeLocation);
-        }
+        url.searchParams.set('name', properties.properties.name);
+
         window.history.pushState({}, '', url.toString());
         return url;
     }

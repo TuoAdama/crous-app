@@ -44,28 +44,6 @@ onMounted(() => {
   }
 })
 
-
-  async function onSubmit() {
-    const url =  HistoryService.updateHistory(window.location.origin, search.value)
-    const apiUrl =  new URL("/api/search/location/", window.location.origin);
-
-    url.searchParams.forEach( (value, key) => {
-      apiUrl.searchParams.set(key, value);
-    });
-
-    const response = await SearchService.search(apiUrl.toString());
-
-    showAlertBtn.value = true;
-
-    if (!response || !response.results || response.results.length === 0) {
-      notFound.value = true;
-      items.value = [];
-      return;
-    }
-    notFound.value = false;
-    items.value = response.results.items || [];
-  }
-
   function toggleAdvancedFilters() {
     showAdvancedFilters.value = !showAdvancedFilters.value;
   }
@@ -91,19 +69,29 @@ onMounted(() => {
     if (Object.keys(search.value.properties).length === 0) {
       return;
     }
+    makeRequest();
+  }
 
-    const url = new URL(window.location.origin);
 
-    const extent = search.value.properties.extent.join(',');
+  async function makeRequest() {
+    const url =  HistoryService.updateHistory(window.location.origin, search.value)
+    const apiUrl =  new URL("/api/search/location/", window.location.origin);
 
-    url.searchParams.set('extent', extent);
-    url.searchParams.set('type', search.value.typeLocation);
-    url.searchParams.set('min_price', search.value.minPrice);
-    url.searchParams.set('min_area', search.value.minArea);
-    url.searchParams.set('name', search.value.properties.name);
+    url.searchParams.forEach( (value, key) => {
+      apiUrl.searchParams.set(key, value);
+    });
 
-    HistoryService.update(url.toString());
+    const response = await SearchService.search(apiUrl.toString());
 
+    showAlertBtn.value = true;
+
+    if (!response || !response.results || response.results.length === 0) {
+      notFound.value = true;
+      items.value = [];
+      return;
+    }
+    notFound.value = false;
+    items.value = response.results.items || [];
   }
 
 
@@ -128,34 +116,6 @@ onMounted(() => {
           />
         </div>
         <FilterSection @update="updateFilter"/>
-        <div v-show="showAdvancedFilters" class="flex-col space-y-4 sm:grid sm:grid-cols-2 md:grid-cols-3 gap-4">
-          <!-- Champ Budget max avec styles identiques à Budget min -->
-          <input
-              v-model.number="search.budgetMax"
-              type="number"
-              placeholder="Budget max (€)"
-              class="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
-          />
-          <input
-              v-model.number="search.surface"
-              type="number"
-              placeholder="Surface (m²)"
-              class="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
-          />
-        </div>
-        <div class="flex flex-col sm:flex-row sm:space-x-4 space-y-4 sm:space-y-0">
-          <button type="submit" class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition duration-200 w-full sm:w-auto">
-            Rechercher
-          </button>
-          <AlertButton v-if="showAlertBtn"/>
-          <button
-              type="button"
-              @click="toggleAdvancedFilters"
-              class="bg-gray-200 text-gray-800 px-6 py-2 rounded-lg hover:bg-gray-300 transition duration-200 w-full sm:w-auto"
-          >
-            {{ showAdvancedFilters ? 'Masquer filtre' : 'Filtre avancé' }}
-          </button>
-        </div>
       </form>
     </div>
   </div>

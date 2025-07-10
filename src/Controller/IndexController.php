@@ -23,22 +23,31 @@ class IndexController extends AbstractController
     #[Route('/', name: 'app_home')]
     public function home(#[MapQueryString] ?SearchRequestQuery $query): Response
     {
-        if ($query === null) {
-            $query = new SearchRequestQuery();
-        }
+        $params = []; $results = [];
 
-        $results = $this->searchService->getLocationByQuery($query);
+        if ($query){
+            if ($query->type) {
+                $params['type'] = $query->type;
+            }
+            if ($query->minArea) {
+                $params['minArea'] = $query->minArea;
+            }
+            if ($query->minPrice) {
+                $params['minPrice'] = $query->minPrice;
+            }
+            if ($query->name) {
+                $params['name'] = $query->name;
+            }
+            if ($query->extent) {
+                $params['extent'] = $query->extent;
+                $results = $this->searchService->getLocationByQuery($query);
+            }
+        }
 
         return $this->render('pages/home/index.html.twig', [
             'config' => $this->searchService->getConfigs(),
             'data' => $results,
-            'params' => [
-                'extent' => $query->extent,
-                'type' => $query->type,
-                'minArea' => $query->minArea,
-                'minPrice' => $query->minPrice,
-                'name' => $query->name
-            ]
+            'params' => $params
         ]);
     }
 
