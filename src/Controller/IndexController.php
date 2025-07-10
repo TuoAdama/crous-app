@@ -36,7 +36,8 @@ class IndexController extends AbstractController
                 'extent' => $query->extent,
                 'type' => $query->type,
                 'minArea' => $query->minArea,
-                'minPrice' => $query->minPrice
+                'minPrice' => $query->minPrice,
+                'name' => $query->name
             ]
         ]);
     }

@@ -100,6 +100,7 @@ onMounted(() => {
     url.searchParams.set('type', search.value.typeLocation);
     url.searchParams.set('min_price', search.value.minPrice);
     url.searchParams.set('min_area', search.value.minArea);
+    url.searchParams.set('name', search.value.properties.name);
 
     HistoryService.update(url.toString());
 
@@ -123,7 +124,7 @@ onMounted(() => {
             @change="updateFilter"
             :url="props.configs.searchUrl"
             :reset="resetInput"
-            :value="params.q || ''"
+            :value="params.name || ''"
           />
         </div>
         <FilterSection @update="updateFilter"/>
