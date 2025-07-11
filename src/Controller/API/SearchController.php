@@ -14,6 +14,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Attribute\MapQueryString;
+use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
 use Symfony\Component\Routing\Annotation\Route;
 
 
@@ -87,5 +88,12 @@ class SearchController extends AbstractController
     public function getLocationByQuery(#[MapQueryString] SearchRequestQuery $query): JsonResponse
     {
         return $this->json($this->searchService->getLocationByQuery($query), Response::HTTP_OK);
+    }
+
+
+    #[Route('/search/create-alert', methods: ['POST'])]
+    public function createAlert(#[MapRequestPayload] SearchRequestQuery $query): JsonResponse
+    {
+        return $this->json($query,Response::HTTP_CREATED);
     }
 }

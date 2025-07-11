@@ -94,6 +94,28 @@ onMounted(() => {
     items.value = response.results.items || [];
   }
 
+  async function onCreateAlert(){
+
+    const {typeLocation, minPrice, minArea, properties} = search.value;
+
+    const response = await fetch('/api/search/create-alert', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        type: typeLocation,
+        min_area: minArea,
+        min_price: minPrice,
+        extent: properties.extent,
+        name: properties.name,
+      })
+    })
+
+    const data = await response.json()
+
+    console.log({data})
+  }
 
 
 </script>
@@ -115,7 +137,15 @@ onMounted(() => {
             :value="params.name || ''"
           />
         </div>
-        <FilterSection @update="updateFilter"/>
+        <div class="flex justify-between items-center">
+          <FilterSection @update="updateFilter"/>
+          <div>
+            <button @click="onCreateAlert" :disabled="search.properties.extent === undefined" style="background-color: #b91c1c" class="flex rounded-md items-center gap-2 px-4 py-2 text-white">
+              <i class="fa-solid fa-bell"></i>
+              Créer une alertes
+            </button>
+          </div>
+        </div>
       </form>
     </div>
   </div>
