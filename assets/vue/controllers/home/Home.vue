@@ -98,6 +98,11 @@ onMounted(() => {
 
     const {typeLocation, minPrice, minArea, properties} = search.value;
 
+    let extent = properties.extent;
+    if (extent instanceof Array){
+      extent = extent.join(',');
+    }
+
     const response = await fetch('/api/search/create-alert', {
       method: 'POST',
       headers: {
@@ -107,7 +112,7 @@ onMounted(() => {
         type: typeLocation,
         min_area: minArea,
         min_price: minPrice,
-        extent: properties.extent,
+        extent,
         name: properties.name,
       })
     })
