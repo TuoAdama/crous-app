@@ -6,6 +6,7 @@ use App\DTO\Request\SearchRequestQuery;
 use App\Entity\SearchCriteria;
 use App\Entity\User;
 use App\Repository\SearchCriteriaRepository;
+use App\Services\AlertService;
 use App\Services\SearchCriteriaValidator;
 use App\Services\SearchService;
 use DateTimeImmutable;
@@ -25,7 +26,8 @@ class SearchController extends AbstractController
     public function __construct(
         private readonly SearchCriteriaValidator $searchValidator,
         private readonly SearchCriteriaRepository $criteriaRepository,
-        private readonly SearchService $searchService
+        private readonly SearchService $searchService,
+        private readonly AlertService $alertService,
     )
     {
     }
@@ -94,6 +96,12 @@ class SearchController extends AbstractController
     #[Route('/search/create-alert', methods: ['POST'])]
     public function createAlert(#[MapRequestPayload] SearchRequestQuery $query): JsonResponse
     {
-        return $this->json($query,Response::HTTP_CREATED);
+        /** @var ?User $user */
+        $user = $this->getUser();
+        if ($user === null){
+            return $this->json([], Response::HTTP_UNAUTHORIZED);
+        }
+        $criteria = $this->alertService->create($user, $query);
+        return $this->json($criteria,Response::HTTP_CREATED);
     }
 }

@@ -5,7 +5,6 @@ import HouseItem from "../components/housing/HouseItem.vue";
 import NotFoundHouse from "../components/housing/NotFoundHouse.vue";
 import SearchService from "../service/SearchService";
 import HistoryService from "../service/HistoryService";
-import AlertButton from "../components/alert/AlertButton.vue";
 import Navbar from "./Navbar.vue";
 import FilterSection from "../components/filter/FilterSection.vue";
 
@@ -44,19 +43,14 @@ onMounted(() => {
   }
 })
 
-  function toggleAdvancedFilters() {
-    showAdvancedFilters.value = !showAdvancedFilters.value;
-  }
-
   function resetFilters() {
     search.value = {
       typeLocation: '',
       minPrice: null,
       minArea: null,
     };
-    showCreatedAlertBtn.value = false;
+    showAlertBtn.value = false;
     notFound.value = false;
-    // Inverse la valeur pour forcer le reset du SearchInput
     resetInput.value = !resetInput.value;
   }
 
@@ -66,9 +60,12 @@ onMounted(() => {
       ...value,
     };
 
+    showAlertBtn.value = false;
+
     if (Object.keys(search.value.properties).length === 0) {
       return;
     }
+    showAlertBtn.value = true;
     makeRequest();
   }
 
@@ -118,8 +115,6 @@ onMounted(() => {
     })
 
     const data = await response.json()
-
-    console.log({data})
   }
 
 
@@ -133,7 +128,7 @@ onMounted(() => {
   <div class="bg-gray-100 min-h-[40vh] flex flex-col justify-center items-center text-center px-4">
     <h1 class="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-800 mb-6">Trouvez votre logement étudiant idéal</h1>
     <div class="bg-white p-4 sm:p-6 rounded-lg shadow-md w-full max-w-4xl flex flex-col space-y-4">
-      <form class="flex flex-col space-y-4" @submit.prevent="onSubmit">
+      <form class="flex flex-col space-y-4">
         <div class="">
           <SearchInput
             @change="updateFilter"
@@ -145,7 +140,7 @@ onMounted(() => {
         <div class="flex justify-between items-center">
           <FilterSection @update="updateFilter"/>
           <div>
-            <button @click="onCreateAlert" :disabled="search.properties.extent === undefined" style="background-color: #b91c1c" class="flex rounded-md items-center gap-2 px-4 py-2 text-white">
+            <button v-if="showAlertBtn" @click="onCreateAlert" style="background-color: #b91c1c" class="flex rounded-md items-center gap-2 px-4 py-2 text-white">
               <i class="fa-solid fa-bell"></i>
               Créer une alertes
             </button>
