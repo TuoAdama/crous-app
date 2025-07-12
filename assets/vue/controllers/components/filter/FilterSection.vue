@@ -1,18 +1,17 @@
 <script setup>
 import FilterItem from "./FilterItem.vue";
-import {ref} from "vue";
+import {computed, ref, watch} from "vue";
 
 
 const emit = defineEmits(['update']);
 
-const modalIndex = ref(-1);
-const typeLocationIsUpdated = ref(false);
-const minPriceIsUpdated = ref(false);
-const minAreaIsUpdated = ref(false);
+const props = defineProps(['locationType', 'minPrice', 'minArea'])
 
-const locationType = ref("");
-const minPrice = ref(null);
-const minArea = ref(null);
+const modalIndex = ref(-1);
+
+const locationType = ref(props.locationType);
+const minPrice = ref(props.minPrice);
+const minArea = ref(props.minArea);
 
 function showModel(index) {
   if (modalIndex.value === index) {
@@ -25,22 +24,22 @@ function showModel(index) {
 function onUpdateFilter(index) {
 
   modalIndex.value = -1;
-
   switch (index) {
     case 0:
-      typeLocationIsUpdated.value = true;
       emit('update', { typeLocation: locationType.value });
       break;
     case 1:
-      minPriceIsUpdated.value = true;
       emit('update', { minPrice: minPrice.value });
       break;
     case 2:
-      minAreaIsUpdated.value = true;
       emit('update', { minArea: minArea.value });
       break;
   }
 }
+
+const typeLocationIsUpdated = computed(() => locationType !== "");
+const minPriceIsUpdated = computed(() => minPrice !== null);
+const minAreaIsUpdated = computed(() => minArea !== null);
 
 function onReset(index) {
 
@@ -62,6 +61,13 @@ function onReset(index) {
       break;
   }
 }
+
+
+watch(() => [props.minArea, props.minPrice, props.locationType], () => {
+  minArea.value = props.minArea;
+  minPrice.value = props.minPrice;
+  locationType.value = props.locationType;
+})
 
 </script>
 
