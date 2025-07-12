@@ -147,10 +147,15 @@ function formatData(data) {
 }
 
 // Ajout du watcher pour reset le champ de recherche (reset est maintenant un booléen)
-watch(() => props.reset, () => {
-  query.value = '';
-  filteredSuggestions.value = [];
-  highlightedIndex.value = -1;
-  showSuggestions.value = false;
+watch(() => [props.reset, props.value], ([newReset, newValue], [prevReset, prevValue]) => {
+  if (newReset !== prevReset){
+    query.value = '';
+    filteredSuggestions.value = [];
+    highlightedIndex.value = -1;
+    showSuggestions.value = false;
+  }
+  if (newValue !== prevValue){
+    query.value = newValue
+  }
 });
 </script>

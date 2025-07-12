@@ -42,7 +42,7 @@ class LoginController extends AbstractController
                 $accountDisable = true;
             }else {
                 $security->login($user);
-                return $this->redirectToRoute('app_index');
+                return $this->redirectToRoute($redirect ?? 'app_index');
             }
         }
 

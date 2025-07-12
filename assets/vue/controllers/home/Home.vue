@@ -1,5 +1,5 @@
 <script setup>
-import {onMounted, ref} from "vue";
+import {computed, onMounted, ref} from "vue";
 import SearchInput from "./SearchInput.vue";
 import HouseItem from "../components/housing/HouseItem.vue";
 import NotFoundHouse from "../components/housing/NotFoundHouse.vue";
@@ -9,37 +9,38 @@ import Navbar from "./Navbar.vue";
 import FilterSection from "../components/filter/FilterSection.vue";
 
 
-const props = defineProps({
+const STORAGE_KEY = "search"
+
+const {configs, params, user, data} = defineProps({
 configs: Object,
 params: Object,
 data: Object,
 user: Object,
 });
 
-const showAdvancedFilters = ref(false);
-const items = ref([]);
-const showAlertBtn = ref(false);
+const items = ref(data.results ? data.results.items : []);
 const notFound = ref(false);
 const resetInput = ref(false);
+
 const search = ref({
-  typeLocation: '',
-  minPrice: 0,
-  minArea: 0,
-  properties: {},
+  typeLocation: params.type ?? '',
+  minPrice: params.minPrice ?? null,
+  minArea: params.minArea ?? null,
+  properties: {
+    extent: params.extent ?? [],
+    name: params.name ?? "",
+  },
+});
+
+const showAlertBtn =  computed(() => {
+  return search.value.properties.extent.length > 0;
 });
 
 onMounted(() => {
-
-  search.value = {
-    typeLocation: props.params.type || '',
-    minPrice: props.params.budgetMax || null,
-    minArea: props.params.surface || null,
-    properties: {
-      extent: props.params.extent ??  [],
-    },
-  };
-  if (props.data.results) {
-    items.value = props.data.results.items || [];
+  let oldSearch = localStorage.getItem(STORAGE_KEY)
+  if (oldSearch !== null){
+    search.value = JSON.parse(oldSearch)
+    localStorage.removeItem(STORAGE_KEY)
   }
 })
 
@@ -49,7 +50,6 @@ onMounted(() => {
       minPrice: null,
       minArea: null,
     };
-    showAlertBtn.value = false;
     notFound.value = false;
     resetInput.value = !resetInput.value;
   }
@@ -59,13 +59,9 @@ onMounted(() => {
       ...search.value,
       ...value,
     };
-
-    showAlertBtn.value = false;
-
     if (Object.keys(search.value.properties).length === 0) {
       return;
     }
-    showAlertBtn.value = true;
     makeRequest();
   }
 
@@ -79,8 +75,6 @@ onMounted(() => {
     });
 
     const response = await SearchService.search(apiUrl.toString());
-
-    showAlertBtn.value = true;
 
     if (!response || !response.results || response.results.length === 0) {
       notFound.value = true;
@@ -100,21 +94,31 @@ onMounted(() => {
       extent = extent.join(',');
     }
 
+    const payload = {
+      type: typeLocation,
+      min_area: minArea,
+      min_price: minPrice,
+      extent,
+      name: properties.name,
+    };
+
     const response = await fetch('/api/search/create-alert', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({
-        type: typeLocation,
-        min_area: minArea,
-        min_price: minPrice,
-        extent,
-        name: properties.name,
-      })
+      body: JSON.stringify(payload)
     })
 
-    const data = await response.json()
+    if (response.status === 200){
+      const data = await response.json();
+      alert("Donnée créée")
+    }else if (response.status === 401){
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(search.value))
+      window.location.href = "/login?redirect=app_home";
+    }else {
+      alert("Une erreur est survenue")
+    }
   }
 
 
@@ -122,25 +126,26 @@ onMounted(() => {
 
 <template>
 
-  <Navbar :is-auth="props.user !== null"/>
+  <Navbar :is-auth="user !== null"/>
 
   <!-- Section de recherche -->
   <div class="bg-gray-100 min-h-[40vh] flex flex-col justify-center items-center text-center px-4">
+    <button @click="search.properties.name = 'Hello world'">Update</button>
     <h1 class="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-800 mb-6">Trouvez votre logement étudiant idéal</h1>
     <div class="bg-white p-4 sm:p-6 rounded-lg shadow-md w-full max-w-4xl flex flex-col space-y-4">
       <form class="flex flex-col space-y-4">
         <div class="">
           <SearchInput
             @change="updateFilter"
-            :url="props.configs.searchUrl"
+            :url="configs.searchUrl"
             :reset="resetInput"
-            :value="params.name || ''"
+            :value="search.properties.name || ''"
           />
         </div>
         <div class="flex justify-between items-center">
           <FilterSection @update="updateFilter"/>
           <div>
-            <button v-if="showAlertBtn" @click="onCreateAlert" style="background-color: #b91c1c" class="flex rounded-md items-center gap-2 px-4 py-2 text-white">
+            <button type="button" v-if="showAlertBtn" @click="onCreateAlert" style="background-color: #b91c1c" class="flex rounded-md items-center gap-2 px-4 py-2 text-white">
               <i class="fa-solid fa-bell"></i>
               Créer une alertes
             </button>
@@ -157,7 +162,7 @@ onMounted(() => {
   <div class="p-4 sm:p-8" v-if="items.length > 0">
     <h2 class="text-xl sm:text-2xl font-bold mb-4">Logements disponibles</h2>
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-      <HouseItem v-for="item in items" :item :key="item.id" :idTool="props.configs.idTool"/>
+      <HouseItem v-for="item in items" :item :key="item.id" :idTool="configs.idTool"/>
     </div>
   </div>
 </template>
