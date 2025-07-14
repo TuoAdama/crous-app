@@ -37,9 +37,9 @@ function onUpdateFilter(index) {
   }
 }
 
-const typeLocationIsUpdated = computed(() => locationType !== "");
-const minPriceIsUpdated = computed(() => minPrice !== null);
-const minAreaIsUpdated = computed(() => minArea !== null);
+const typeLocationIsUpdated = computed(() => locationType.value !== "");
+const minPriceIsUpdated = computed(() => minPrice.value !== null);
+const minAreaIsUpdated = computed(() => minArea.value !== null);
 
 function onReset(index) {
 
