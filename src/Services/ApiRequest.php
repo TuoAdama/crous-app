@@ -57,4 +57,25 @@ class ApiRequest
             'body' => $body
         ]);
     }
+
+
+    public function get(string $url, array $parameters): array
+    {
+        $data = [];
+        try {
+            $response = $this->client->request('GET', $url, $parameters);
+            if ($response->getStatusCode() !== 200) {
+                return $data;
+            }
+            $data = json_decode($response->getContent(), true);
+
+        } catch (TransportExceptionInterface
+        | ClientExceptionInterface
+        | ServerExceptionInterface
+        | RedirectionExceptionInterface
+        | ClientExceptionInterface $e) {
+            $this->logger->error('Error during API request: ' . $e->getMessage());
+        }
+        return $data;
+    }
 }

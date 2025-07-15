@@ -1,0 +1,15 @@
+{% extends 'pages/home/base.html.twig' %}
+
+{% block body %}
+    <div {{ vue_component('home/Home', {
+        configs:  config,
+        params,
+        data,
+        user: app.user ? {
+            id: app.user.id,
+            name: app.user.username,
+            email: app.user.email,
+        } : null,
+        }
+    ) }}></div>
+{% endblock %}

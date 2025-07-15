@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\DTO\Request\SearchRequestQuery;
 use App\DTO\Response\CriteriaResultResponse;
 use App\Entity\SearchCriteria;
 use App\Entity\User;
@@ -9,13 +10,13 @@ use App\Message\SearchResultMessage;
 use App\Repository\SearchCriteriaRepository;
 use App\Repository\SearchResultRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Messenger\MessageBusInterface;
 use UnexpectedValueException;
-use Psr\Container\ContainerExceptionInterface;
-use Psr\Container\NotFoundExceptionInterface;
-use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 
 class SearchService
 {
@@ -35,6 +36,8 @@ class SearchService
     private string $resultLink;
     private int $limit;
 
+    private string $searchUrl = "";
+
     /**
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
@@ -46,9 +49,9 @@ class SearchService
         private readonly SearchCriteriaRepository $criteriaRepository,
         private readonly SearchResultRepository   $searchResultRepository,
         private readonly ApiRequest               $apiRequest,
-        private readonly ComparisonService $comparisonService,
-        private readonly MessageBusInterface $bus,
-        private readonly EntityManagerInterface $entityManager,
+        private readonly ComparisonService        $comparisonService,
+        private readonly MessageBusInterface      $bus,
+        private readonly EntityManagerInterface   $entityManager,
     )
     {
         $this->precision = $this->params->get('precision');
@@ -64,6 +67,7 @@ class SearchService
         $this->url = $this->params->get('url');
         $this->resultLink = $this->params->get('result.link');
         $this->limit = $this->params->get('criteria.fetch.limit');
+        $this->searchUrl = $this->params->get("url.search");
     }
 
     /**
@@ -88,11 +92,11 @@ class SearchService
             'residence' => $this->residence,
             'sector' => $this->sector,
             'precision' => $this->precision,
-            'occupationModes' => $this->occupationModes,
+            'occupationModes' => $searchCriteria->getType(),
             'equipment' => $this->equipment,
             'price' => [
                 'min' => $this->min,
-                'max' => $searchCriteria->getPrice() * $this->multiple,
+                'max' => ($searchCriteria->getPrice() ?? 300) * $this->multiple,
             ],
             'location' => [
                 [
@@ -132,8 +136,8 @@ class SearchService
                 foreach ($allCriteria as $criteria) {
                     $searchResult = $this->search($criteria);
                     if (!$this->isResponseBodyContainsResults($searchResult, $criteria)) {
-                        $criteriaOldResult =  $criteria->getSearchResults();
-                        if ($criteriaOldResult->count() > 0){
+                        $criteriaOldResult = $criteria->getSearchResults();
+                        if ($criteriaOldResult->count() > 0) {
                             foreach ($criteriaOldResult as $oldResult) {
                                 $this->entityManager->remove($oldResult);
                             }
@@ -173,8 +177,8 @@ class SearchService
         }
 
         $exist = $this->comparisonService->exists($criteria, $results['items']);
-        if ($exist){
-            $this->logger->info('criteria_id = '.$criteria->getId());
+        if ($exist) {
+            $this->logger->info('criteria_id = ' . $criteria->getId());
             return false;
         }
         return true;
@@ -186,11 +190,11 @@ class SearchService
      */
     public function storeSearchResults(array $results): void
     {
-       $results = $this->searchResultRepository->updateOrStoreAll($results);
-       $ids = [];
+        $results = $this->searchResultRepository->updateOrStoreAll($results);
+        $ids = [];
         foreach ($results as $result) {
             $ids[] = $result->getId();
-       }
+        }
         $this->bus->dispatch(new SearchResultMessage($ids));
     }
 
@@ -222,11 +226,11 @@ class SearchService
      */
     function getLink(SearchCriteria $criteria): string
     {
-       $lat1 = $criteria->getLat1();
-       $lon1 = $criteria->getLon1();
-       $lat2 = $criteria->getLat2();
-       $lon2 = $criteria->getLon2();
-       return str_replace(['LAT-1', 'LON-1', 'LAT-2', 'LON-2'], [$lat1, $lon1, $lat2, $lon2], $this->resultLink);
+        $lat1 = $criteria->getLat1();
+        $lon1 = $criteria->getLon1();
+        $lat2 = $criteria->getLat2();
+        $lon2 = $criteria->getLon2();
+        return str_replace(['LAT-1', 'LON-1', 'LAT-2', 'LON-2'], [$lat1, $lon1, $lat2, $lon2], $this->resultLink);
     }
 
 
@@ -243,6 +247,41 @@ class SearchService
     public function getUserCriteria(User $user): array
     {
         return $this->criteriaRepository->findBy(['user' => $user]);
+    }
+
+
+    public function getConfigs(): array
+    {
+        return [
+            'precision' => $this->precision,
+            'idTool' => $this->idTool,
+            'needAggregation' => $this->needAggregation,
+            'residence' => $this->residence,
+            'sector' => $this->sector,
+            'page' => $this->page,
+            'occupationModes' => $this->occupationModes,
+            'min' => $this->min,
+            'equipment' => $this->equipment,
+            'multiple' => $this->multiple,
+            'url' => $this->url,
+            'resultLink' => $this->resultLink,
+            'searchUrl' => $this->searchUrl,
+        ];
+    }
+
+    public function getLocationByQuery(SearchRequestQuery $query): array
+    {
+        $searchCriteria = new SearchCriteria();
+
+        $searchCriteria->setLocation([
+            'properties' => [
+                'extent' => explode(',', $query->extent),
+            ]
+        ]);
+        $searchCriteria->setType(isset($query->type) ? [$query->type] : []);
+        $searchCriteria->setPrice($query->minPrice ?? null);
+
+        return $this->search($searchCriteria);
     }
 
 }
