@@ -6,7 +6,6 @@ use App\DTO\Request\SearchRequestQuery;
 use App\Entity\SearchCriteria;
 use App\Entity\User;
 use App\Repository\SearchCriteriaRepository;
-use App\Services\AlertService;
 use App\Services\SearchCriteriaValidator;
 use App\Services\SearchService;
 use DateTimeImmutable;
@@ -15,7 +14,6 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Attribute\MapQueryString;
-use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
 use Symfony\Component\Routing\Annotation\Route;
 
 
@@ -27,7 +25,6 @@ class SearchController extends AbstractController
         private readonly SearchCriteriaValidator $searchValidator,
         private readonly SearchCriteriaRepository $criteriaRepository,
         private readonly SearchService $searchService,
-        private readonly AlertService $alertService,
     )
     {
     }
@@ -64,7 +61,7 @@ class SearchController extends AbstractController
 
 
     #[Route('/search/results', name: 'search.results', methods: ['POST'])]
-    public function getSearchResults(Request $request, SearchService $searchService)
+    public function getSearchResults(Request $request, SearchService $searchService): JsonResponse
     {
         $content = $request->getContent();
 
@@ -90,18 +87,5 @@ class SearchController extends AbstractController
     public function getLocationByQuery(#[MapQueryString] SearchRequestQuery $query): JsonResponse
     {
         return $this->json($this->searchService->getLocationByQuery($query), Response::HTTP_OK);
-    }
-
-
-    #[Route('/search/create-alert', methods: ['POST'])]
-    public function createAlert(#[MapRequestPayload] SearchRequestQuery $query): JsonResponse
-    {
-        /** @var ?User $user */
-        $user = $this->getUser();
-        if ($user === null){
-            return $this->json([], Response::HTTP_UNAUTHORIZED);
-        }
-        $criteria = $this->alertService->create($user, $query);
-        return $this->json($criteria,Response::HTTP_CREATED);
     }
 }
