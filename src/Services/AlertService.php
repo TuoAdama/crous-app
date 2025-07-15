@@ -5,6 +5,7 @@ namespace App\Services;
 use App\DTO\Request\SearchRequestQuery;
 use App\Entity\SearchCriteria;
 use App\Entity\User;
+use App\Enum\TypeLocation;
 use App\Repository\SearchCriteriaRepository;
 use DateTimeImmutable;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
@@ -22,7 +23,7 @@ class AlertService
     public function create(User $user, SearchRequestQuery $query): SearchCriteria
     {
         $criteria = new SearchCriteria();
-        $criteria->setType(isset($query->type) ? [$query->type] : [])
+        $criteria->setType(isset($query->type) ? [$query->type] : [TypeLocation::COLOCATION->value])
             ->setPrice($query->minPrice ?? $this->minPrice)
             ->setUser($user)
             ->setLocation(
