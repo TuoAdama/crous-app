@@ -7,13 +7,14 @@ use App\Entity\SearchCriteria;
 use App\Entity\User;
 use App\Repository\SearchCriteriaRepository;
 use DateTimeImmutable;
-use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
 class AlertService
 {
     public function __construct(
-        private readonly SearchCriteriaRepository $criteriaRepository
+        private readonly SearchCriteriaRepository $criteriaRepository,
+        #[Autowire(param: 'min')]
+        private readonly int $minPrice,
     )
     {
     }
@@ -22,7 +23,7 @@ class AlertService
     {
         $criteria = new SearchCriteria();
         $criteria->setType(isset($query->type) ? [$query->type] : [])
-            ->setPrice($query->minPrice)
+            ->setPrice($query->minPrice ?? $this->minPrice)
             ->setUser($user)
             ->setLocation(
                 [
