@@ -23,7 +23,8 @@ class AlertService
     public function create(User $user, SearchRequestQuery $query): SearchCriteria
     {
         $criteria = new SearchCriteria();
-        $criteria->setType(isset($query->type) ? [$query->type] : [TypeLocation::COLOCATION->value, TypeLocation::INDIVIDUAL->value])
+        $type = !empty($query->type) ? [$query->type] : [TypeLocation::COLOCATION->value, TypeLocation::INDIVIDUAL->value];
+        $criteria->setType($type)
             ->setPrice($query->minPrice ?? $this->minPrice)
             ->setUser($user)
             ->setLocation(
