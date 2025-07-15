@@ -7,9 +7,12 @@ import SearchService from "../service/SearchService";
 import HistoryService from "../service/HistoryService";
 import Navbar from "./Navbar.vue";
 import FilterSection from "../components/filter/FilterSection.vue";
+import AlertMessage from "../components/alert/AlertMessage.vue";
+import {AlertType} from "../enum/AlertType";
 
 
 const STORAGE_KEY = "search"
+
 
 const {configs, params, user, data} = defineProps({
 configs: Object,
@@ -21,6 +24,10 @@ user: Object,
 const items = ref(data.results ? data.results.items : []);
 const notFound = ref(false);
 const resetInput = ref(false);
+const alert = ref({
+  message: "",
+  type: ""
+});
 
 const search = ref({
   typeLocation: params.type ?? '',
@@ -110,14 +117,15 @@ onMounted(() => {
       body: JSON.stringify(payload)
     })
 
-    if (response.status === 200){
-      const data = await response.json();
-      alert("Donnée créée")
+    if (response.status === 201){
+      alert.value.message = AlertType.ALERT_SUCCESS_MESSAGE;
+      alert.value.type = AlertType.SUCCESS
     }else if (response.status === 401){
       localStorage.setItem(STORAGE_KEY, JSON.stringify(search.value))
       window.location.href = "/login?redirect=app_home";
-    }else {
-      alert("Une erreur est survenue")
+    } else {
+      alert.value.message = AlertType.ALERT_ERROR_MESSAGE;
+      alert.value.type = AlertType.DANGER
     }
   }
 
@@ -131,6 +139,7 @@ onMounted(() => {
   <!-- Section de recherche -->
   <div class="bg-gray-100 min-h-[40vh] flex flex-col justify-center items-center text-center px-4">
     <h1 class="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-800 mb-6">Trouvez votre logement étudiant idéal</h1>
+    <AlertMessage v-if="alert.message !== ''" message="Alerte créée avec succès" :type="alert.type"/>
     <div class="bg-white p-4 sm:p-6 rounded-lg shadow-md w-full max-w-4xl flex flex-col space-y-4">
       <form class="flex flex-col space-y-4">
         <div class="">
@@ -151,7 +160,7 @@ onMounted(() => {
           <div>
             <button type="button" v-if="showAlertBtn" @click="onCreateAlert" style="background-color: #b91c1c" class="flex rounded-md items-center gap-2 px-4 py-2 text-white">
               <i class="fa-solid fa-bell"></i>
-              Créer une alertes
+              Créer une alerte
             </button>
           </div>
         </div>
