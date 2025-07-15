@@ -30,6 +30,7 @@ class LoginController extends AbstractController
             return $this->redirectToRoute('app_index');
         }
         $user = null;
+        $redirect = $request->query->get('redirect');
         $accountDisable = false;
         $form = $this->createForm(LoginType::class, []);
         $form->handleRequest($request);

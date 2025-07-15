@@ -144,7 +144,7 @@ onMounted(() => {
   <div class="bg-gray-100 min-h-[40vh] flex flex-col justify-center items-center text-center px-4">
     <h1 class="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-800 mb-6">Trouvez votre logement étudiant idéal</h1>
     <div class="bg-white p-4 sm:p-6 rounded-lg shadow-md w-full max-w-4xl flex flex-col space-y-4">
-      <AlertMessage @close="alert.message = ''" v-if="alert.message !== ''" message="Alerte créée avec succès" :type="alert.type"/>
+      <AlertMessage @close="alert.message = ''" v-if="alert.message !== ''" :message="alert.message" :type="alert.type"/>
       <form class="flex flex-col space-y-4">
         <div class="">
           <SearchInput
