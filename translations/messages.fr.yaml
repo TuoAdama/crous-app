@@ -95,3 +95,8 @@ sms:
       verification: Un sms de vérification vous a été envoyé
 token:
   expired: Le lien a expiré
+
+constraint:
+  message:
+    extent: "La valeur extent est invalide"
+    type_location: "La valeur type est invalide"
