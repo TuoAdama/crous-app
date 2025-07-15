@@ -56,6 +56,10 @@ onMounted(() => {
       typeLocation: '',
       minPrice: null,
       minArea: null,
+      properties: {
+        extent: [],
+        name: "",
+      }
     };
     notFound.value = false;
     resetInput.value = !resetInput.value;
