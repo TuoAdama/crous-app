@@ -159,7 +159,8 @@ class SearchCriteriaType extends AbstractType
         ];
 
         if ($addedDefaultValue){
-            $attr['data'] = [TypeLocation::getTypesLocation()[TypeLocation::INDIVIDUAL->value]];
+            $individual = ucfirst(strtolower(TypeLocation::INDIVIDUAL->name));
+            $attr['data'] = [TypeLocation::getTypesLocation()[$individual]];
         }
 
 

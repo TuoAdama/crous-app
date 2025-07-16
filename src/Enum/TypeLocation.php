@@ -4,15 +4,15 @@ namespace App\Enum;
 
 enum TypeLocation: string
 {
-    case INDIVIDUAL = 'Individual';
-    case COLOCATION = 'Colocation';
-    case COUPLE = 'Couple';
+    case INDIVIDUAL = 'alone';
+    case COLOCATION = 'house_sharing';
+    case COUPLE = 'couple';
 
     public static function getTypesLocation(): array {
         return [
-            self::INDIVIDUAL->value => strtolower(self::INDIVIDUAL->value),
-            self::COLOCATION->value => strtolower(self::COLOCATION->value),
-            self::COUPLE->value => strtolower(self::COUPLE->value),
+            ucfirst(strtolower(TypeLocation::INDIVIDUAL->name)) => strtolower(self::INDIVIDUAL->value),
+            ucfirst(strtolower(TypeLocation::COLOCATION->name)) => strtolower(self::COLOCATION->value),
+            ucfirst(strtolower(TypeLocation::COUPLE->name)) => strtolower(self::COUPLE->value),
         ];
     }
 }
