@@ -13,6 +13,12 @@ const locationType = ref(props.locationType);
 const minPrice = ref(props.minPrice);
 const minArea = ref(props.minArea);
 
+const typeLocation =  {
+  alone: "Individuel",
+  house_sharing: "Colocation",
+  couple: "Couple"
+}
+
 function showModel(index) {
   if (modalIndex.value === index) {
     modalIndex.value = -1; // Close the modal if it's already open
@@ -77,12 +83,12 @@ watch(() => [props.minArea, props.minPrice, props.locationType], () => {
       <template #modal>
         <select v-model="locationType" @change="onUpdateFilter(0)" class="w-full bg-white border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-600">
           <option value="couple">Couple</option>
-          <option value="colocation">Colocation</option>
-          <option value="individuel">Individuel</option>
+          <option value="house_sharing">Colocation</option>
+          <option value="alone">Individuel</option>
         </select>
       </template>
       <template #update-content>
-        <span class="mx-2">Type: {{locationType}}</span>
+        <span class="mx-2">Type: {{ typeLocation[locationType] }}</span>
       </template>
     </FilterItem>
     <FilterItem @onReset="onReset(1)" :is-updated="minPriceIsUpdated" :showModal="modalIndex === 1" @onShowModal="() => showModel(1)" name="Prix minimum" icon="fa-solid fa-tag">
