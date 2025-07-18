@@ -5,6 +5,7 @@ services:
       context: ./docker/web/dev
     depends_on:
       - db
+      - chrome
     env_file:
       - .env.local
     volumes:
@@ -53,6 +54,12 @@ services:
     ports:
       - "1025:1025"
       - "1080:1080"
+  chrome:
+    image: selenium/standalone-chrome:latest
+    ports:
+      - "4444:4444"
+    platform: linux/amd64
+    shm_size: 2g
 
 volumes:
   db_data: {}
