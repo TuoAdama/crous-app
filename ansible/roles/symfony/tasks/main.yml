@@ -12,23 +12,24 @@
     dest: "{{ project_root }}"
     version: "{{ branch }}"
     single_branch: yes
+    force: yes
 
 - name: Copy .env.prod file
   copy:
     src: "{{ env_prod_file }}"
-    dest: "{{ project_root }}/.env"
+    dest: "{{ project_root }}/.env.local"
     owner: root
     group: root
     mode: '0644'
 
 
 - name: Start/Update Docker Compose containers
-  shell: docker-compose up -d --build
+  shell: docker compose up -d --build
   args:
     chdir: "{{ project_root }}"
 
 - name: Install Composer dependencies
-  command: docker-compose exec web composer install --no-interaction --prefer-dist --optimize-autoloader
+  command: docker compose exec web composer install --no-interaction --prefer-dist --optimize-autoloader
   args:
     chdir: "{{ project_root }}"
   environment:
