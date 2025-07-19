@@ -1,0 +1,35 @@
+- name: Create project directory
+  file:
+    path: "{{ project_root }}"
+    state: directory
+    owner: root
+    group: root
+    mode: '0755'
+
+- name: Clone the repository
+  ansible.builtin.git:
+    repo: "{{ git_repo }}"
+    dest: "{{ project_root }}"
+    version: "{{ branch }}"
+    single_branch: yes
+
+- name: Copy .env.prod file
+  copy:
+    src: "{{ env_prod_file }}"
+    dest: "{{ project_root }}/.env"
+    owner: root
+    group: root
+    mode: '0644'
+
+
+- name: Start/Update Docker Compose containers
+  shell: docker-compose up -d --build
+  args:
+    chdir: "{{ project_root }}"
+
+- name: Install Composer dependencies
+  command: docker-compose exec web composer install --no-interaction --prefer-dist --optimize-autoloader
+  args:
+    chdir: "{{ project_root }}"
+  environment:
+    COMPOSER_ALLOW_SUPERUSER: "1"

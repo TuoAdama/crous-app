@@ -1,0 +1,6 @@
+- hosts: symfony
+  become: yes
+  vars_files:
+    - group_vars/all.yml
+  roles:
+    - symfony

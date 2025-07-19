@@ -1,0 +1,4 @@
+project_root: /root/crous-app
+git_repo: git@github.com:TuoAdama/crous-app.git
+branch: main
+env_prod_file: "{{ playbook_dir | dirname }}/.env.prod"
