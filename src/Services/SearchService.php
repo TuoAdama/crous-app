@@ -68,8 +68,9 @@ class SearchService
         $this->min = $this->params->get('min');
         $this->equipment = $this->params->get('equipment');
         $this->multiple = $this->params->get('multiple');
-        $this->url = $this->params->get('url');
+        $this->url = str_replace('{{id_tool}}', $this->idTool, $this->params->get('url'));
         $this->resultLink = $this->params->get('result.link');
+        $this->resultLink = str_replace('{{id_tool}}', $this->idTool, $this->params->get('result.link'));
         $this->limit = $this->params->get('criteria.fetch.limit');
         $this->searchUrl = $this->params->get("url.search");
     }
