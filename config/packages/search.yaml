@@ -1,8 +1,7 @@
 parameters:
-    idTool: 41
     url.search: "https://trouverunlogement.lescrous.fr/photon/api?limit=18&osm_tag=amenity%%3Acollege&osm_tag=amenity%%3Alibrary&osm_tag=amenity%%3Aschool&osm_tag=amenity%%3Auniversity&osm_tag=place%%3Acountry&osm_tag=place%%3Aregion&osm_tag=place%%3Astate&osm_tag=place%%3Acity&osm_tag=place%%3Atown&osm_tag=place%%3Avillage&osm_tag=place%%3Ahouse&osm_tag=landuse%%3Aresidential"
     url.domain: https://trouverunlogement.lescrous.fr
-    url: "https://trouverunlogement.lescrous.fr/api/fr/search/%idTool%"
+    url: "https://trouverunlogement.lescrous.fr/api/fr/search/{{id_tool}}"
     image_base_path: https://trouverunlogement.lescrous.fr/cache/images/preview/
     precision: 6
     need_aggregation: true
@@ -15,7 +14,7 @@ parameters:
     multiple: 100
     # Represente le jour auquel un resulat rétrouvé est supprimé
     delete.after.change: 5
-    result.link: "%url.domain%/tools/%idTool%/search?bounds=LAT-1_LON-1_LAT-2_LON-2"
+    result.link: "%url.domain%/tools/{{id_tool}}/search?bounds=LAT-1_LON-1_LAT-2_LON-2"
 
     criteria.fetch.limit: 100
 

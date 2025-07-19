@@ -52,10 +52,14 @@ class SearchService
         private readonly ComparisonService        $comparisonService,
         private readonly MessageBusInterface      $bus,
         private readonly EntityManagerInterface   $entityManager,
+        private readonly IdToolService $idToolService,
     )
     {
         $this->precision = $this->params->get('precision');
-        $this->idTool = $this->params->get('idTool');
+        $this->idTool = $this->idToolService->getIdTool();
+        if (!$this->idTool) {
+            throw new UnexpectedValueException("L'ID de l'outil n'a pas pu être récupéré.");
+        }
         $this->needAggregation = $this->params->get('need_aggregation');
         $this->residence = $this->params->get('residence');
         $this->sector = $this->params->get('sector');
@@ -64,8 +68,9 @@ class SearchService
         $this->min = $this->params->get('min');
         $this->equipment = $this->params->get('equipment');
         $this->multiple = $this->params->get('multiple');
-        $this->url = $this->params->get('url');
+        $this->url = str_replace('{{id_tool}}', $this->idTool, $this->params->get('url'));
         $this->resultLink = $this->params->get('result.link');
+        $this->resultLink = str_replace('{{id_tool}}', $this->idTool, $this->params->get('result.link'));
         $this->limit = $this->params->get('criteria.fetch.limit');
         $this->searchUrl = $this->params->get("url.search");
     }

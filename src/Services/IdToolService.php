@@ -29,7 +29,7 @@ class IdToolService
         $button = $crawler->selectButton("Lancer une recherche");
         sleep(5);
         $button->click();
-        sleep(10);
+        sleep(6);
         $currentUrl = $client->getCurrentURL();
 
         if (preg_match('#/tools/(\d+)/#', $currentUrl, $matches)) {
@@ -68,5 +68,14 @@ class IdToolService
             ]);
         }
         return null;
+    }
+
+
+    /**
+     * @throws Exception
+     */
+    public function updateIdTool(): void
+    {
+        $this->getIdToolFromCache();
     }
 }

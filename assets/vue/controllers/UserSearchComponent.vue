@@ -18,13 +18,24 @@ function onDelete (id){
 
 <template>
   <div class="row">
-    <UserSearchItem
-        v-for="item in criteriaWithResults"
-        :token="token"
-        :criteriaWithResults="item"
-        :path="props.path"
-        :onDelete="() => onDelete(item.criteria.id)"
-    />
+    <table class="table table-striped table-hover">
+      <thead class="table-dark">
+      <tr>
+        <th scope="col">Ville</th>
+        <th scope="col">Type</th>
+        <th scope="col">Actions</th>
+      </tr>
+      </thead>
+      <tbody>
+        <UserSearchItem
+            v-for="item in criteriaWithResults"
+            :token="token"
+            :criteriaWithResults="item"
+            :path="props.path"
+            :onDelete="() => onDelete(item.criteria.id)"
+        />
+      </tbody>
+    </table>
   </div>
 </template>
 
