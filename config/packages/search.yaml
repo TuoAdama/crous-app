@@ -19,3 +19,4 @@ parameters:
     criteria.fetch.limit: 100
 
     criteria.search.result.schedule: 5 # every five minutes
+    id.tool.expiration: 28800 # 8 hours
