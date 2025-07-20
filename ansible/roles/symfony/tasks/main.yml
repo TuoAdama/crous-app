@@ -63,6 +63,14 @@
     - composer_install
 
 
+- name: Update database schema
+  command: docker compose exec web php bin/console doctrine:schema:update --force
+  args:
+    chdir: "{{ project_root }}"
+  tags:
+    - doctrine_schema_update
+
+
 - name: Install node dependencies
   command: docker compose exec node npm install
   args:
