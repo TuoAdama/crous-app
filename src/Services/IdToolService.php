@@ -8,13 +8,20 @@ use Psr\Cache\InvalidArgumentException;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Panther\Client;
 use Symfony\Contracts\Cache\CacheInterface;
+use Symfony\Component\HttpKernel\KernelInterface;
 
 class IdToolService
 {
+
+    private string $projectDir;
+
     public function __construct(
-        private readonly CacheInterface $cache, private readonly LoggerInterface $logger,
+        private readonly CacheInterface $cache,
+        private readonly LoggerInterface $logger,
+        private readonly KernelInterface $kernel,
     )
     {
+        $this->projectDir = $this->kernel->getProjectDir();
     }
 
     /**
@@ -35,7 +42,8 @@ class IdToolService
         if (preg_match('#/tools/(\d+)/#', $currentUrl, $matches)) {
             $idTool = $matches[1];
         }
-        $client->takeScreenshot("screenshot/screenshot.png");
+    
+        $client->takeScreenshot($this->projectDir . "/var/tmp/screenshot.png");
         $client->quit();
 
         return $idTool;

@@ -33,6 +33,18 @@
     - copy_docker_compose_prod_yml
 
 
+- name: Enable permissions for var directory
+  file:
+    path: "{{ project_root }}/var"
+    state: directory
+    owner: root
+    group: root
+    mode: '0777'
+    recurse: yes
+  tags:
+    - var_directory_permissions
+
+
 - name: Start/Update Docker Compose containers
   shell: docker compose up -d --build
   args:
