@@ -1,0 +1,2 @@
+[symfony]
+87.106.207.7 ansible_user=root ansible_ssh_private_key_file=~/.ssh/id_rsa

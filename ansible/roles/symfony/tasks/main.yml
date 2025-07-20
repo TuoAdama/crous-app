@@ -1,0 +1,79 @@
+- name: Create project directory
+  file:
+    path: "{{ project_root }}"
+    state: directory
+    owner: root
+    group: root
+    mode: '0755'
+
+- name: Clone the repository
+  ansible.builtin.git:
+    repo: "{{ git_repo }}"
+    dest: "{{ project_root }}"
+    version: "{{ branch }}"
+    single_branch: yes
+    force: yes
+
+- name: Copy .env.prod file
+  copy:
+    src: "{{ env_prod_file }}"
+    dest: "{{ project_root }}/.env.local"
+    owner: root
+    group: root
+    mode: '0644'
+
+- name: Copy docker-compose.prod.yml file
+  copy:
+    src: "{{ docker_compose_prod_file }}"
+    dest: "{{ project_root }}/docker-compose.yml"
+    owner: root
+    group: root
+    mode: '0644'
+  tags:
+    - copy_docker_compose_prod_yml
+
+
+- name: Enable permissions for var directory
+  file:
+    path: "{{ project_root }}/var"
+    state: directory
+    owner: root
+    group: root
+    mode: '0777'
+    recurse: yes
+  tags:
+    - var_directory_permissions
+
+
+- name: Start/Update Docker Compose containers
+  shell: docker compose up -d --build
+  args:
+    chdir: "{{ project_root }}"
+  tags:
+    - docker_compose_up
+
+
+- name: Install composer dependencies
+  command: docker compose exec web composer install --no-interaction --prefer-dist --optimize-autoloader
+  args:
+    chdir: "{{ project_root }}"
+  environment:
+    COMPOSER_ALLOW_SUPERUSER: "1"
+  tags:
+    - composer_install
+
+
+- name: Install node dependencies
+  command: docker compose exec node npm install
+  args:
+    chdir: "{{ project_root }}"
+  tags:
+    - node_install
+
+
+- name: Build assets
+  command: docker compose exec node npm run build
+  args:
+    chdir: "{{ project_root }}"
+  tags:
+    - node_build
