@@ -22,15 +22,46 @@
     group: root
     mode: '0644'
 
+- name: Copy docker-compose.prod.yml file
+  copy:
+    src: "{{ docker_compose_prod_file }}"
+    dest: "{{ project_root }}/docker-compose.yml"
+    owner: root
+    group: root
+    mode: '0644'
+  tags:
+    - copy_docker_compose_prod_yml
+
 
 - name: Start/Update Docker Compose containers
   shell: docker compose up -d --build
   args:
     chdir: "{{ project_root }}"
+  tags:
+    - docker_compose_up
 
-- name: Install Composer dependencies
+
+- name: Install composer dependencies
   command: docker compose exec web composer install --no-interaction --prefer-dist --optimize-autoloader
   args:
     chdir: "{{ project_root }}"
   environment:
     COMPOSER_ALLOW_SUPERUSER: "1"
+  tags:
+    - composer_install
+
+
+- name: Install node dependencies
+  command: docker compose exec node npm install
+  args:
+    chdir: "{{ project_root }}"
+  tags:
+    - node_install
+
+
+- name: Build assets
+  command: docker compose exec node npm run build
+  args:
+    chdir: "{{ project_root }}"
+  tags:
+    - node_build
