@@ -9,6 +9,7 @@ use Psr\Log\LoggerInterface;
 use Symfony\Component\Panther\Client;
 use Symfony\Contracts\Cache\CacheInterface;
 use Symfony\Component\HttpKernel\KernelInterface;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
 class IdToolService
 {
@@ -19,9 +20,14 @@ class IdToolService
         private readonly CacheInterface $cache,
         private readonly LoggerInterface $logger,
         private readonly KernelInterface $kernel,
+        #[Autowire(param: 'id.tool.expiration')]
+        private readonly int $idToolExpiration,
     )
     {
         $this->projectDir = $this->kernel->getProjectDir();
+        $this->logger->info('ID tool expiration', [
+            'idToolExpiration' => $this->idToolExpiration,
+        ]);
     }
 
     /**
@@ -57,7 +63,7 @@ class IdToolService
         try {
             return  $this->cache->get('id_tool', function ($item) {
                 $id = $this->crawlIdTool();
-                $item->expiresAfter(3600 * 24);
+                $item->expiresAfter($this->idToolExpiration);
                 return $id;
             });
         } catch (InvalidArgumentException $e) {
@@ -82,8 +88,8 @@ class IdToolService
     /**
      * @throws Exception
      */
-    public function updateIdTool(): void
+    public function updateIdTool(): int
     {
-        $this->getIdToolFromCache();
+        return $this->getIdToolFromCache();
     }
 }

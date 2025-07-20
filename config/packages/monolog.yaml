@@ -4,6 +4,7 @@ monolog:
         - queue
         - sms
         - searchScheduler
+        - idTool
 
 when@dev:
     monolog:
@@ -35,6 +36,11 @@ when@dev:
                 path: "%kernel.logs_dir%/search-scheduler.log"
                 level: debug
                 channels: ['searchScheduler']
+            idTool:
+                type: stream
+                path: "%kernel.logs_dir%/id-tool.log"
+                level: debug
+                channels: ['idTool']
 
 when@test:
     monolog:

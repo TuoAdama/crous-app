@@ -9,12 +9,15 @@ use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Psr\Log\LoggerInterface;
+use Exception;
 
 #[AsCommand(name: 'app:id-tool', description: 'Hello PhpStorm')]
 class IdToolCommand extends Command
 {
     public function __construct(
         private readonly IdToolService $idToolService,
+        private readonly LoggerInterface $idToolLogger,
     )
     {
         parent::__construct();
@@ -22,14 +25,17 @@ class IdToolCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $start = microtime(true);
-        $id = $this->idToolService->getIdTool();
-        $end = microtime(true);
-        dd([
-            'id' => $id,
-            'execution_time' => ($end - $start) . ' seconds',
-            'screenshot' => 'screenshot/screenshot.png',
-        ]);
+        try {
+            $idTool = $this->idToolService->updateIdTool();
+            $this->idToolLogger->info('ID tool updated successfully', [
+                'id' => $idTool,
+            ]);
+        } catch (Exception $e) {
+            $this->idToolLogger->error('Error updating ID tool', [
+                'exception' => $e,
+            ]);
+            return Command::FAILURE;
+        }
         return Command::SUCCESS;
     }
 }
