@@ -64,13 +64,13 @@ mail:
   template:
     reset.password:
       title: Modifier mon mot de passe
-      body: "Pour le changement de votre mot de passe, veuillez suivre le lien suivant:"
+      body: "Pour le changement de votre mot de passe, veuillez suivre le lien suivant "
     user.registration:
       title: Vérification de votre compte
-      body: "Pour activer votre compte, veuillez suivre le lien suivant:"
+      body: "Pour activer votre compte, veuillez suivre le lien suivant "
     change.mail:
       title: Changement d'adresse e-mail
-      body: "Pour validez le changement de votre adresse e-mail, veuillez suivre le lien suivant:"
+      body: "Pour validez le changement de votre adresse e-mail, veuillez suivre le lien suivant "
 enable.account.link: Cliquez-ici pour l'activé
 invalid.credentials: E-mail ou mot de passe incorrect.
 
