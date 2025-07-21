@@ -96,3 +96,11 @@
     job: "docker compose -f {{ project_root }}/docker-compose.yml exec web bin/console app:id-tool"
   tags:
     - cron
+
+
+- name: Consume messages
+  shell: docker compose exec web bin/console messenger:stop-workers && docker compose exec web bin/console messenger:consume async -vv &
+  args:
+    chdir: "{{ project_root }}"
+  tags:
+    - consume_messages
