@@ -1,0 +1,3 @@
+framework:
+        router:
+            default_uri: 'https://crousapp-dev.tuo-adama.com'

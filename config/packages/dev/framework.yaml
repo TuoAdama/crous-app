@@ -1,0 +1,4 @@
+# see https://symfony.com/doc/current/reference/configuration/framework.html
+framework:
+    router:
+        default_uri: 'http://localhost'
