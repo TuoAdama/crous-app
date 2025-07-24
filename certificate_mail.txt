@@ -1,0 +1,10 @@
+From: noreply@tuo-adama.com
+To: tuoadama17@gmail.com
+Subject: Renouvellement de votre certificat SSL/TLS
+
+Bonjour,
+
+Ceci est un mail vous informant que votre certificat SSL/TLS a été renouvellé avec succès grâce à Let's Encrypt.
+
+Cordialement,
+ATUO

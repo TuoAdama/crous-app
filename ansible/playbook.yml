@@ -4,3 +4,23 @@
     - group_vars/all.yml
   roles:
     - symfony
+
+- name: SSL certificate with certbot
+  hosts: symfony
+  become: yes
+  vars_files:
+    - group_vars/all.yml
+  roles:
+    - certbot
+  tags:
+    - certbot
+
+- name: Deploy Nginx configuration
+  hosts: symfony
+  become: yes
+  vars_files:
+    - group_vars/all.yml
+  roles:
+    - ngnix
+  tags:
+    - nginx

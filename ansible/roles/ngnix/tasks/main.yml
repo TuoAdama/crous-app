@@ -1,0 +1,29 @@
+- name: Deploy Nginx configuration
+  copy:
+    src: file/ngnix-conf
+    dest: /etc/nginx/sites-available/crousapp-dev.tuo-adama.com
+    owner: root
+    group: root
+    mode: '0644'
+
+- name: Activate Nginx configuration
+  file:
+    src: /etc/nginx/sites-available/crousapp-dev.tuo-adama.com
+    dest: /etc/nginx/sites-enabled/crousapp-dev.tuo-adama.com
+    state: link
+    force: yes
+
+- name: Test Nginx configuration
+  command: nginx -t
+  register: nginx_test
+  ignore_errors: yes
+
+- name: Show Nginx test result
+  debug:
+    var: nginx_test.stdout_lines
+
+- name: Reload Nginx
+  service:
+    name: nginx
+    state: reloaded
+  when: nginx_test.rc == 0
