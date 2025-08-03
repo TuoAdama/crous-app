@@ -19,3 +19,5 @@ yarn-error.log
 ###< symfony/webpack-encore-bundle ###
 
 .env.prod
+
+/docker/web/dev/certs/
