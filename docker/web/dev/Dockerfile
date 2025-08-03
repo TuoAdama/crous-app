@@ -1,6 +1,5 @@
 FROM php:8.3-apache
 RUN a2enmod rewrite headers
-RUN a2enmod ssl
 
 RUN apt-get update && apt-get install -y \
         libfreetype6-dev \

@@ -15,7 +15,7 @@ services:
       - ./docker/web/dev/php.ini:/usr/local/etc/php/php.ini
       - ./docker/web/dev/xdebug.ini:/usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
     ports:
-      - "441:443"
+      - "81:80"
 
   node:
     image: node:16

@@ -1,6 +1,6 @@
 - name: Deploy Nginx configuration
   copy:
-    src: file/ngnix-conf
+    src: file/ngnix.conf
     dest: /etc/nginx/sites-available/crousapp-dev.tuo-adama.com
     owner: root
     group: root
