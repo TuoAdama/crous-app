@@ -1,15 +1,15 @@
 - name: Deploy Nginx configuration
   copy:
     src: file/ngnix.conf
-    dest: /etc/nginx/sites-available/crousapp-dev.tuo-adama.com
+    dest: /etc/nginx/sites-available/crousapp.atuo
     owner: root
     group: root
     mode: '0644'
 
 - name: Activate Nginx configuration
   file:
-    src: /etc/nginx/sites-available/crousapp-dev.tuo-adama.com
-    dest: /etc/nginx/sites-enabled/crousapp-dev.tuo-adama.com
+    src: /etc/nginx/sites-available/crousapp.atuo
+    dest: /etc/nginx/sites-enabled/crousapp.atuo
     state: link
     force: yes
 

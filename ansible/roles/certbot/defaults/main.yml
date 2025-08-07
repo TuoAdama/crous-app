@@ -31,7 +31,7 @@ mail_password: !vault |
           6632
 
 certbot_auto_renew: true
-certbot_domain: crousapp-dev.tuo-adama.com
+certbot_domain: crousapp.atuo.fr
 mail_from: noreply@tuo-adama.com
 
 certificate_path: "/etc/letsencrypt/live/{{ certbot_domain }}/fullchain.pem"
