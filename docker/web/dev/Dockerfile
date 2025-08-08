@@ -20,7 +20,7 @@ RUN apt-get update && apt-get install -y \
 RUN docker-php-ext-configure gd --enable-gd --with-freetype --with-jpeg \
     && docker-php-ext-install -j$(nproc) gd
 
-RUN pecl install redis \
+RUN pecl install redis-5.3.7 \
     && docker-php-ext-enable redis
 
 RUN pecl install xdebug \

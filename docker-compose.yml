@@ -45,7 +45,7 @@ services:
       - PMA_ARBITRARY=1
 
   redis:
-    image: redis:5-alpine
+    image: redis:6-alpine
     ports:
       - "6379:6379"
 
