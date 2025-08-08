@@ -104,3 +104,11 @@
     chdir: "{{ project_root }}"
   tags:
     - consume_messages
+
+- name: Launch app:id-tool command
+  become: no
+  command: docker compose exec web bin/console app:id-tool
+  args:
+    chdir: "{{ project_root }}"
+  tags:
+    - id_tool

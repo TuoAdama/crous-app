@@ -17,7 +17,7 @@ class IdToolService
     private string $projectDir;
 
     public function __construct(
-        private readonly CacheInterface $cache,
+        private readonly CacheInterface $cacheRedis,
         private readonly LoggerInterface $logger,
         private readonly KernelInterface $kernel,
         #[Autowire(param: 'id.tool.expiration')]
@@ -48,7 +48,7 @@ class IdToolService
         if (preg_match('#/tools/(\d+)/#', $currentUrl, $matches)) {
             $idTool = $matches[1];
         }
-    
+
         $client->takeScreenshot($this->projectDir . "/var/tmp/screenshot.png");
         $client->quit();
 
@@ -61,7 +61,7 @@ class IdToolService
     private function getIdToolFromCache(): int
     {
         try {
-            return  $this->cache->get('id_tool', function ($item) {
+            return  $this->cacheRedis->get('id_tool', function ($item) {
                 $id = $this->crawlIdTool();
                 $item->expiresAfter($this->idToolExpiration);
                 return $id;
