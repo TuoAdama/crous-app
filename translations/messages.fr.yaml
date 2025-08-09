@@ -100,3 +100,6 @@ constraint:
   message:
     extent: "La valeur extent est invalide"
     type_location: "La valeur type est invalide"
+no:
+  criteria:
+    found:  Aucun critère n'a été défini

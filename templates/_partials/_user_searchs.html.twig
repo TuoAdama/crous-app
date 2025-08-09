@@ -1,9 +1,14 @@
-<div {{ vue_component('UserSearchComponent',
-            {
-                criteriaWithResults: criteriaWithResults,
-                token: csrf_token('delete'),
-                path: path('app_criteria_delete')
-            })
-}}>
-
-</div>
+{% if criteriaWithResults|length > 0 %}
+    <div {{ vue_component('UserSearchComponent',
+        {
+            criteriaWithResults: criteriaWithResults,
+            token: csrf_token('delete'),
+            path: path('app_criteria_delete')
+        })
+    }}>
+    </div>
+{% else %}
+    <div class="alert alert-info">
+        {{ 'no.criteria.found'|trans }}
+    </div>
+{% endif %}
