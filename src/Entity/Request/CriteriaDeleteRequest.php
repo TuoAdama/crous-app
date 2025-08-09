@@ -16,7 +16,7 @@ class CriteriaDeleteRequest
         #[Assert\NotNull]
         #[Assert\NotBlank]
         #[Assert\Positive]
-        public readonly string $id,
+        public readonly int $id,
 
         #[Assert\NotNull]
         #[Assert\NotBlank]

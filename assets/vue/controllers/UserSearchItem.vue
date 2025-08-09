@@ -1,17 +1,17 @@
 <script setup>
     const {criteriaWithResults, token, path, onDelete} = defineProps(['criteriaWithResults', 'token', 'path', 'onDelete'])
-    function onSubmit(e){
-        const formData = new FormData(e.target);
-        const body = {};
-        formData.forEach((value, key) => body[key] = value);
-
+    function onSubmit(id, token){
         fetch(path, {
             headers: {
               'Content-Type': 'application/json',
               'Accept': 'application/json',
             },
             method: "POST",
-            body: JSON.stringify(body),
+            body: JSON.stringify({
+                id: id,
+                token: token,
+                method: "DELETE"
+            }),
         })
         .then(response  => {
             if (response.status === 200) {
@@ -34,12 +34,25 @@
     </td>
     <td>
       <a class="btn btn-primary btn-sm mx-2" :href="`/criteria/edit/${criteriaWithResults.criteria.id}`">Modifier</a>
-      <form class="d-inline" method="post" @submit.prevent="onSubmit">
-        <input type="hidden" name="method" value="DELETE">
-        <input type="hidden" name="token" :value="token">
-        <input type="hidden" name="id" :value="criteriaWithResults.criteria.id" />
-        <button type="submit" onclick="confirm('Êtes-vous sûre d\'éffectuer cette opération ?')" class="btn btn-danger mdc-ripple-upgraded">Supprimer</button>
-      </form>
+      <button type="button" class="btn btn-danger mdc-ripple-upgraded" data-bs-toggle="modal" :data-bs-target="'#deleteModal-' + criteriaWithResults.criteria.id">Supprimer</button>
     </td>
   </tr>
+
+<div class="modal fade" :id="'deleteModal-' + criteriaWithResults.criteria.id" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="deleteModalLabel">Confirmation de suppression</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        Êtes-vous sûr de vouloir supprimer ce critère de recherche ?
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+        <button type="button" class="btn btn-danger" @click="onSubmit(criteriaWithResults.criteria.id, token)" data-bs-dismiss="modal">Supprimer</button>
+      </div>
+    </div>
+  </div>
+</div>
 </template>
