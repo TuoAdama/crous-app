@@ -5,7 +5,9 @@ namespace App\Controller;
 use App\DTO\Request\SearchRequestQuery;
 use App\Entity\User;
 use App\Services\SearchService;
+use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Attribute\MapQueryString;
 use Symfony\Component\Routing\Annotation\Route;
@@ -53,13 +55,20 @@ class IndexController extends AbstractController
 
     #[Route('/profile', name: 'app_index')]
     #[IsGranted('IS_AUTHENTICATED_FULLY')]
-    public function index(): Response
+    public function index(PaginatorInterface $paginator, Request $request): Response
     {
         /** @var User $user */
         $user = $this->getUser();
         $criteriaWithResults = $this->searchService->getCriteriaWithResults($user);
+
+        $pagination = $paginator->paginate(
+            $criteriaWithResults,
+            $request->query->getInt('page', 1),
+            10
+        );
+
         return $this->render('pages/dashboard.html.twig', [
-            'criteriaWithResults' => $criteriaWithResults
+            'criteriaWithResults' => $pagination
         ]);
     }
 }

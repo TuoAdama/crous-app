@@ -1,7 +1,10 @@
-{% if criteriaWithResults|length > 0 %}
+{% if criteriaWithResults.getTotalItemCount > 0 %}
     <div {{ vue_component('UserSearchComponent',
         {
-            criteriaWithResults: criteriaWithResults,
+            criteriaWithResults: {
+                'items': criteriaWithResults.getItems(),
+                'pagination': criteriaWithResults.getPaginationData()
+            },
             token: csrf_token('delete'),
             path: path('app_criteria_delete')
         })
