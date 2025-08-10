@@ -1,5 +1,17 @@
 <script setup>
     const {criteriaWithResults, token, path, onDelete} = defineProps(['criteriaWithResults', 'token', 'path', 'onDelete'])
+    function translateType(type) {
+        switch (type) {
+            case 'alone':
+                return 'Individuel';
+            case 'house_sharing':
+                return 'Colocation';
+            case 'couple':
+                return 'Couple';
+            default:
+                return type;
+        }
+    }
     function onSubmit(id, token){
         fetch(path, {
             headers: {
@@ -29,7 +41,7 @@
     <td>{{criteriaWithResults.criteria.location.properties.name}}</td>
     <td>
       <div class="mt-3">
-        <span class="me-2 bg-secondary text-white py-1 px-2 rounded-1" v-for="type in criteriaWithResults.criteria.type">{{type}}</span>
+        <span class="me-2 bg-secondary text-white py-1 px-2 rounded-1" v-for="type in criteriaWithResults.criteria.type">{{translateType(type)}}</span>
       </div>
     </td>
     <td>
