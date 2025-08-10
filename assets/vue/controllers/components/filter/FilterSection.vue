@@ -1,6 +1,6 @@
 <script setup>
 import FilterItem from "./FilterItem.vue";
-import {computed, ref, watch} from "vue";
+import {computed, ref, watch, onMounted, onUnmounted} from "vue";
 
 
 const emit = defineEmits(['update']);
@@ -26,6 +26,38 @@ function showModel(index) {
   }
   modalIndex.value = index;
 }
+
+// Fermer le modal quand on clique ailleurs
+function handleClickOutside(event) {
+  // Vérifie si le clic est dans un conteneur de filtre ou un modal
+  const isInFilterContainer = event.target.closest('.filter-item-container');
+  const isInModal = event.target.closest('.filter-modal');
+  
+  // Si le clic n'est pas dans un filtre et qu'un modal est ouvert, on le ferme
+  if (!isInFilterContainer && !isInModal && modalIndex.value !== -1) {
+    modalIndex.value = -1;
+  }
+}
+
+// Fermer avec la touche Escape
+function handleEscape(event) {
+  if (event.key === 'Escape' && modalIndex.value !== -1) {
+    modalIndex.value = -1;
+  }
+}
+
+onMounted(() => {
+  // Petit délai pour éviter la fermeture immédiate lors du clic d'ouverture
+  setTimeout(() => {
+    document.addEventListener('click', handleClickOutside, true);
+    document.addEventListener('keydown', handleEscape);
+  }, 10);
+});
+
+onUnmounted(() => {
+  document.removeEventListener('click', handleClickOutside, true);
+  document.removeEventListener('keydown', handleEscape);
+});
 
 function onUpdateFilter(index) {
 
@@ -79,14 +111,15 @@ watch(() => [props.minArea, props.minPrice, props.locationType], () => {
 
 <template>
   <div class="flex flex-wrap gap-2">
-    <FilterItem 
-      @onReset="onReset(0)" 
-      :is-updated="typeLocationIsUpdated" 
-      :showModal="modalIndex === 0" 
-      @onShowModal="() => showModel(0)" 
-      name="Type logement" 
-      icon="fa-solid fa-house"
-    >
+    <div class="filter-item-container" @click.stop>
+      <FilterItem 
+        @onReset="onReset(0)" 
+        :is-updated="typeLocationIsUpdated" 
+        :showModal="modalIndex === 0" 
+        @onShowModal="() => showModel(0)" 
+        name="Type logement" 
+        icon="fa-solid fa-house"
+      >
       <template #modal>
         <select v-model="locationType" @change="onUpdateFilter(0)" class="w-full bg-white border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-600">
           <option value="">Sélectionner un type</option>
@@ -98,16 +131,18 @@ watch(() => [props.minArea, props.minPrice, props.locationType], () => {
       <template #update-content>
         <span class="mx-1 text-sm sm:text-base">{{ typeLocation[locationType] }}</span>
       </template>
-    </FilterItem>
+      </FilterItem>
+    </div>
     
-    <FilterItem 
-      @onReset="onReset(1)" 
-      :is-updated="minPriceIsUpdated" 
-      :showModal="modalIndex === 1" 
-      @onShowModal="() => showModel(1)" 
-      name="Prix minimum" 
-      icon="fa-solid fa-tag"
-    >
+    <div class="filter-item-container" @click.stop>
+      <FilterItem 
+        @onReset="onReset(1)" 
+        :is-updated="minPriceIsUpdated" 
+        :showModal="modalIndex === 1" 
+        @onShowModal="() => showModel(1)" 
+        name="Prix minimum" 
+        icon="fa-solid fa-tag"
+      >
       <template #modal>
         <input 
           v-model="minPrice" 
@@ -120,16 +155,18 @@ watch(() => [props.minArea, props.minPrice, props.locationType], () => {
       <template #update-content>
         <span class="mx-1 text-sm sm:text-base">{{minPrice}} €</span>
       </template>
-    </FilterItem>
+      </FilterItem>
+    </div>
     
-    <FilterItem 
-      @onReset="onReset(2)" 
-      :is-updated="minAreaIsUpdated" 
-      :showModal="modalIndex === 2" 
-      @onShowModal="() => showModel(2)" 
-      name="Surface minimum" 
-      icon="fa-solid fa-clone"
-    >
+    <div class="filter-item-container" @click.stop>
+      <FilterItem 
+        @onReset="onReset(2)" 
+        :is-updated="minAreaIsUpdated" 
+        :showModal="modalIndex === 2" 
+        @onShowModal="() => showModel(2)" 
+        name="Surface minimum" 
+        icon="fa-solid fa-clone"
+      >
       <template #modal>
         <input 
           v-model="minArea" 
@@ -142,7 +179,8 @@ watch(() => [props.minArea, props.minPrice, props.locationType], () => {
       <template #update-content>
         <span class="mx-1 text-sm sm:text-base">{{minArea}} m²</span>
       </template>
-    </FilterItem>
+      </FilterItem>
+    </div>
   </div>
 </template>
 

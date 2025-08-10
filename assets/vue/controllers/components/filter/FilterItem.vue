@@ -21,7 +21,7 @@
       isUpdated ? 'bg-blue-50 border-blue-500 text-blue-700' : 'bg-white border-gray-300 hover:border-gray-400'
     ]"
   >
-    <FilterModal v-if="showModal" :title="name" @blur="emit('onShowModal')">
+    <FilterModal v-if="showModal" :title="name">
       <slot name="modal"></slot>
     </FilterModal>
     
