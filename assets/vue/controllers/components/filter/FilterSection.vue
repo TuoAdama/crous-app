@@ -110,8 +110,8 @@ watch(() => [props.minArea, props.minPrice, props.locationType], () => {
 </script>
 
 <template>
-  <div class="flex flex-wrap gap-2">
-    <div class="filter-item-container" @click.stop>
+  <div class="flex flex-wrap gap-2 w-full md:w-auto">
+    <div class="filter-item-container flex-grow sm:flex-grow-0" @click.stop>
       <FilterItem 
         @onReset="onReset(0)" 
         :is-updated="typeLocationIsUpdated" 
@@ -134,7 +134,7 @@ watch(() => [props.minArea, props.minPrice, props.locationType], () => {
       </FilterItem>
     </div>
     
-    <div class="filter-item-container" @click.stop>
+    <div class="filter-item-container flex-grow sm:flex-grow-0" @click.stop>
       <FilterItem 
         @onReset="onReset(1)" 
         :is-updated="minPriceIsUpdated" 
@@ -158,7 +158,7 @@ watch(() => [props.minArea, props.minPrice, props.locationType], () => {
       </FilterItem>
     </div>
     
-    <div class="filter-item-container" @click.stop>
+    <div class="filter-item-container flex-grow sm:flex-grow-0" @click.stop>
       <FilterItem 
         @onReset="onReset(2)" 
         :is-updated="minAreaIsUpdated" 

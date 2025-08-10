@@ -16,7 +16,7 @@
   <div 
     @click="emit('onShowModal')"
     :class="[
-      'relative flex items-center gap-1 sm:gap-2 px-3 py-2 border rounded-lg cursor-pointer transition-all duration-200',
+      'relative flex items-center justify-center sm:justify-start gap-1 sm:gap-2 px-3 py-2 sm:py-2 border rounded-lg cursor-pointer transition-all duration-200 w-full',
       'hover:shadow-md focus:outline-none focus:ring-2 focus:ring-blue-600',
       isUpdated ? 'bg-blue-50 border-blue-500 text-blue-700' : 'bg-white border-gray-300 hover:border-gray-400'
     ]"

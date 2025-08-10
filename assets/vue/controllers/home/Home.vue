@@ -160,7 +160,7 @@ onMounted(() => {
           <!-- Filtres et bouton alerte -->
           <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
             <!-- Section des filtres -->
-            <div class="flex-1">
+            <div class="w-full lg:flex-1">
               <FilterSection
                 @update="updateFilter"
                 :min-area="search.minArea"
