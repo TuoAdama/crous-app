@@ -10,7 +10,7 @@
         @focus="showSuggestions = true"
         @blur="hideSuggestions"
         placeholder="Ville (ex. Paris, Lyon)"
-        class="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
+        class="w-full px-4 py-3 text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-blue-600 transition-all duration-200"
     />
 
     <ul

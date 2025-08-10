@@ -141,34 +141,49 @@ onMounted(() => {
   <Navbar :is-auth="user !== null"/>
 
   <!-- Section de recherche -->
-  <div class="bg-gray-100 min-h-[40vh] flex flex-col justify-center items-center text-center px-4">
-    <h1 class="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-800 mb-6">Trouvez votre logement étudiant idéal</h1>
-    <div class="bg-white p-4 sm:p-6 rounded-lg shadow-md w-full max-w-4xl flex flex-col space-y-4">
-      <AlertMessage @close="alert.message = ''" v-if="alert.message !== ''" :message="alert.message" :type="alert.type"/>
-      <form class="flex flex-col space-y-4">
-        <div class="">
-          <SearchInput
-            @change="updateFilter"
-            :url="configs.searchUrl"
-            :reset="resetInput"
-            :value="search.properties.name || ''"
-          />
-        </div>
-        <div class="flex justify-between items-center">
-          <FilterSection
-              @update="updateFilter"
-              :min-area="search.minArea"
-              :min-price="search.minPrice"
-              :location-type="search.typeLocation"
-          />
-          <div>
-            <button type="button" v-if="showAlertBtn" @click="onCreateAlert" style="background-color: #b91c1c" class="flex rounded-md items-center gap-2 px-4 py-2 text-white">
-              <i class="fa-solid fa-bell"></i>
-              Créer une alerte
-            </button>
+  <div class="bg-gray-100 min-h-[40vh] flex flex-col justify-center items-center py-8 px-4">
+    <div class="w-full max-w-6xl">
+      <h1 class="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-800 mb-6 text-center">Trouvez votre logement étudiant idéal</h1>
+      <div class="bg-white p-4 sm:p-6 rounded-lg shadow-md">
+        <AlertMessage @close="alert.message = ''" v-if="alert.message !== ''" :message="alert.message" :type="alert.type"/>
+        <form class="space-y-4">
+          <!-- Barre de recherche -->
+          <div class="w-full">
+            <SearchInput
+              @change="updateFilter"
+              :url="configs.searchUrl"
+              :reset="resetInput"
+              :value="search.properties.name || ''"
+            />
           </div>
-        </div>
-      </form>
+          
+          <!-- Filtres et bouton alerte -->
+          <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+            <!-- Section des filtres -->
+            <div class="flex-1">
+              <FilterSection
+                @update="updateFilter"
+                :min-area="search.minArea"
+                :min-price="search.minPrice"
+                :location-type="search.typeLocation"
+              />
+            </div>
+            
+            <!-- Bouton créer une alerte -->
+            <div class="flex-shrink-0">
+              <button 
+                type="button" 
+                v-if="showAlertBtn" 
+                @click="onCreateAlert" 
+                class="w-full lg:w-auto flex justify-center items-center gap-2 px-6 py-2.5 bg-red-700 hover:bg-red-800 text-white rounded-lg transition-colors duration-200"
+              >
+                <i class="fa-solid fa-bell"></i>
+                <span>Créer une alerte</span>
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
     </div>
   </div>
 

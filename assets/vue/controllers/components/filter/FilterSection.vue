@@ -78,33 +78,69 @@ watch(() => [props.minArea, props.minPrice, props.locationType], () => {
 </script>
 
 <template>
-  <div class="flex">
-    <FilterItem @onReset="onReset(0)" :is-updated="typeLocationIsUpdated" :showModal="modalIndex === 0" @onShowModal="() => showModel(0)" name="Type logement" icon="fa-solid fa-house">
+  <div class="flex flex-wrap gap-2">
+    <FilterItem 
+      @onReset="onReset(0)" 
+      :is-updated="typeLocationIsUpdated" 
+      :showModal="modalIndex === 0" 
+      @onShowModal="() => showModel(0)" 
+      name="Type logement" 
+      icon="fa-solid fa-house"
+    >
       <template #modal>
         <select v-model="locationType" @change="onUpdateFilter(0)" class="w-full bg-white border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-600">
+          <option value="">Sélectionner un type</option>
           <option value="couple">Couple</option>
           <option value="house_sharing">Colocation</option>
           <option value="alone">Individuel</option>
         </select>
       </template>
       <template #update-content>
-        <span class="mx-2">Type: {{ typeLocation[locationType] }}</span>
+        <span class="mx-1 text-sm sm:text-base">{{ typeLocation[locationType] }}</span>
       </template>
     </FilterItem>
-    <FilterItem @onReset="onReset(1)" :is-updated="minPriceIsUpdated" :showModal="modalIndex === 1" @onShowModal="() => showModel(1)" name="Prix minimum" icon="fa-solid fa-tag">
+    
+    <FilterItem 
+      @onReset="onReset(1)" 
+      :is-updated="minPriceIsUpdated" 
+      :showModal="modalIndex === 1" 
+      @onShowModal="() => showModel(1)" 
+      name="Prix minimum" 
+      icon="fa-solid fa-tag"
+    >
       <template #modal>
-        <input v-model="minPrice" @change="onUpdateFilter(1)" type="number" placeholder="Prix minimum (€)" class="w-full bg-white border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-600" />
+        <input 
+          v-model="minPrice" 
+          @change="onUpdateFilter(1)" 
+          type="number" 
+          placeholder="Prix minimum (€)" 
+          class="w-full bg-white border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-600" 
+        />
       </template>
       <template #update-content>
-        <span class="mx-2">Min: {{minPrice}} €</span>
+        <span class="mx-1 text-sm sm:text-base">{{minPrice}} €</span>
       </template>
     </FilterItem>
-    <FilterItem @onReset="onReset(2)" :is-updated="minAreaIsUpdated" :showModal="modalIndex === 2" @onShowModal="() => showModel(2)" name="Surface minimum" icon="fa-solid fa-clone">
+    
+    <FilterItem 
+      @onReset="onReset(2)" 
+      :is-updated="minAreaIsUpdated" 
+      :showModal="modalIndex === 2" 
+      @onShowModal="() => showModel(2)" 
+      name="Surface minimum" 
+      icon="fa-solid fa-clone"
+    >
       <template #modal>
-        <input v-model="minArea" @change="onUpdateFilter(2)" type="number" placeholder="Surface minimum (m²)" class="w-full bg-white border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-600" />
+        <input 
+          v-model="minArea" 
+          @change="onUpdateFilter(2)" 
+          type="number" 
+          placeholder="Surface minimum (m²)" 
+          class="w-full bg-white border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-600" 
+        />
       </template>
       <template #update-content>
-        <span class="mx-2">Surface: {{minArea}} m²</span>
+        <span class="mx-1 text-sm sm:text-base">{{minArea}} m²</span>
       </template>
     </FilterItem>
   </div>
