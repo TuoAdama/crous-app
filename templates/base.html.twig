@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-	<title>{% block page_title %}Crous - App{% endblock %}</title>
+	<title>{% block page_title %}StudentStay - Recherche de Logement{% endblock %}</title>
 
 	<!-- Meta -->
 	<meta charset="utf-8">
@@ -9,49 +9,154 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<link rel="shortcut icon" href="favicon.ico">
 
+	<!-- FontAwesome -->
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+	
+	<!-- Tailwind CSS -->
+	<script src="https://cdn.tailwindcss.com"></script>
+	<script>
+		tailwind.config = {
+			theme: {
+				extend: {
+					colors: {
+						primary: {
+							50: '#fefefe',
+							100: '#fdfdfd',
+							200: '#fafafa',
+							300: '#f5f5f5',
+							400: '#f0f0f0',
+							500: '#e8e8e8',
+							600: '#d1d1d1',
+							700: '#b3b3b3',
+							800: '#8c8c8c',
+							900: '#636363',
+						}
+					},
+					fontFamily: {
+						'sans': ['Inter', 'system-ui', 'sans-serif'],
+					}
+				}
+			}
+		}
+	</script>
+
 	{% block javascripts %}
 		{{ encore_entry_script_tags('app') }}
 	{% endblock %}
-	<!-- FontAwesome JS-->
-	<script defer src="/plugins/fontawesome/js/all.min.js"></script>
 
 	<!-- App CSS -->
 	<link id="theme-style" rel="stylesheet" href="/css/portal.css">
+	<link rel="stylesheet" href="/css/modern-theme.css">
 
 	{% block styles %}{% endblock %}
 
-
+	<style>
+		/* Styles modernes pour la cohérence */
+		.modern-header {
+			background: white;
+			border-bottom: 1px solid #e5e7eb;
+			box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+		}
+		
+		.modern-sidebar {
+			background: white;
+			border-right: 1px solid #e5e7eb;
+			box-shadow: 2px 0 4px rgba(0, 0, 0, 0.1);
+		}
+		
+		.modern-content {
+			background: #f9fafb;
+			min-height: calc(100vh - 64px);
+		}
+		
+		.modern-card {
+			background: white;
+			border-radius: 12px;
+			box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+			border: 1px solid #e5e7eb;
+		}
+		
+		.modern-btn {
+			background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+			border: none;
+			color: white;
+			padding: 8px 16px;
+			border-radius: 8px;
+			font-weight: 500;
+			transition: all 0.3s ease;
+		}
+		
+		.modern-btn:hover {
+			transform: translateY(-1px);
+			box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+		}
+		
+		.nav-link-modern {
+			color: #6b7280;
+			padding: 12px 16px;
+			border-radius: 8px;
+			transition: all 0.3s ease;
+			display: flex;
+			align-items: center;
+			gap: 12px;
+		}
+		
+		.nav-link-modern:hover {
+			background: #f3f4f6;
+			color: #374151;
+		}
+		
+		.nav-link-modern.active {
+			background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+			color: white;
+		}
+	</style>
 </head> 
 
-<body class="app">   	
-    <header class="app-header fixed-top">
+<body class="bg-gray-50 font-sans">   	
+    <header class="modern-header fixed top-0 left-0 right-0 z-50 h-16">
 		{% include '_partials/header.html.twig' %}
-		{% include '_partials/sidebar.html.twig' %}
     </header>
     
-    <div class="app-wrapper">
-	    
-	    <div class="app-content pt-3 p-md-3 p-lg-4">
-		    <div class="container-xl">
-			    
-			    <h1 class="app-page-title">{% block content_title %}Overview{% endblock %}</h1>
-				{% include '_partials/_flash-message.html.twig' %}
-				{% block content %}{% endblock %}
+    <div class="flex h-screen pt-16">
+		<!-- Sidebar -->
+		<aside class="modern-sidebar w-64 hidden lg:block">
+			{% include '_partials/sidebar.html.twig' %}
+		</aside>
+		
+		<!-- Main Content -->
+		<main class="flex-1 modern-content overflow-auto">
+			<div class="p-6">
+				<div class="max-w-7xl mx-auto">
+					<!-- Page Header -->
+					<div class="mb-8">
+						{% block content_title %}
+							<h1 class="text-3xl font-bold text-gray-800">{% block title %}Tableau de bord{% endblock %}</h1>
+						{% endblock %}
+					</div>
+					
+					<!-- Flash Messages -->
+					{% include '_partials/_flash-message.html.twig' %}
+					
+					<!-- Main Content -->
+					<div class="modern-card p-6">
+						{% block content %}{% endblock %}
+					</div>
+				</div>
+			</div>
+		</main>
+    </div>
 
-
-			</div><!--//container-fluid-->
-	    </div><!--//app-content-->
-
+	<!-- Footer -->
+	<footer class="bg-white border-t border-gray-200 py-6 mt-auto">
 		{% include '_partials/footer.html.twig' %}
-	    
-    </div><!--//app-wrapper-->
+	</footer>
+
+	<!-- Scripts -->
 	<script src="/plugins/popper.min.js"></script>
 	<script src="/plugins/bootstrap/js/bootstrap.min.js"></script>
-
-	<!-- Page Specific JS -->
 	<script src="/js/app.js"></script>
 	{% block scripts %}{% endblock %}
-
 </body>
 </html> 
 
