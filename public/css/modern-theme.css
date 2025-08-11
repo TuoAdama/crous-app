@@ -239,6 +239,11 @@ h6 { font-size: 1rem; }
   text-decoration: none;
 }
 
+.page-item.active {
+  margin-left: 0.5rem;
+  margin-right: 0.5rem;
+}
+
 .nav-link.active {
   background: var(--primary-gradient);
   color: white;
@@ -359,7 +364,7 @@ h6 { font-size: 1rem; }
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 2.5rem;
+  width: 5.5rem;
   height: 2.5rem;
   border-radius: var(--border-radius);
   background: var(--bg-primary);
@@ -368,6 +373,8 @@ h6 { font-size: 1rem; }
   transition: var(--transition);
   border: 1px solid var(--border-color);
 }
+
+
 
 .page-link:hover {
   background: var(--bg-tertiary);
