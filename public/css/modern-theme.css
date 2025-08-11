@@ -176,6 +176,11 @@ h6 { font-size: 1rem; }
   font-size: 0.875rem;
 }
 
+.form-check-input:checked {
+  background-color: #15a362 !important;
+  border-color: #15a362 !important;
+}
+
 .form-input {
   padding: 0.75rem 1rem;
   border: 2px solid var(--border-color);
