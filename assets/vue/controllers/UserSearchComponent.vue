@@ -37,7 +37,18 @@ function onDelete (id){
         />
       </tbody>
     </table>
-    <div class="navigation text-primary">
+
+    <!-- List for mobile -->
+    <div class="d-md-none">
+      <ul class="list-group">
+        <li href="#" class="list-group-item d-flex justify-content-between" v-for="item in criteriaWithResults">
+          <span>{{ item.criteria.location.properties.name }}</span>
+          <a :href="`/criteria/edit/${item.criteria.id}`" class="btn btn-link text-primary">Voir</a>
+        </li>
+      </ul>
+    </div>
+
+    <div class="d-none d-md-block navigation text-primary">
         <ul class="pagination">
             <li class="page-item text-primary" :class="{disabled: pagination.current === 1}">
                 <a class="page-link" :href="`?page=${pagination.current - 1}`">Previous</a>
