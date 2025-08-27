@@ -1,6 +1,7 @@
 <script setup>
 import {ref} from "vue";
 import UserSearchItem from "./UserSearchItem.vue";
+import TypeLocationService from "./service/TypeLocationService";
 
 const props = defineProps({
   criteriaWithResults: [],
@@ -42,8 +43,15 @@ function onDelete (id){
     <!-- List for mobile -->
     <div class="d-md-none">
       <ul class="list-group">
-        <li href="#" class="list-group-item d-flex justify-content-between" v-for="item in criteriaWithResults">
-          <span>{{ item.criteria.location.properties.name }}</span>
+        <li href="#" class="list-group-item d-flex justify-content-between align-items-center" v-for="item in criteriaWithResults">
+          <span class="d-flex flex-column">
+            <span class="mb-1 fs-5">{{ item.criteria.location.properties.name }}</span>
+            <span>
+              <span class="me-1 bg-secondary text-white p-1 rounded-1" v-for="type in item.criteria.type">
+                {{ TypeLocationService.translateType(type) }}
+              </span>
+            </span>
+          </span>
           <a :href="`/criteria/edit/${item.criteria.id}`" class="btn btn-link text-primary">Voir</a>
         </li>
       </ul>
