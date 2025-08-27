@@ -19,7 +19,8 @@ function onDelete (id){
 
 <template>
   <div class="row">
-    <table class="table table-striped table-hover">
+    <!-- Table for desktop/tablet -->
+    <table class="table table-striped table-hover d-none d-md-table">
       <thead class="table-dark">
       <tr>
         <th scope="col">Ville</th>
