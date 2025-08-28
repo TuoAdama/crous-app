@@ -21,7 +21,7 @@
 
 <template>
   <div class="min-h-screen bg-gray-50 py-8">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="max-w-7xl mx-auto px-2 px-md-4 sm:px-6 lg:px-8">
       <!-- Breadcrumb -->
       <nav class="mb-8" aria-label="breadcrumb">
         <ol class="flex items-center space-x-2 text-sm text-gray-600">
@@ -44,9 +44,9 @@
           <div class="card-modern p-6 text-center">
             <div class="relative mb-6">
               <div class="w-32 h-32 mx-auto relative">
-                <img 
-                  src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" 
-                  alt="Photo de profil" 
+                <img
+                  src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+                  alt="Photo de profil"
                   class="w-full h-full rounded-full object-cover border-4 border-white shadow-lg"
                 >
                 <div class="absolute -bottom-2 -right-2 w-8 h-8 bg-green-500 rounded-full border-4 border-white flex items-center justify-center">
@@ -54,10 +54,10 @@
                 </div>
               </div>
             </div>
-            
+
             <h2 class="text-2xl font-bold text-gray-900 mb-2">{{ user.username }}</h2>
             <p class="text-gray-700 mb-4">{{ user.email }}</p>
-            
+
             <div class="space-y-3">
               <div class="flex items-center justify-center text-sm text-gray-600">
                 <i class="fas fa-envelope mr-2 text-green-500"></i>
@@ -68,9 +68,9 @@
                 <span>Membre depuis 2024</span>
               </div>
             </div>
-            
+
             <div class="mt-6 pt-6 border-t border-gray-200">
-              <button 
+              <button
                 @click="onEdit"
                 class="btn-modern w-full"
               >
@@ -122,7 +122,7 @@
                 <i class="fas fa-shield-alt text-red-600"></i>
               </div>
             </div>
-            
+
             <div class="space-y-4">
               <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg border border-gray-200">
                 <div class="flex items-center">
@@ -136,7 +136,7 @@
                   Modifier
                 </button>
               </div>
-              
+
               <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg border border-gray-200">
                 <div class="flex items-center">
                   <i class="fas fa-mobile-alt text-gray-700 mr-3"></i>
