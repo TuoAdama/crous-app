@@ -75,8 +75,8 @@ const onSendNumberVerification = async () => {
           </button>
         </div>
 
-        <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg border border-gray-200">
-          <div class="flex items-center">
+        <div class="flex items-center flex-wrap justify-between p-4 bg-gray-50 rounded-lg border border-gray-200">
+          <div class="flex flex-column flex-md-row items-center">
             <ResendButton
               :is-loading="loading"
               :is-verified="user.emailIsVerified"
