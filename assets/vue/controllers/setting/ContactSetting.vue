@@ -67,15 +67,14 @@ const onSendNumberVerification = async () => {
               <p class="text-sm text-gray-700">Gérez votre adresse email principale</p>
             </div>
           </div>
-          <button 
-            @click="isEditEmail = true" 
-            class="btn-modern btn-secondary"
+          <button
+            @click="isEditEmail = true"
+            class="btn"
           >
-            <i class="fas fa-edit mr-2"></i>
-            Modifier
+            <i class="fas fa-edit"></i>
           </button>
         </div>
-        
+
         <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg border border-gray-200">
           <div class="flex items-center">
             <ResendButton
@@ -112,15 +111,14 @@ const onSendNumberVerification = async () => {
               <p class="text-sm text-gray-700">Gérez votre numéro de téléphone</p>
             </div>
           </div>
-          <button 
-            @click="onAddNumber" 
-            class="btn-modern btn-secondary"
+          <button
+            @click="onAddNumber"
+            class="btn"
           >
-            <i class="fas fa-edit mr-2"></i>
-            {{ user.number ? 'Modifier' : 'Ajouter' }}
+            <i class="fas fa-edit"></i>
           </button>
         </div>
-        
+
         <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg border border-gray-200">
           <div class="flex items-center">
             <ResendButton
@@ -149,15 +147,15 @@ const onSendNumberVerification = async () => {
     </template>
 
     <!-- Formulaires d'édition -->
-    <EditEmailForm 
-      v-if="isEditEmail && !isAddNumber" 
-      :user="user" 
+    <EditEmailForm
+      v-if="isEditEmail && !isAddNumber"
+      :user="user"
       :on-update="onUpdateEmail"
       :on-cancel="() => isEditEmail = false"
     />
-    
-    <AddNumberSetting 
-      v-if="isAddNumber && !isEditEmail" 
+
+    <AddNumberSetting
+      v-if="isAddNumber && !isEditEmail"
       :on-cancel="() => isAddNumber = false"
     />
   </div>
