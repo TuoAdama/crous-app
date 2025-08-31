@@ -128,16 +128,20 @@ class SearchService
     }
 
 
-    public function run(): void
+    /**
+     * Run search for all criteria
+     * @return array<array{criteria: SearchCriteria, results: array}>
+     */
+    public function run(): array
     {
         $this->searchSchedulerLogger->info("start searching..");
         $page = 1;
         $hasCriteria = true;
+        $results = [];
         while ($hasCriteria) {
             $allCriteria = $this->criteriaRepository->findFirstTop($page, $this->limit);
             $hasCriteria = count($allCriteria);
             if ($hasCriteria) {
-                $results = [];
                 foreach ($allCriteria as $criteria) {
                     $searchResult = $this->search($criteria);
                     if (!$this->isResponseBodyContainsResults($searchResult, $criteria)) {
@@ -162,6 +166,7 @@ class SearchService
             }
         }
         $this->searchSchedulerLogger->info("end searching..");
+        return $results;
     }
 
 
