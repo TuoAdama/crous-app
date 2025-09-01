@@ -141,7 +141,7 @@ onMounted(() => {
   <Navbar :is-auth="user !== null"/>
 
   <!-- Hero Section avec gradient -->
-  <div class="relative bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 min-h-[50vh] flex flex-col justify-center items-center py-12 px-4 overflow-hidden">
+  <div class="relative bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 min-h-[50vh] flex flex-col justify-center items-center py-12 px-4">
     <!-- Animated background elements -->
     <div class="absolute inset-0 overflow-hidden">
       <div class="absolute -top-10 -right-10 w-40 h-40 bg-blue-200 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob"></div>
