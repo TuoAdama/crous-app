@@ -1,20 +1,20 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <title>Vérification de numéro de téléphone - StudentStay</title>
+    <title>Vérification de numéro de téléphone - Crousfy</title>
 
     <!-- Meta -->
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <meta name="description" content="Vérifiez votre numéro de téléphone pour sécuriser votre compte StudentStay">
-    <meta name="author" content="StudentStay">
+    <meta name="description" content="Vérifiez votre numéro de téléphone pour sécuriser votre compte Crousfy">
+    <meta name="author" content="Crousfy">
     <link rel="shortcut icon" href="favicon.ico">
 
     <!-- FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-    
+
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -53,20 +53,20 @@
         .gradient-bg {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         }
-        
+
         .glass-effect {
             background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(10px);
             border: 1px solid rgba(255, 255, 255, 0.2);
         }
-        
+
         .card-modern {
             background: white;
             border-radius: 20px;
             box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
             border: 1px solid rgba(255, 255, 255, 0.2);
         }
-        
+
         .btn-modern {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             border: none;
@@ -77,12 +77,12 @@
             transition: all 0.3s ease;
             box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
         }
-        
+
         .btn-modern:hover {
             transform: translateY(-2px);
             box-shadow: 0 12px 35px rgba(102, 126, 234, 0.4);
         }
-        
+
         .input-modern {
             border: 2px solid #e5e7eb;
             border-radius: 12px;
@@ -91,14 +91,14 @@
             transition: all 0.3s ease;
             background: #f9fafb;
         }
-        
+
         .input-modern:focus {
             outline: none;
             border-color: #667eea;
             background: white;
             box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
         }
-        
+
         .verification-code {
             letter-spacing: 0.5em;
             font-size: 24px;
@@ -165,7 +165,7 @@
                 <!-- Formulaire -->
                 <div class="space-y-6">
                     {{ form_start(form, {'attr': {'class': 'space-y-6'}}) }}
-                    
+
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-2">
                             <i class="fas fa-key mr-2"></i>
@@ -198,7 +198,7 @@
                         <i class="fas fa-check mr-2"></i>
                         Vérifier le code
                     </button>
-                    
+
                     {{ form_end(form) }}
                 </div>
 
@@ -221,5 +221,5 @@
         </div>
     </div>
 </body>
-</html> 
+</html>
 

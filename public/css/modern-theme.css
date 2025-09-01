@@ -1,4 +1,4 @@
-/* Modern Theme for StudentStay */
+/* Modern Theme for Crousfy */
 
 /* Variables CSS personnalisées */
 :root {
@@ -7,32 +7,32 @@
   --success-gradient: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
   --warning-gradient: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
   --danger-gradient: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
-  
+
   --primary-color: #f5f5f5;
   --secondary-color: #764ba2;
   --success-color: #10b981;
   --warning-color: #f59e0b;
   --danger-color: #ef4444;
   --info-color: #3b82f6;
-  
+
   --text-primary: #1f2937;
   --text-secondary: #6b7280;
   --text-muted: #9ca3af;
-  
+
   --bg-primary: #ffffff;
   --bg-secondary: #f9fafb;
   --bg-tertiary: #f3f4f6;
-  
+
   --border-color: #e5e7eb;
   --border-radius: 12px;
   --border-radius-lg: 16px;
   --border-radius-xl: 20px;
-  
+
   --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
   --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
   --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
   --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-  
+
   --transition: all 0.3s ease;
   --transition-fast: all 0.15s ease;
   --transition-slow: all 0.5s ease;
@@ -440,16 +440,16 @@ h6 { font-size: 1rem; }
   .card-modern {
     border-radius: var(--border-radius);
   }
-  
+
   .btn-modern {
     width: 100%;
     justify-content: center;
   }
-  
+
   .table-modern {
     font-size: 0.875rem;
   }
-  
+
   .table-modern th,
   .table-modern td {
     padding: 0.75rem 0.5rem;
@@ -462,7 +462,7 @@ h6 { font-size: 1rem; }
     box-shadow: none;
     border: 1px solid #000;
   }
-  
+
   .btn-modern {
     display: none;
   }
