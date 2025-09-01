@@ -112,3 +112,13 @@
     chdir: "{{ project_root }}"
   tags:
     - id_tool
+
+
+- name: Run criteria search command
+  cron:
+    name: "Run criteria search command every 30 minutes"
+    minute: "*/30"
+    user: root
+    job: "docker compose -f {{ project_root }}/docker-compose.yml exec web bin/console app:search:run"
+  tags:
+    - cron
