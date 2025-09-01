@@ -5,11 +5,166 @@
 {% block title %}{{ 'contact'|trans }}{% endblock %}
 
 {% block content %}
-    <div class="row justify-content-center">
-        <div class="col-7">
-            {{ form_start(form) }}
-            {{ form_widget(form) }}
-            {{ form_end(form) }}
+<div class="min-h-screen bg-gray-50 py-8 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-4xl mx-auto">
+        <!-- Header Section -->
+        <div class="text-center mb-12">
+            <div class="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full mb-6 shadow-lg">
+                <i class="fas fa-envelope text-white text-3xl"></i>
+            </div>
+            <h1 class="text-4xl font-bold text-gray-800 mb-4">{{ 'contact'|trans }}</h1>
+            <p class="text-xl text-gray-600 max-w-2xl mx-auto">
+                Nous sommes là pour vous aider ! N'hésitez pas à nous contacter pour toute question concernant votre recherche de logement.
+            </p>
+        </div>
+
+        <!-- Contact Form Card -->
+        <div class="card-modern">
+            <div class="p-8">
+                {{ form_start(form, {'attr': {'class': 'space-y-6'}}) }}
+                
+                <!-- Subject Field -->
+                <div>
+                    <label for="{{ form.subject.vars.id }}" class="block text-sm font-semibold text-gray-700 mb-2">
+                        {{ form.subject.vars.label|trans }}
+                        <span class="text-red-500">*</span>
+                    </label>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <i class="fas fa-tag text-gray-400"></i>
+                        </div>
+                        {{ form_widget(form.subject, {
+                            'attr': {
+                                'class': 'block w-full pl-10 pr-3 py-4 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 text-gray-900 placeholder-gray-500',
+                                'placeholder': 'Ex: Question sur un logement, Problème technique...'
+                            }
+                        }) }}
+                    </div>
+                    {% if form.subject.vars.errors|length > 0 %}
+                        <div class="mt-2 text-sm text-red-600">
+                            {% for error in form.subject.vars.errors %}
+                                <p>{{ error.message }}</p>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <!-- Description Field -->
+                <div>
+                    <label for="{{ form.description.vars.id }}" class="block text-sm font-semibold text-gray-700 mb-2">
+                        Votre message
+                        <span class="text-red-500">*</span>
+                    </label>
+                    <div class="relative">
+                        <div class="absolute top-4 left-3 flex items-start pointer-events-none">
+                            <i class="fas fa-comment text-gray-400 mt-1"></i>
+                        </div>
+                        {{ form_widget(form.description, {
+                            'attr': {
+                                'class': 'block w-full pl-10 pr-3 py-4 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 text-gray-900 placeholder-gray-500 resize-none',
+                                'rows': '8',
+                                'placeholder': 'Décrivez votre question ou votre problème en détail...'
+                            }
+                        }) }}
+                    </div>
+                    {% if form.description.vars.errors|length > 0 %}
+                        <div class="mt-2 text-sm text-red-600">
+                            {% for error in form.description.vars.errors %}
+                                <p>{{ error.message }}</p>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <!-- Submit Button -->
+                <div class="pt-4">
+                    {{ form_widget(form.submit, {
+                        'attr': {
+                            'class': 'w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold py-4 px-8 rounded-xl transition-all duration-200 transform hover:scale-105 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 flex items-center justify-center space-x-2'
+                        }
+                    }) }}
+                </div>
+
+                {{ form_end(form) }}
+            </div>
+        </div>
+
+        <!-- Additional Contact Information -->
+        <div class="mt-12 grid grid-cols-1 md:grid-cols-3 gap-8">
+            <!-- Email Support -->
+            <div class="text-center">
+                <div class="inline-flex items-center justify-center w-16 h-16 bg-blue-100 rounded-full mb-4">
+                    <i class="fas fa-envelope-open text-blue-600 text-xl"></i>
+                </div>
+                <h3 class="text-lg font-semibold text-gray-900 mb-2">Support Email</h3>
+                <p class="text-gray-600">support@crous-app.com</p>
+            </div>
+
+            <!-- Response Time -->
+            <div class="text-center">
+                <div class="inline-flex items-center justify-center w-16 h-16 bg-green-100 rounded-full mb-4">
+                    <i class="fas fa-clock text-green-600 text-xl"></i>
+                </div>
+                <h3 class="text-lg font-semibold text-gray-900 mb-2">Temps de réponse</h3>
+                <p class="text-gray-600">Sous 24h</p>
+            </div>
+
+            <!-- FAQ -->
+            <div class="text-center">
+                <div class="inline-flex items-center justify-center w-16 h-16 bg-purple-100 rounded-full mb-4">
+                    <i class="fas fa-question-circle text-purple-600 text-xl"></i>
+                </div>
+                <h3 class="text-lg font-semibold text-gray-900 mb-2">FAQ</h3>
+                <p class="text-gray-600">Questions fréquentes</p>
+            </div>
+        </div>
+
+        <!-- Helpful Tips -->
+        <div class="mt-12 bg-blue-50 rounded-2xl p-8 border border-blue-100">
+            <h3 class="text-xl font-semibold text-blue-900 mb-4 flex items-center">
+                <i class="fas fa-lightbulb text-yellow-500 mr-3"></i>
+                Conseils pour un message efficace
+            </h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-blue-800">
+                <div class="flex items-start space-x-3">
+                    <i class="fas fa-check-circle text-green-500 mt-1"></i>
+                    <span>Précisez le type de logement recherché</span>
+                </div>
+                <div class="flex items-start space-x-3">
+                    <i class="fas fa-check-circle text-green-500 mt-1"></i>
+                    <span>Mentionnez votre budget approximatif</span>
+                </div>
+                <div class="flex items-start space-x-3">
+                    <i class="fas fa-check-circle text-green-500 mt-1"></i>
+                    <span>Indiquez vos préférences de localisation</span>
+                </div>
+                <div class="flex items-start space-x-3">
+                    <i class="fas fa-check-circle text-green-500 mt-1"></i>
+                    <span>Décrivez clairement votre problème</span>
+                </div>
+            </div>
         </div>
     </div>
+</div>
+
+<!-- Success Message Toast -->
+{% for message in app.flashes('success') %}
+    <div id="success-toast" class="fixed top-4 right-4 bg-green-500 text-white px-6 py-4 rounded-xl shadow-lg transform transition-all duration-300 z-50">
+        <div class="flex items-center space-x-3">
+            <i class="fas fa-check-circle text-xl"></i>
+            <span class="font-semibold">{{ message }}</span>
+            <button onclick="this.parentElement.parentElement.remove()" class="ml-4 text-white hover:text-green-200">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+    </div>
+    <script>
+        setTimeout(() => {
+            const toast = document.getElementById('success-toast');
+            if (toast) {
+                toast.remove();
+            }
+        }, 5000);
+    </script>
+{% endfor %}
 {% endblock %}
