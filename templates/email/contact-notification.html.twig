@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Nouveau contact reçu</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .header {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        .contact-info {
+            background-color: #ffffff;
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .field {
+            margin-bottom: 15px;
+        }
+        .field-label {
+            font-weight: bold;
+            color: #495057;
+            margin-bottom: 5px;
+        }
+        .field-value {
+            padding: 10px;
+            background-color: #f8f9fa;
+            border-radius: 3px;
+            border-left: 4px solid #007bff;
+        }
+        .message-content {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 3px;
+            border-left: 4px solid #28a745;
+            white-space: pre-wrap;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #dee2e6;
+            color: #6c757d;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>📧 Nouveau contact reçu</h1>
+        <p>Un nouveau message de contact a été envoyé depuis votre site web.</p>
+    </div>
+
+    <div class="contact-info">
+        <div class="field">
+            <div class="field-label">Nom :</div>
+            <div class="field-value">{{ name }}</div>
+        </div>
+
+        <div class="field">
+            <div class="field-label">Email :</div>
+            <div class="field-value">{{ user_email }}</div>
+        </div>
+
+        <div class="field">
+            <div class="field-label">Sujet :</div>
+            <div class="field-value">{{ title }}</div>
+        </div>
+
+        <div class="field">
+            <div class="field-label">Date d'envoi :</div>
+            <div class="field-value">{{ createdAt|date('d/m/Y à H:i') }}</div>
+        </div>
+
+        <div class="field">
+            <div class="field-label">Message :</div>
+            <div class="message-content">{{ message }}</div>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>Cet email a été envoyé automatiquement par votre système de contact.</p>
+        <p>Vous pouvez répondre directement à l'expéditeur en utilisant l'adresse email fournie ci-dessus.</p>
+    </div>
+</body>
+</html>
