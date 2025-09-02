@@ -50,19 +50,12 @@ class IndexController extends AbstractController
             }
         }
 
-        // Créer le formulaire de contact public
         $contactForm = $this->createForm(PublicContactType::class);
         $contactForm->handleRequest($request);
 
         if ($contactForm->isSubmitted() && $contactForm->isValid()) {
             $formData = $contactForm->getData();
-            
-            // Ici vous pouvez ajouter la logique pour traiter le message
-            // Par exemple, envoyer un email ou sauvegarder en base
-            
             $this->addFlash('success', 'Votre message a été envoyé avec succès ! Nous vous répondrons dans les plus brefs délais.');
-            
-            // Réinitialiser le formulaire
             $contactForm = $this->createForm(PublicContactType::class);
         }
 
