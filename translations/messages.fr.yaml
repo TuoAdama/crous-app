@@ -103,3 +103,8 @@ constraint:
 no:
   criteria:
     found:  Aucun critère n'a été défini
+
+
+public:
+  contact:
+    success.message: Votre message a été envoyé avec succès ! Nous vous répondrons dans les plus brefs délais.

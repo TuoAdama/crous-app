@@ -3,8 +3,10 @@
 namespace App\Controller;
 
 use App\DTO\Request\SearchRequestQuery;
+use App\Entity\PublicContact;
 use App\Entity\User;
 use App\Form\PublicContactType;
+use App\Services\ContactService;
 use App\Services\SearchService;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -14,11 +16,14 @@ use Symfony\Component\HttpKernel\Attribute\MapQueryString;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class IndexController extends AbstractController
 {
     public function __construct(
         private readonly SearchService $searchService,
+        private readonly TranslatorInterface $translator,
+        private readonly ContactService $contactService,
         #[Autowire("%env(SUPPORT_MAIL)%")]
         private readonly string $noreplyEmail
     )
@@ -50,13 +55,12 @@ class IndexController extends AbstractController
             }
         }
 
-        $contactForm = $this->createForm(PublicContactType::class);
+        $publicContact = new PublicContact();
+        $contactForm = $this->createForm(PublicContactType::class, $publicContact);
         $contactForm->handleRequest($request);
-
         if ($contactForm->isSubmitted() && $contactForm->isValid()) {
-            $formData = $contactForm->getData();
-            $this->addFlash('success', 'Votre message a été envoyé avec succès ! Nous vous répondrons dans les plus brefs délais.');
-            $contactForm = $this->createForm(PublicContactType::class);
+            $this->addFlash('success', $this->translator->trans("public.contact.success.message"));
+            $this->contactService->savePublicContact($publicContact);
         }
 
         return $this->render('pages/home/index.html.twig', [

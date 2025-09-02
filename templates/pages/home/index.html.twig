@@ -74,9 +74,9 @@
                     <!-- Formulaire de contact -->
                     <div class="card-modern p-8">
                         <h3 class="text-2xl font-bold text-gray-800 mb-6 text-center">Contactez-nous</h3>
-                        
+
                         {{ form_start(contactForm, {'attr': {'class': 'space-y-6'}}) }}
-                        
+
                         <!-- Nom -->
                         <div>
                             <label for="{{ contactForm.name.vars.id }}" class="block text-sm font-semibold text-gray-700 mb-2">
@@ -129,21 +129,21 @@
 
                         <!-- Sujet -->
                         <div>
-                            <label for="{{ contactForm.subject.vars.id }}" class="block text-sm font-semibold text-gray-700 mb-2">
-                                {{ contactForm.subject.vars.label }}
+                            <label for="{{ contactForm.title.vars.id }}" class="block text-sm font-semibold text-gray-700 mb-2">
+                                {{ contactForm.title.vars.label }}
                                 <span class="text-red-500">*</span>
                             </label>
                             <div class="relative">
                                 <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                                     <i class="fas fa-tag text-gray-400"></i>
                                 </div>
-                                {{ form_widget(contactForm.subject, {
+                                {{ form_widget(contactForm.title, {
                                     'attr': {
                                         'class': 'block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 text-gray-900 placeholder-gray-500'
                                     }
                                 }) }}
                             </div>
-                            {% if contactForm.subject.vars.errors|length > 0 %}
+                            {% if contactForm.title.vars.errors|length > 0 %}
                                 <div class="mt-2 text-sm text-red-600">
                                     {% for error in contactForm.subject.vars.errors %}
                                         <p>{{ error.message }}</p>
