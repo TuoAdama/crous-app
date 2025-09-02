@@ -44,11 +44,11 @@ class MailService
         try {
             $this->mailer->send($email);
             $this->logger->info('[MAIL] Mail send to {email}', [
-                'email' => 'tuoadama17@gmail',
+                'email' => $email->getTo(),
             ]);
         } catch (TransportExceptionInterface $e) {
             $this->logger->alert('[MAIL] Envoie de mail echoué: user [email: {email}]', [
-                'email' => 'tuoadama17@gmail'
+                'email' => $email->getTo(),
             ]);
         }
     }
