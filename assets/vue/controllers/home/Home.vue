@@ -148,10 +148,10 @@ onMounted(() => {
       <div class="absolute -bottom-8 -left-10 w-40 h-40 bg-purple-200 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-2000"></div>
       <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-40 h-40 bg-pink-200 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-4000"></div>
     </div>
-    
+
     <div class="relative w-full max-w-6xl z-10">
       <div class="text-center mb-8">
-        <h1 class="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-800 mb-4 animate-fade-in-down">
+        <h1 id="search-section" class="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-800 mb-4 animate-fade-in-down">
           Trouvez votre logement étudiant idéal
         </h1>
         <p class="text-lg sm:text-xl text-gray-600 animate-fade-in-up">
@@ -170,7 +170,7 @@ onMounted(() => {
               :value="search.properties.name || ''"
             />
           </div>
-          
+
           <!-- Filtres et bouton alerte -->
           <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
             <!-- Section des filtres -->
@@ -182,13 +182,13 @@ onMounted(() => {
                 :location-type="search.typeLocation"
               />
             </div>
-            
+
             <!-- Bouton créer une alerte -->
             <div class="flex-shrink-0">
-              <button 
-                type="button" 
-                v-if="showAlertBtn" 
-                @click="onCreateAlert" 
+              <button
+                type="button"
+                v-if="showAlertBtn"
+                @click="onCreateAlert"
                 class="w-full lg:w-auto flex justify-center items-center gap-2 px-6 py-2.5 bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white rounded-lg transition-all duration-200 shadow-md hover:shadow-lg transform hover:-translate-y-0.5"
               >
                 <i class="fa-solid fa-bell"></i>
@@ -216,7 +216,7 @@ onMounted(() => {
           <h3 class="text-xl font-semibold mb-3 text-gray-800">Recherche avancée</h3>
           <p class="text-gray-600">Trouvez facilement le logement idéal grâce à nos filtres détaillés et notre système de recherche intelligent.</p>
         </div>
-        
+
         <!-- Feature 2 -->
         <div class="group bg-white p-8 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
           <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mb-6 group-hover:bg-green-200 transition-colors">
@@ -225,7 +225,7 @@ onMounted(() => {
           <h3 class="text-xl font-semibold mb-3 text-gray-800">100% Sécurisé</h3>
           <p class="text-gray-600">Tous les logements sont vérifiés et conformes aux normes étudiantes. Votre sécurité est notre priorité.</p>
         </div>
-        
+
         <!-- Feature 3 -->
         <div class="group bg-white p-8 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
           <div class="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mb-6 group-hover:bg-purple-200 transition-colors">
@@ -264,10 +264,10 @@ onMounted(() => {
       <h2 class="text-2xl sm:text-3xl font-bold text-gray-800 mb-6">Prêt à trouver votre futur logement ?</h2>
       <p class="text-lg text-gray-600 mb-8">Commencez votre recherche dès maintenant et trouvez le logement parfait pour vos études</p>
       <div class="flex flex-col sm:flex-row gap-4 justify-center">
-        <button class="px-8 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white rounded-lg shadow-lg hover:shadow-xl transition-all duration-200 transform hover:-translate-y-0.5">
+        <a href="#search-section" class="px-8 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white rounded-lg shadow-lg hover:shadow-xl transition-all duration-200 transform hover:-translate-y-0.5">
           <i class="fa-solid fa-search mr-2"></i>
           Commencer la recherche
-        </button>
+        </a>
         <button class="px-8 py-3 bg-white border-2 border-gray-300 hover:border-gray-400 text-gray-700 rounded-lg shadow-md hover:shadow-lg transition-all duration-200">
           <i class="fa-solid fa-info-circle mr-2"></i>
           En savoir plus

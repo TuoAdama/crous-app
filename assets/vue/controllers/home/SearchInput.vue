@@ -39,8 +39,8 @@
               @mousedown.prevent="selectSuggestion(suggestion)"
               :class="[
                 'px-3 py-3 cursor-pointer rounded-lg transition-all duration-200 flex items-center',
-                index === highlightedIndex 
-                  ? 'bg-gradient-to-r from-blue-50 to-purple-50 border border-blue-200' 
+                index === highlightedIndex
+                  ? 'bg-gradient-to-r from-blue-50 to-purple-50 border border-blue-200'
                   : 'hover:bg-gray-50'
               ]"
           >
