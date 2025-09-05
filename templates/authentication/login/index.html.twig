@@ -624,30 +624,28 @@
                         Votre compte a été désactivé. Veuillez contacter l'administrateur.
                     </div>
                 {% endif %}
-
-                <form class="login-form" method="post">
+                {{form_start(form,{'attr': {'class': 'login-form'}})}}
                     <div class="form-group">
                         <div class="input-container">
                             <i class="fas fa-envelope input-icon"></i>
-                            <input type="email" 
-                                   id="{{ form.email.vars.id }}" 
-                                   name="{{ form.email.vars.full_name }}" 
-                                   class="form-input" 
-                                   placeholder="Adresse email"
-                                   value="{{ form.email.vars.value }}"
-                                   required>
+                            {{ form_row(form.email, {
+                                'attr': {
+                                    'class': 'form-input',
+                                    'placeholder': 'Adresse email'
+                                }
+                            }) }}
                         </div>
                     </div>
 
                     <div class="form-group">
                         <div class="input-container">
                             <i class="fas fa-lock input-icon"></i>
-                            <input type="password" 
-                                   id="{{ form.password.vars.id }}" 
-                                   name="{{ form.password.vars.full_name }}" 
-                                   class="form-input" 
-                                   placeholder="Mot de passe"
-                                   required>
+                            {{ form_row(form.password, {
+                                'attr': {
+                                    'class': 'form-input',
+                                    'placeholder': 'Mot de passe'
+                                }
+                            }) }}
                         </div>
                     </div>
 
@@ -659,8 +657,7 @@
                         <span>Se connecter</span>
                         <i class="fas fa-arrow-right"></i>
                     </button>
-                </form>
-
+                {{form_end(form)}}
                 <div class="form-footer">
                     <p class="register-text">
                         Pas encore de compte ? 
