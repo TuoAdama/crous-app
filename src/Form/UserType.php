@@ -22,14 +22,14 @@ class UserType extends AbstractType
                     'class' => 'form-control signup-name',
                     'required' => true,
                 ],
-                'label' => 'Nom:',
+                'label' => false,
             ])
             ->add('email', EmailType::class, [
                 'attr' => [
                     'class' => 'form-control email signup-email',
                     'required' => true,
                 ],
-                'label' => 'E-mail:',
+                'label' => false,
             ])
             ->add('password', RepeatedType::class, [
                 'type' => PasswordType::class,
@@ -39,8 +39,8 @@ class UserType extends AbstractType
                         'required' => true,
                     ],
                 ],
-                'first_options'  => ['label' => 'input.password.label'],
-                'second_options' => ['label' => 'input.password.confirm.label'],
+                'first_options'  => ['label' => false],
+                'second_options' => ['label' => false],
             ])
             ->add('submit', SubmitType::class, [
                 'label' => 'Enregistrer',

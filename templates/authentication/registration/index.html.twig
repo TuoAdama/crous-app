@@ -1,30 +1,752 @@
-{% extends "authentication/base.html.twig" %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Création de compte - CROUSFY</title>
+    <link rel="shortcut icon" href="favicon.ico">
+    
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-{% block header_title %}
-    Création de compte
-{% endblock %}
+        :root {
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --secondary-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            --success-gradient: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            
+            --primary-color: #667eea;
+            --secondary-color: #764ba2;
+            --success-color: #10b981;
+            --warning-color: #f59e0b;
+            --danger-color: #ef4444;
+            
+            --text-primary: #1f2937;
+            --text-secondary: #6b7280;
+            --text-muted: #9ca3af;
+            
+            --bg-primary: #ffffff;
+            --bg-secondary: #f9fafb;
+            --bg-tertiary: #f3f4f6;
+            
+            --border-color: #e5e7eb;
+            --border-radius: 12px;
+            --border-radius-lg: 16px;
+            
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            
+            --transition: all 0.3s ease;
+        }
 
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: var(--text-primary);
+            background: var(--bg-secondary);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
 
-{% block title %}
-    Créer un compte
-{% endblock %}
+        .mt-3 {
+            margin-top: 1rem;
+        }
 
-{% block content %}
-    <div class="auth-form-container text-start mx-auto">
-        {{ form_start(form) }}
-        <div class="mb-3">
-            {{ form_row(form.username) }}
+        .registration-container {
+            min-height: 100vh;
+            display: flex;
+            position: relative;
+        }
+
+        /* Section gauche - Branding */
+        .branding-section {
+            flex: 1;
+            background: var(--primary-gradient);
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .branding-content {
+            text-align: center;
+            color: white;
+            z-index: 2;
+            position: relative;
+            max-width: 500px;
+            padding: 2rem;
+            animation: slideInLeft 0.8s ease-out;
+        }
+
+        .logo-container {
+            margin-bottom: 2rem;
+        }
+
+        .logo {
+            width: 80px;
+            height: 80px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            animation: float 3s ease-in-out infinite;
+        }
+
+        .logo i {
+            font-size: 2.5rem;
+            color: white;
+        }
+
+        .brand-title {
+            font-size: 3.5rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            letter-spacing: -0.02em;
+            text-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .brand-subtitle {
+            font-size: 1.25rem;
+            opacity: 0.9;
+            font-weight: 300;
+            line-height: 1.6;
+            margin-bottom: 3rem;
+        }
+
+        .benefits-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+        }
+
+        .benefit-card {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: var(--border-radius);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: var(--transition);
+        }
+
+        .benefit-card:hover {
+            transform: translateY(-2px);
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .benefit-icon {
+            width: 3rem;
+            height: 3rem;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+        }
+
+        .benefit-text {
+            font-size: 1.1rem;
+            font-weight: 500;
+        }
+
+        /* Éléments décoratifs */
+        .decoration {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .floating-element {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .element-1 {
+            width: 300px;
+            height: 300px;
+            top: 10%;
+            left: -150px;
+            animation-delay: 0s;
+        }
+
+        .element-2 {
+            width: 200px;
+            height: 200px;
+            top: 60%;
+            right: -100px;
+            animation-delay: 2s;
+        }
+
+        .element-3 {
+            width: 150px;
+            height: 150px;
+            top: 30%;
+            right: 20%;
+            animation-delay: 4s;
+        }
+
+        .element-4 {
+            width: 100px;
+            height: 100px;
+            bottom: 20%;
+            left: 10%;
+            animation-delay: 1s;
+        }
+
+        /* Section droite - Formulaire */
+        .form-section {
+            flex: 1;
+            background: var(--bg-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            position: relative;
+        }
+
+        .form-container {
+            width: 100%;
+            max-width: 450px;
+            animation: slideInRight 0.8s ease-out;
+        }
+
+        .form-header {
+            text-align: center;
+            margin-bottom: 2.5rem;
+        }
+
+        .form-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .form-subtitle {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            font-weight: 400;
+        }
+
+        .registration-form {
+            background: var(--bg-primary);
+            padding: 2rem;
+            border-radius: var(--border-radius-lg);
+            box-shadow: var(--shadow-lg);
+            border: 1px solid var(--border-color);
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .input-container {
+            position: relative;
+        }
+
+        .input-icon {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+            font-size: 1.1rem;
+            z-index: 2;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 1rem 1rem 1rem 3rem;
+            border: 2px solid var(--border-color);
+            border-radius: var(--border-radius);
+            font-size: 1rem;
+            font-weight: 400;
+            transition: var(--transition);
+            background: var(--bg-primary);
+            color: var(--text-primary);
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+            transform: translateY(-1px);
+        }
+
+        .form-input::placeholder {
+            color: var(--text-muted);
+        }
+
+        .password-requirements {
+            margin-top: 0.5rem;
+            padding: 0.75rem;
+            background: var(--bg-secondary);
+            border-radius: var(--border-radius);
+            border: 1px solid var(--border-color);
+        }
+
+        .password-requirements h4 {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .requirement-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .requirement-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.25rem;
+        }
+
+        .requirement-item i {
+            font-size: 0.75rem;
+            width: 1rem;
+        }
+
+        .requirement-item.valid {
+            color: var(--success-color);
+        }
+
+        .requirement-item.invalid {
+            color: var(--danger-color);
+        }
+
+        .submit-button {
+            width: 100%;
+            background: var(--primary-gradient);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: var(--border-radius);
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            box-shadow: var(--shadow-md);
+            margin-bottom: 1.5rem;
+        }
+
+        .submit-button:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-xl);
+        }
+
+        .submit-button:active {
+            transform: translateY(0);
+        }
+
+        .form-footer {
+            text-align: center;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .login-text {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+
+        .login-link {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 600;
+            transition: var(--transition);
+        }
+
+        .login-link:hover {
+            color: var(--secondary-color);
+            text-decoration: none;
+        }
+
+        /* Flash messages */
+        .flash-messages {
+            margin-bottom: 1.5rem;
+        }
+
+        .alert {
+            padding: 1rem 1.5rem;
+            border-radius: var(--border-radius);
+            margin-bottom: 1rem;
+            border: 1px solid;
+            font-weight: 500;
+        }
+
+        .alert-success {
+            background: #ecfdf5;
+            border-color: #a7f3d0;
+            color: #065f46;
+        }
+
+        .alert-danger {
+            background: #fef2f2;
+            border-color: #fca5a5;
+            color: #991b1b;
+        }
+
+        .alert-warning {
+            background: #fffbeb;
+            border-color: #fcd34d;
+            color: #92400e;
+        }
+
+        /* Animations */
+        @keyframes slideInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(180deg); }
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .registration-container {
+                flex-direction: column;
+            }
+
+            .branding-section {
+                min-height: 40vh;
+            }
+
+            .brand-title {
+                font-size: 2.5rem;
+            }
+
+            .benefits-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 1rem;
+            }
+
+            .benefit-card {
+                padding: 0.75rem;
+            }
+
+            .benefit-text {
+                font-size: 1rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .form-section {
+                padding: 1rem;
+            }
+
+            .form-title {
+                font-size: 2rem;
+            }
+
+            .brand-title {
+                font-size: 2rem;
+            }
+
+            .brand-subtitle {
+                font-size: 1rem;
+            }
+
+            .benefits-grid {
+                grid-template-columns: 1fr;
+                gap: 0.75rem;
+            }
+
+            .registration-form {
+                padding: 1.5rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .branding-content {
+                padding: 1rem;
+            }
+
+            .logo {
+                width: 60px;
+                height: 60px;
+            }
+
+            .logo i {
+                font-size: 2rem;
+            }
+
+            .brand-title {
+                font-size: 1.75rem;
+            }
+
+            .form-container {
+                max-width: 100%;
+            }
+
+            .registration-form {
+                padding: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="registration-container">
+        <!-- Section gauche - Branding -->
+        <div class="branding-section">
+            <div class="branding-content">
+                <div class="logo-container">
+                    <div class="logo">
+                        <i class="fas fa-user-plus"></i>
+                    </div>
+                    <h1 class="brand-title">CROUSFY</h1>
+                    <p class="brand-subtitle">Rejoignez notre communauté d'étudiants</p>
+                </div>
+                
+                <div class="benefits-grid">
+                    <div class="benefit-card">
+                        <div class="benefit-icon">
+                            <i class="fas fa-rocket"></i>
+                        </div>
+                        <div class="benefit-text">Accès rapide aux offres</div>
+                    </div>
+                    <div class="benefit-card">
+                        <div class="benefit-icon">
+                            <i class="fas fa-heart"></i>
+                        </div>
+                        <div class="benefit-text">Favoris personnalisés</div>
+                    </div>
+                    <div class="benefit-card">
+                        <div class="benefit-icon">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <div class="benefit-text">Communauté active</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Éléments décoratifs -->
+            <div class="decoration">
+                <div class="floating-element element-1"></div>
+                <div class="floating-element element-2"></div>
+                <div class="floating-element element-3"></div>
+                <div class="floating-element element-4"></div>
+            </div>
         </div>
-        <div class="mb-3">
-            {{ form_row(form.email) }}
-        </div>
-        <div class="mb-3">
-            {{ form_row(form.password) }}
-        </div>
-        {{ form_end(form) }}
 
-        <div class="auth-option text-center pt-5">Avez-vous un compte ? <a class="text-link" href="{{ path('app_login') }}">Se connecter</a>
+        <!-- Section droite - Formulaire -->
+        <div class="form-section">
+            <div class="form-container">
+                <div class="form-header">
+                    <h2 class="form-title">Créer un compte</h2>
+                    <p class="form-subtitle">Rejoignez CROUSFY en quelques étapes</p>
+                </div>
+
+                <!-- Flash Messages -->
+                <div class="flash-messages">
+                    {% for type, messages in app.flashes %}
+                        {% for message in messages %}
+                            <div class="alert alert-{{ type }}">
+                                {{ message }}
+                            </div>
+                        {% endfor %}
+                    {% endfor %}
+                </div>
+                {{form_start(form,{'attr': {'class': 'registration-form'}})}}
+                    <div class="form-group">
+                        <div class="input-container">
+                            <i class="fas fa-user input-icon"></i>
+                            {{ form_row(form.username, {
+                                'attr': {
+                                    'class': 'form-input',
+                                    'placeholder': 'Nom d\'utilisateur'
+                                }
+                            }) }}
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="input-container">
+                            <i class="fas fa-envelope input-icon"></i>
+                            {{ form_row(form.email, {
+                                'attr': {
+                                    'class': 'form-input',
+                                    'placeholder': 'Adresse email'
+                                }
+                            }) }}
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="input-container">
+                            <i class="fas fa-lock input-icon"></i>
+
+                            {{ form_row(form.password.first, {
+                                'attr': {
+                                    'class': 'form-input',
+                                    'placeholder': 'Entrer le mot de passe'
+                                }
+                            }) }}
+                        </div>
+
+                        <div class="input-container mt-3">
+                            <i class="fas fa-lock input-icon"></i>
+                            {{ form_row(form.password.second, {
+                                'attr': {
+                                    'class': 'form-input',
+                                    'placeholder': 'Confirmer le mot de passe'
+                                }
+                            }) }}
+                        </div>
+                        
+                        <div class="password-requirements">
+                            <h4>Exigences du mot de passe :</h4>
+                            <ul class="requirement-list">
+                                <li class="requirement-item" id="req-length">
+                                    <i class="fas fa-circle"></i>
+                                    Au moins 8 caractères
+                                </li>
+                                <li class="requirement-item" id="req-uppercase">
+                                    <i class="fas fa-circle"></i>
+                                    Une majuscule
+                                </li>
+                                <li class="requirement-item" id="req-lowercase">
+                                    <i class="fas fa-circle"></i>
+                                    Une minuscule
+                                </li>
+                                <li class="requirement-item" id="req-number">
+                                    <i class="fas fa-circle"></i>
+                                    Un chiffre
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    {{form_row(form.submit, {
+                        'attr': {
+                            'class': 'submit-button'
+                        },
+                        'label': 'Créer mon compte'
+                    })}}
+                {{form_end(form)}}
+
+                <div class="form-footer">
+                    <p class="login-text">
+                        Vous avez déjà un compte ? 
+                        <a href="{{ path('app_login') }}" class="login-link">Se connecter</a>
+                    </p>
+                </div>
+            </div>
         </div>
     </div>
-{% endblock %}
 
+    <script>
+        // Validation du mot de passe en temps réel
+        document.addEventListener('DOMContentLoaded', function() {
+            const passwordInput = document.getElementById('user_password_first');
+            const requirements = {
+                length: document.getElementById('req-length'),
+                uppercase: document.getElementById('req-uppercase'),
+                lowercase: document.getElementById('req-lowercase'),
+                number: document.getElementById('req-number')
+            };
+
+            passwordInput.addEventListener('input', function() {
+                const password = this.value;
+                
+                // Vérifier la longueur
+                if (password.length >= 8) {
+                    requirements.length.classList.add('valid');
+                    requirements.length.classList.remove('invalid');
+                    requirements.length.querySelector('i').className = 'fas fa-check';
+                } else {
+                    requirements.length.classList.add('invalid');
+                    requirements.length.classList.remove('valid');
+                    requirements.length.querySelector('i').className = 'fas fa-times';
+                }
+
+                // Vérifier les majuscules
+                if (/[A-Z]/.test(password)) {
+                    requirements.uppercase.classList.add('valid');
+                    requirements.uppercase.classList.remove('invalid');
+                    requirements.uppercase.querySelector('i').className = 'fas fa-check';
+                } else {
+                    requirements.uppercase.classList.add('invalid');
+                    requirements.uppercase.classList.remove('valid');
+                    requirements.uppercase.querySelector('i').className = 'fas fa-times';
+                }
+
+                // Vérifier les minuscules
+                if (/[a-z]/.test(password)) {
+                    requirements.lowercase.classList.add('valid');
+                    requirements.lowercase.classList.remove('invalid');
+                    requirements.lowercase.querySelector('i').className = 'fas fa-check';
+                } else {
+                    requirements.lowercase.classList.add('invalid');
+                    requirements.lowercase.classList.remove('valid');
+                    requirements.lowercase.querySelector('i').className = 'fas fa-times';
+                }
+
+                // Vérifier les chiffres
+                if (/[0-9]/.test(password)) {
+                    requirements.number.classList.add('valid');
+                    requirements.number.classList.remove('invalid');
+                    requirements.number.querySelector('i').className = 'fas fa-check';
+                } else {
+                    requirements.number.classList.add('invalid');
+                    requirements.number.classList.remove('valid');
+                    requirements.number.querySelector('i').className = 'fas fa-times';
+                }
+            });
+        });
+    </script>
+</body>
+</html>
