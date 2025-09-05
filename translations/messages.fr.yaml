@@ -113,3 +113,19 @@ email:
   contact:
     notification:
       subject: "Nouveau contact reçu"
+
+verification:
+  subject: Vérification de votre compte
+  body: "Pour activer votre compte, veuillez suivre le lien suivant "
+  button: Vérifier mon compte
+  alternative: "Si le bouton ne fonctionne pas, vous pouvez copier et coller le lien suivant dans votre navigateur :"
+
+
+email.verification.greeting: Bienvenue sur notre plateforme !
+email.verification.message: Pour finaliser votre inscription et accéder à tous nos services, veuillez cliquer sur le bouton ci-dessous pour vérifier votre adresse email :
+email.verification.button: Vérifier mon email
+email.verification.alternative: "Si le bouton ne fonctionne pas, vous pouvez copier et coller le lien suivant dans votre navigateur :"
+email.verification.security: Pour des raisons de sécurité, ce lien expirera dans 24 heures.
+email.verification.ignore: "Si vous n'avez pas demandé cette vérification, vous pouvez ignorer cet email en toute sécurité."
+email.footer.contact: Pour toute question, contactez notre support client.
+email.footer.unsubscribe: Vous recevez cet email car vous vous êtes inscrit sur notre plateforme.

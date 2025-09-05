@@ -1,14 +1,159 @@
-<!doctype html>
-<html lang="en">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="format-detection" content="telephone=no" />
+    <meta name="format-detection" content="date=no" />
+    <meta name="format-detection" content="address=no" />
+    <meta name="format-detection" content="email=no" />
     <title>{{ title|trans }}</title>
+    <!--[if mso]>
+    <noscript>
+        <xml>
+            <o:OfficeDocumentSettings>
+                <o:PixelsPerInch>96</o:PixelsPerInch>
+            </o:OfficeDocumentSettings>
+        </xml>
+    </noscript>
+    <![endif]-->
+    <style type="text/css">
+        /* Reset styles */
+        body, table, td, p, a, li, blockquote {
+            -webkit-text-size-adjust: 100%;
+            -ms-text-size-adjust: 100%;
+        }
+        table, td {
+            mso-table-lspace: 0pt;
+            mso-table-rspace: 0pt;
+        }
+        img {
+            -ms-interpolation-mode: bicubic;
+            border: 0;
+            height: auto;
+            line-height: 100%;
+            outline: none;
+            text-decoration: none;
+        }
+        
+        /* Main styles */
+        body {
+            height: 100% !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            width: 100% !important;
+            background-color: #f4f4f4;
+            font-family: Arial, sans-serif;
+        }
+        
+        .email-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #ffffff;
+        }
+        
+        .header {
+            background-color: #2c3e50;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            color: #ffffff;
+            margin: 0;
+            font-size: 24px;
+            font-weight: bold;
+        }
+        
+        .content {
+            padding: 30px 20px;
+            line-height: 1.6;
+        }
+        
+        .content h2 {
+            color: #2c3e50;
+            font-size: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .content p {
+            color: #555555;
+            font-size: 16px;
+            margin-bottom: 15px;
+        }
+        
+        .button {
+            display: inline-block;
+            background-color: #3498db;
+            color: #ffffff !important;
+            padding: 12px 30px;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+            margin: 20px 0;
+        }
+        
+        .button:hover {
+            background-color: #2980b9;
+        }
+        
+        .footer {
+            background-color: #ecf0f1;
+            padding: 20px;
+            text-align: center;
+            font-size: 12px;
+            color: #7f8c8d;
+        }
+        
+        .footer p {
+            margin: 5px 0;
+        }
+        
+        /* Mobile responsive */
+        @media only screen and (max-width: 600px) {
+            .email-container {
+                width: 100% !important;
+            }
+            .content {
+                padding: 20px 15px !important;
+            }
+            .header h1 {
+                font-size: 20px !important;
+            }
+        }
+    </style>
 </head>
 <body>
-    <h3>{{ 'hello'|trans }},</h3>
-    <p>{{ message|trans }}: <a href="{{ link }}">{{ link }}</a></p>
+    <div class="email-container">
+        <!-- Header -->
+        <div class="header">
+            <h1>CROUS App</h1>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="content">
+            <h2>{{ 'hello'|trans }} {{ user.name|default('') }},</h2>
+            
+            <p>{{ 'email.verification.greeting'|trans }}</p>
+            
+            <p>{{ message|trans }}</p>
+            
+            <div style="text-align: center; margin: 30px 0;">
+                <a href="{{ link }}" class="button">{{ 'email.verification.button'|trans }}</a>
+            </div>
+                        
+            
+            <p>{{ 'email.verification.security'|trans }}</p>
+            
+            <p>{{ 'email.verification.ignore'|trans }}</p>
+        </div>
+        
+        <!-- Footer -->
+        <div class="footer">
+            <p><strong>CROUS App</strong></p>
+            <p>{{ 'email.footer.contact'|trans }}</p>
+            <p>{{ 'email.footer.unsubscribe'|trans }}</p>
+        </div>
+    </div>
 </body>
 </html>
